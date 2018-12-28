@@ -2,7 +2,7 @@ import json
 
 import requests
 
-from librus_types import SynergiaSessionUser
+from .types import SynergiaSessionUser
 
 # config line
 REDIRURI = 'http://localhost/bar'
@@ -76,5 +76,3 @@ def get_synergia_users(access_token, print_credentials=False):
             print(json.dumps(d))
         users.append(SynergiaSessionUser(d))
     return users
-
-# Printing utilities
