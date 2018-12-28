@@ -1,4 +1,5 @@
 import datetime
+
 import requests
 
 
@@ -50,7 +51,7 @@ class SynergiaSession:
         if as_dict:
             return self.get('Timetables').json()
         elif week_start_str:
-            tt =  self.get('Timetables', params={'weekStart': week_start_str}).json()['Timetable']
+            tt = self.get('Timetables', params={'weekStart': week_start_str}).json()['Timetable']
         else:
             tt = self.get('Timetables').json()['Timetable']
 
@@ -72,6 +73,7 @@ class SynergiaSession:
             return self.get('Grades').text
         if as_dict:
             return self.get('Grades').json()
+
 
 class SynergiaSessionUser:
     def __init__(self, data_dict):

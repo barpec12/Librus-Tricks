@@ -12,6 +12,7 @@ SYNERGIAAUTHURL = 'https://portal.librus.pl/api/SynergiaAccounts'
 CLIENTID = 'wmSyUMo8llDAs4y9tJVYY92oyZ6h4lAt7KCuy0Gv'
 LIBRUSLOGINURL = f'https://portal.librus.pl/oauth2/authorize?client_id={CLIENTID}&redirect_uri={REDIRURI}&response_type=code'
 
+
 # Auth utilities
 
 def get_auth_code(email, passwd):
@@ -42,6 +43,7 @@ def get_auth_code(email, passwd):
     access_code = web_crawler.get(redir_addr, allow_redirects=False).headers['location'][26:]
     return access_code
 
+
 def get_access_token(auth_code):
     """
     Zamienia kod autoryzacyjny na token
@@ -67,7 +69,7 @@ def get_synergia_users(access_token, print_credentials=False):
         SYNERGIAAUTHURL,
         headers={'Authorization': f'Bearer {access_token}'}
     ).json()
-    accounts = response['accounts'] # Tutaj się dzieją się różne dziwne rzeczy TODO: coś wymyślić
+    accounts = response['accounts']  # Tutaj się dzieją się różne dziwne rzeczy TODO: coś wymyślić
     users = []
     for d in accounts:
         if print_credentials:
