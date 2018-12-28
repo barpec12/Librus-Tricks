@@ -14,6 +14,11 @@ synergia_user = get_synergia_users(
     ))
 )
 
+#or 
+
+from librus_tricks import ez_login
+synergia_user = ez_login('krystian@postek.eu', 'notmyrealpassword')[0]
+
 # Create session
 syn_sess = SynergiaSession(synergia_user)
 
