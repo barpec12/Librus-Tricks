@@ -74,6 +74,11 @@ class SynergiaSession:
         if as_dict:
             return self.get('Grades').json()
 
+    def get_lucky_num(self):
+        return self.get(
+            'LuckyNumbers'
+        ).json()['LuckyNumber']
+
 
 class SynergiaSessionUser:
     def __init__(self, data_dict):
