@@ -63,13 +63,30 @@ def get_access_token(auth_code):
     ).json()['access_token']
 
 
-def get_synergia_users(access_token, print_credentials=False):
-    """"""
+def try_until_die(access_token):
+    """
+    Funkcja pomocnicza do get_synergia_users
+
+    :return: accounts
+    """
     response = requests.get(
         SYNERGIAAUTHURL,
         headers={'Authorization': f'Bearer {access_token}'}
     ).json()
-    accounts = response['accounts']  # Tutaj się dzieją się różne dziwne rzeczy TODO: coś wymyślić
+    try:
+        accounts = response['accounts']
+    except:
+        return try_until_die(access_token)
+    return accounts
+
+def get_synergia_users(access_token, print_credentials=False):
+    """
+
+    :param access_token:
+    :param print_credentials:
+    :return:
+    """
+    accounts = try_until_die(access_token)
     users = []
     for d in accounts:
         if print_credentials:
