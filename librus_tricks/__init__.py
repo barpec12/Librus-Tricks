@@ -3,6 +3,7 @@ import requests
 from librus_tricks.types import SynergiaSessionUser
 from librus_tricks.utils import get_access_token, get_auth_code, get_synergia_users, SYNERGIAAUTHURL
 
+name = 'librus_tricks'
 
 def ez_login(email, passwd, rtype='UserObjs'):
     """
