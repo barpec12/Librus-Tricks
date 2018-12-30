@@ -63,21 +63,22 @@ def get_access_token(auth_code):
     ).json()['access_token']
 
 
-def try_until_die(access_token):
+def try_many_times(access_token, print_requests=False, connecting_tries=10):
     """
     Funkcja pomocnicza do get_synergia_users
 
     :return: accounts
     """
-    response = requests.get(
-        SYNERGIAAUTHURL,
-        headers={'Authorization': f'Bearer {access_token}'}
-    ).json()
-    try:
-        accounts = response['accounts']
-    except:
-        return try_until_die(access_token)
-    return accounts
+    for connection_try in range(0, connecting_tries):
+        try:
+            response = requests.get(
+                SYNERGIAAUTHURL,
+                headers={'Authorization': f'Bearer {access_token}'}
+            ).json()
+            accounts = response['accounts']
+            return accounts
+        except:
+            raise ConnectionError('Serwer synergi nie odpowiada')
 
 def get_synergia_users(access_token, print_credentials=False):
     """
@@ -86,7 +87,7 @@ def get_synergia_users(access_token, print_credentials=False):
     :param print_credentials:
     :return:
     """
-    accounts = try_until_die(access_token)
+    accounts = try_many_times(access_token)
     users = []
     for d in accounts:
         if print_credentials:
