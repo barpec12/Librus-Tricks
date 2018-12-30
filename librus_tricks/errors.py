@@ -1,0 +1,2 @@
+class OverrideRequired(Exception):
+    pass

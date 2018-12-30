@@ -2,6 +2,27 @@ import datetime
 
 import requests
 
+from librus_tricks import errors as li_err
+
+
+class SynergiaGenericClass:
+    def __init__(self, obj_id, session, get_extra_info=False):
+        self.oid = obj_id
+        self.__session = session
+        if get_extra_info:
+            self.get_extra_info()
+            self.have_extra = True
+        else:
+            self.have_extra = False
+
+    def get_extra_info(self):
+        raise li_err.OverrideRequired()
+
+    def __repr__(self):
+        return f'<Synergia lesson {self.oid}>'
+
+
+
 
 class SynergiaSession:
     def __init__(self, user, api_url='https://api.librus.pl/2.0/'):
@@ -81,7 +102,7 @@ class SynergiaSession:
                         print(ste)
         return fancy_tt
 
-    def get_grades(self, raw=False, as_dict=False, print_on_collect=False): # TODO: tu ogólnie trzeba cokolwiek zrobić
+    def get_grades(self, raw=False, as_dict=False, print_on_collect=False):  # TODO: tu ogólnie trzeba cokolwiek zrobić
         if raw:
             return self.get('Grades').text
         if as_dict:
@@ -126,7 +147,8 @@ class SynergiaLesson:
     def get_extra_info(self):
         r = self.__session.get(
             'Lessons', self.lid,
-        ).json()['Lesson']
+        )
+        r = r.json()['Lesson']
         self.teacher = SynergiaTeacher(r['Teacher']['Id'], self.__session)
         self.subject = SynergiaSubject(r['Subject']['Id'], self.__session)
         self.have_extra = True
@@ -203,7 +225,6 @@ class SynergiaSubject:
         self.sname = r['Short']
         self.is_extra = r['IsExtracurricular']
         self.have_extra = True
-
 
     def __repr__(self):
         if self.have_extra:
@@ -318,10 +339,13 @@ class SynergiaTimetableEntry:
         self.__session = session
         self.lesson = SynergiaLesson(entry_dict['Lesson']['Id'], self.__session, get_extra_info=collect_extra)
         try:
-            self.classroom = SynergiaClassroom(entry_dict['Classroom']['Id'], self.__session, get_extra_info=collect_extra)
+            self.classroom = SynergiaClassroom(entry_dict['Classroom']['Id'], self.__session,
+                                               get_extra_info=collect_extra)
         except:
-            self.classroom = SynergiaClassroom(entry_dict['OrgClassroom']['Id'], self.__session, get_extra_info=collect_extra)
-        self.lesson_entry = SynergiaLessonEntry(entry_dict['TimetableEntry']['Id'], self.__session, get_extra_info=collect_extra)
+            self.classroom = SynergiaClassroom(entry_dict['OrgClassroom']['Id'], self.__session,
+                                               get_extra_info=collect_extra)
+        self.lesson_entry = SynergiaLessonEntry(entry_dict['TimetableEntry']['Id'], self.__session,
+                                                get_extra_info=collect_extra)
         self.day_no = entry_dict['DayNo']
         self.subject = SynergiaSubject(entry_dict['Subject']['Id'], self.__session, get_extra_info=collect_extra)
         self.teacher = SynergiaTeacher(entry_dict['Teacher']['Id'], self.__session, get_extra_info=collect_extra)
@@ -331,7 +355,8 @@ class SynergiaTimetableEntry:
         self.hour_from = entry_dict['HourFrom']  # TODO: zmienić na obiekt typu datetime
         self.hour_to = entry_dict['HourTo']
         try:
-            self.virtual_class = SynergiaVirtualClass(entry_dict['VirtualClass']['Id'], self.__session, get_extra_info=collect_extra)
+            self.virtual_class = SynergiaVirtualClass(entry_dict['VirtualClass']['Id'], self.__session,
+                                                      get_extra_info=collect_extra)
         except:
             self.virtual_class = None
 
