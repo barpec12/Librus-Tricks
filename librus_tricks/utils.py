@@ -75,6 +75,8 @@ def try_many_times(access_token, print_requests=False, connecting_tries=10):
                 SYNERGIAAUTHURL,
                 headers={'Authorization': f'Bearer {access_token}'}
             ).json()
+            if print_requests:
+                print(response)
             accounts = response['accounts']
             return accounts
         except:
