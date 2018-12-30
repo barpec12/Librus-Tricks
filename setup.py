@@ -5,6 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="librus_tricks",
+    python_requires='>3.6.0',
     version="0.0.1",
     author="Krystian Postek",
     author_email="krystian@postek.eu",
