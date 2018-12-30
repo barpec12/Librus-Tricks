@@ -21,11 +21,18 @@ class SynergiaSession:
         path_str = f'{self.__api_url}'
         for p in path:
             path_str += f'{p}/'
-        return self.session.get(
+        response = self.session.get(
             path_str,
             headers=self.auth_headers,
             params=params
         )
+        if response.status_code != 200:
+            raise requests.HTTPError(f'Potencjalny błąd API Librusa'
+                                     f'{response.status_code}'
+                                     f'{response.url}'
+                                     f'{response.text}')
+        else:
+            return response
 
     def walk(self, path=''):
         """
