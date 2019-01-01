@@ -2,3 +2,6 @@
 __pycache__/
 
 venv/
+\.idea/encodings\.xml
+
+\.idea/deployment\.xml
