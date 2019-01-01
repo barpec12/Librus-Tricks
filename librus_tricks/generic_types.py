@@ -52,9 +52,9 @@ class SynergiaTeacher(SynergiaGenericClass):
         self.have_extra = True
 
 
-class SynergiaSubject(SynergiaGenericClass):
+class SynergiaTeacher(SynergiaGenericClass):
     def get_extra_info(self):
-        response = self.__session.get(
+        response = self.synergia_session.get(
             'Users', self.oid
         )
         payload = response.json()['User']
@@ -77,16 +77,17 @@ class SynergiaVirtualClass(SynergiaGenericClass):
         self.have_extra = True
 
 
-class SynergiaClassroom(SynergiaGenericClass):
+class SynergiaSubject(SynergiaGenericClass):
     def get_extra_info(self):
-        response = self.__session.get(
-            'Classrooms', self.oid
+        response = self.synergia_session.get(
+            'Subjects', self.oid
         )
-        payload = response.json()['Classroom']
+        payload = response.json()['Subject']
         self.name = payload['Name']
-        self.symbol = payload['Symbol']
-        self.is_common_room = payload['SchoolCommonRoom']
-        self.size = payload['Size']
+        self.shortname = payload['Short']
+        self._no = payload['No']
+        self.is_extracirricular = payload['IsExtracurricular']
+        self.id_block_lesson = payload['IsBlockLesson']
         self.have_extra = True
 
 
