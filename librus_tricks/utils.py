@@ -4,6 +4,7 @@ from time import sleep
 import requests
 
 from .core_types import SynergiaSessionUser
+from .generic_types import SynergiaSubject
 
 # config line
 REDIRURI = 'http://localhost/bar'
@@ -127,3 +128,21 @@ def ez_login(email, passwd, rtype='UserObjs'):
         return librus_token
     else:
         raise KeyError('Zły argument dla rtype')
+
+# Convert tools
+
+def convert_grade_keys(grades_dict, session):
+    """
+
+    :param grades_dict:
+    :type grades_dict: dict
+    :type session: librus_tricks.SynergiaSession
+    :return:
+    """
+    new_dict = dict()
+    for s in grades_dict.keys():
+        new_key = SynergiaSubject(s, session, get_extra_info=True)
+        new_dict[new_key] = grades_dict[s][:]
+
+    return new_dict
+
