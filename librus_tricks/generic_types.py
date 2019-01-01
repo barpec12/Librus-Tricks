@@ -14,7 +14,7 @@ class SynergiaGenericClass:
         :type get_extra_info: bool
         """
         self.oid = obj_id
-        self.__session = session
+        self.synergia_session = session
         if get_extra_info:
             self.get_extra_info()
             self.have_extra = True
@@ -30,18 +30,18 @@ class SynergiaGenericClass:
 
 class SynergiaLesson(SynergiaGenericClass):
     def get_extra_info(self):
-        response = self.__session.get(
+        response = self.synergia_session.get(
             'Lessons', self.oid,
         )
         payload = response.json()['Lesson']
-        self.teacher = SynergiaTeacher(payload['Teacher']['Id'], self.__session)
-        self.subject = SynergiaSubject(payload['Subject']['Id'], self.__session)
+        self.teacher = SynergiaTeacher(payload['Teacher']['Id'], self.synergia_session)
+        self.subject = SynergiaSubject(payload['Subject']['Id'], self.synergia_session)
         self.have_extra = True
 
 
-class SynergiaTeacher(SynergiaGenericClass):
+class SynergiaClassroom(SynergiaGenericClass):
     def get_extra_info(self):
-        response = self.__session.get(
+        response = self.synergia_session.get(
             'Classrooms', self.oid
         )
         payload = response.json()['Classroom']
@@ -66,12 +66,12 @@ class SynergiaTeacher(SynergiaGenericClass):
 
 class SynergiaVirtualClass(SynergiaGenericClass):
     def get_extra_info(self):
-        response = self.__session.get(
+        response = self.synergia_session.get(
             'VirtualClasses', self.oid
         ).json()
         payload = response['VirtualClass']
-        self.teacher = SynergiaTeacher(payload['Teacher']['Id'], self.__session)
-        self.subject = SynergiaSubject(payload['Subject']['Id'], self.__session)
+        self.teacher = SynergiaTeacher(payload['Teacher']['Id'], self.synergia_session)
+        self.subject = SynergiaSubject(payload['Subject']['Id'], self.synergia_session)
         self.name = payload['Name']
         self.sname = payload['Symbol']
         self.have_extra = True
@@ -93,17 +93,17 @@ class SynergiaSubject(SynergiaGenericClass):
 
 class SynergiaLessonEntry(SynergiaGenericClass):
     def get_extra_info(self):
-        response = self.__session.get(
+        response = self.synergia_session.get(
             'TimetableEntries', self.oid
         )
         payload = response.json()['TimetableEntry']
-        self.lesson = SynergiaLesson(payload['Lesson']['Id'], self.__session)
-        try:
-            self.virtual_class = SynergiaVirtualClass(payload['VirtualClass']['Id'], self.__session)
-        except:
+        self.lesson = SynergiaLesson(payload['Lesson']['Id'], self.synergia_session)
+        if 'VirtualClass' in payload.keys():
+            self.virtual_class = SynergiaVirtualClass(payload['VirtualClass']['Id'], self.synergia_session)
+        else:
             self.virtual_class = None
         self.date_from = datetime.datetime.strptime(payload['DateFrom'], '%Y-%m-%d')
         self.date_to = datetime.datetime.strptime(payload['DateTo'], '%Y-%m-%d')
         self.lesson_no = payload['LessonNo']
-        self.classroom = SynergiaClassroom(payload['Classroom']['Id'], self.__session)
+        self.classroom = SynergiaClassroom(payload['Classroom']['Id'], self.synergia_session)
         self.have_extra = True

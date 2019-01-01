@@ -30,6 +30,8 @@ class SynergiaSession:
 
         if response.status_code == 401:
             raise li_err.TokenExpired('Token nagle wygasł, odczekaj 20 minut')
+        elif response.status_code == 404:
+            raise li_err.ObjectNotFound(f'Obiektu na ścieżce {path_str} nie znaleziono')
         return response
 
     def walk(self, path=''):

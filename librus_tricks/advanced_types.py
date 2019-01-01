@@ -3,7 +3,7 @@ from .generic_types import *
 
 class SynergiaGrade:
     def __init__(self, grade_dict, session, get_extra_info=False):
-        self.__session = session
+        self.synergia_session = session
         self.grade = grade_dict['Grade']
         self.date = datetime.datetime.strptime(grade_dict['AddDate'], '%Y-%m-%d %H:%M:%S')
         self.semester = grade_dict['Semester']
@@ -12,12 +12,12 @@ class SynergiaGrade:
         self.id_semester_grade_prop = grade_dict['IsSemesterProposition']
         self.is_final_grade = grade_dict['IsFinal']
         self.is_final_grade_prop = grade_dict['IsFinalProposition']
-        self.lesson = SynergiaLesson(grade_dict['Lesson']['Id'], self.__session, False)
-        self.subject = SynergiaSubject(grade_dict['Subject']['Id'], self.__session, False)
-        self.student = SynergiaTeacher(grade_dict['Student']['Id'], self.__session,
+        self.lesson = SynergiaLesson(grade_dict['Lesson']['Id'], self.synergia_session, False)
+        self.subject = SynergiaSubject(grade_dict['Subject']['Id'], self.synergia_session, False)
+        self.student = SynergiaTeacher(grade_dict['Student']['Id'], self.synergia_session,
                                        False)  # TODO: poprawić nazewnictwo
-        # self.category = SynergiaLesson(grade_dict['Category']['Id'], self.__session, False) # TODO: stworzyć klasę
-        self.added_by = SynergiaTeacher(grade_dict['AddedBy']['Id'], self.__session, False)
+        # self.category = SynergiaLesson(grade_dict['Category']['Id'], self.synergia_session, False) # TODO: stworzyć klasę
+        self.added_by = SynergiaTeacher(grade_dict['AddedBy']['Id'], self.synergia_session, False)
 
         if get_extra_info:
             self.get_extra_info()
@@ -39,28 +39,35 @@ class SynergiaGrade:
 
 class SynergiaTimetableEntry:
     def __init__(self, entry_dict, session, collect_extra=False):
-        self.__session = session
-        self.lesson = SynergiaLesson(entry_dict['Lesson']['Id'], self.__session, get_extra_info=collect_extra)
-        try:
-            self.classroom = SynergiaClassroom(entry_dict['Classroom']['Id'], self.__session,
+        """
+
+        :param entry_dict:
+        :type entry_dict: dict
+        :param session:
+        :param collect_extra:
+        """
+        self.synergia_session = session
+        self.lesson = SynergiaLesson(entry_dict['Lesson']['Id'], self.synergia_session, get_extra_info=collect_extra)
+        if 'Classroom' in entry_dict.keys():
+            self.classroom = SynergiaClassroom(entry_dict['Classroom']['Id'], self.synergia_session,
                                                get_extra_info=collect_extra)
-        finally:
-            self.classroom = SynergiaClassroom(entry_dict['OrgClassroom']['Id'], self.__session,
+        else:
+            self.classroom = SynergiaClassroom(entry_dict['OrgClassroom']['Id'], self.synergia_session,
                                                get_extra_info=collect_extra)
-        self.lesson_entry = SynergiaLessonEntry(entry_dict['TimetableEntry']['Id'], self.__session,
+        self.lesson_entry = SynergiaLessonEntry(entry_dict['TimetableEntry']['Id'], self.synergia_session,
                                                 get_extra_info=collect_extra)
         self.day_no = entry_dict['DayNo']
-        self.subject = SynergiaSubject(entry_dict['Subject']['Id'], self.__session, get_extra_info=collect_extra)
-        self.teacher = SynergiaTeacher(entry_dict['Teacher']['Id'], self.__session, get_extra_info=collect_extra)
+        self.subject = SynergiaSubject(entry_dict['Subject']['Id'], self.synergia_session, get_extra_info=collect_extra)
+        self.teacher = SynergiaTeacher(entry_dict['Teacher']['Id'], self.synergia_session, get_extra_info=collect_extra)
         self.is_substitution_lesson = entry_dict['IsSubstitutionClass']
         self.is_canceled = entry_dict['IsCanceled']
         self.substitution_desc = entry_dict['SubstitutionNote']
         self.hour_from = entry_dict['HourFrom']  # TODO: zmienić na obiekt typu datetime
         self.hour_to = entry_dict['HourTo']
-        try:
-            self.virtual_class = SynergiaVirtualClass(entry_dict['VirtualClass']['Id'], self.__session,
+        if 'VirtualClass' in entry_dict.keys():
+            self.virtual_class = SynergiaVirtualClass(entry_dict['VirtualClass']['Id'], self.synergia_session,
                                                       get_extra_info=collect_extra)
-        finally:
+        else:
             self.virtual_class = None
 
     def __repr__(self):
