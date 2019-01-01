@@ -1,8 +1,9 @@
 import json
+from time import sleep
 
 import requests
 
-from .types import SynergiaSessionUser
+from .core_types import SynergiaSessionUser
 
 # config line
 REDIRURI = 'http://localhost/bar'
@@ -69,18 +70,23 @@ def try_many_times(access_token, print_requests=False, connecting_tries=10):
 
     :return: accounts
     """
-    for connection_try in range(0, connecting_tries):
-        try:
-            response = requests.get(
-                SYNERGIAAUTHURL,
-                headers={'Authorization': f'Bearer {access_token}'}
-            ).json()
-            if print_requests:
-                print(response)
-            accounts = response['accounts']
-            return accounts
-        except:
-            raise ConnectionError('Serwer synergi nie odpowiada')
+    try:
+        for connection_try in range(0, connecting_tries):
+            try:
+                response = requests.get(
+                    SYNERGIAAUTHURL,
+                    headers={'Authorization': f'Bearer {access_token}'}
+                ).json()
+                if print_requests:
+                    print(response)
+                accounts = response['accounts']
+                return accounts
+            except:
+                if print_requests:
+                    print(f'Próba uwierzytelnienia numer {connection_try}')
+            sleep(1.5)
+    except:
+        raise ConnectionError('Serwer librusa ma problem z prostymi zapytaniami...')
 
 def get_synergia_users(access_token, print_credentials=False):
     """
@@ -96,3 +102,28 @@ def get_synergia_users(access_token, print_credentials=False):
             print(json.dumps(d))
         users.append(SynergiaSessionUser(d))
     return users
+
+def ez_login(email, passwd, rtype='UserObjs'):
+    """
+    Ułatwia pozyskanie danych do autoryzacji do librus synergia
+    :param email: Email do librus synergia
+    :type email: str
+    :type passwd: str
+    :param rtype: Wybiera w jaki co ma zostać zwrócone na return, wybieraj między `UserObjs` lub `tokens`
+    :type rtype: str
+    """
+    auth_code = get_auth_code(email, passwd)
+    librus_token = get_access_token(auth_code)
+    response = try_many_times(librus_token)
+    if rtype == 'UserObjs':
+        users = []
+        for a in response:
+            users.append(SynergiaSessionUser(a))
+        return users
+    elif rtype == 'tokens':
+        librus_tokens = {}
+        for t in response:
+            librus_tokens[t['studentName']] = t['accessToken']
+        return librus_token
+    else:
+        raise KeyError('Zły argument dla rtype')
