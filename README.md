@@ -3,33 +3,26 @@ Simple wrapper for Librus Synergia API written in Python
 
 ## Examples
 ```python
-from librus_tricks.utils import get_access_token, get_auth_code, get_synergia_users
-from librus_tricks.types import SynergiaSession
-
 # Auth
-synergia_user = get_synergia_users(
-    get_access_token(
-        get_auth_code(
-            'krystian@postek.eu', 'notmyrealpassword'    
-    ))
-)
+from librus_tricks import ez_login, SynergiaSession
+user = ez_login('krystian@postek.eu', 'not my real password')[0]
+session = SynergiaSession(user)
 
-#or 
-
-from librus_tricks import ez_login
-synergia_user = ez_login('krystian@postek.eu', 'notmyrealpassword')[0]
-
-# Create session
-syn_sess = SynergiaSession(synergia_user)
+# Get all grades
+session.get_grades()
+# {37664: [<SynergiaGrade "5-" for subject <SynergiaSubject with object id 37664> added 2018-10-17 13:26:37>, <SynergiaGrade "5-" for subject <SynergiaSubject with object id 37664> added 2018-10-17 13:37:37>, <SynergiaGrade "5-" for subject <SynergiaSubject with object id 37664> added 2018-11-21 14:15:14>, <SynergiaGrade "6" for subject <SynergiaSubject with object id 37664> added 2018-12-04 14:24:35>, <SynergiaGrade "5" for subject <SynergiaSubject with object id 37664> added 2018-12-12 14:26:25>, <SynergiaGrade "5" for subject <SynergiaSubject with object id 37664> added 2018-12-12 14:51:16>], 37678: [<SynergiaGrade "5" for subject <SynergiaSubject with object id 37678> added 2018-09-18 09:41:35>, <SynergiaGrade "4" for subject <SynergiaSubject with object id 37678> added 2018-10-12 13:42:50>, <SynergiaGrade "3" for subject <SynergiaSubject with object id 37678> added 2018-10-19 09:41:05>, <SynergiaGrade "5" for subject <SynergiaSubject with object id 37678> added 2018-10-30 09:39:39>, <SynergiaGrade "6" for subject <SynergiaSubject with object id 37678> added 2018-11-23 08:52:08>, <SynergiaGrade "5" for subject <SynergiaSubject with object id 37678> added 2018-12-18 09:44:15>], 37668: [<SynergiaGrade "+" for subject <SynergiaSubject with object id 37668> added 2018-09-19 10:14:01>, <SynergiaGrade "3" for subject <SynergiaSubject with object id 37668> added 2018-09-24 14:32:25>, <SynergiaGrade "4" for subject <SynergiaSubject with object id 37668> added 2018-10-25 08:40:23>, <SynergiaGrade "3" for subject <SynergiaSubject with object id 37668> added 2018-10-29 13:17:44>...
 
 # Get timetable
-timetab_json = syn_sess.get_timetable(raw=True, week_start_str='2018-12-10') # As json (text)
-timetab_dict = syn_sess.get_timetable(as_dict=True, week_start_str='2018-12-10') # As pythonic dict
-timetab_py = syn_sess.get_timetable(week_start_str='2018-12-10') # Dict with interactive python objects
+session.get_timetable()
+# {'2018-12-31': [], '2019-01-01': [], '2019-01-02': [<SynergiaTimetableEntry between 08:55-09:40>, <SynergiaTimetableEntry between 09:50-10:35>, <SynergiaTimetableEntry between 10:50-11:35>...
 
-# Get grades
-grades_json = syn_sess.get_grades(raw=True) # As json (text)
-grades_dict = syn_sess.get_grades(as_dict=True) # As pythonic dict
+# Get lucky number
+session.get_lucky_num()
+# {'LuckyNumber': 12, 'LuckyNumberDay': '2018-12-22'}
+
 ```
 
+## Screens from debugger
 ![screen](https://github.com/Backdoorek/public-files/raw/master/pycharm64_2018-12-28_14-08-37.png)
+
+> Written with ❤ from scratch by Krystian `Backdoorek` Postek 
