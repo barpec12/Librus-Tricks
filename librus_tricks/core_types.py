@@ -29,7 +29,7 @@ class SynergiaSession:
         )
 
         if response.status_code == 401:
-            raise li_err.TokenExpired('Token nagle wygasł, odczekaj 20 minut')
+            raise li_err.TokenExpired('Token nagle wygasł, odczekaj 20 minut') # TODO: wejście na https://portal.librus.pl/api/SynergiaAccounts/fresh/6379114u roziwązuje problem
         elif response.status_code == 404:
             raise li_err.ObjectNotFound(f'Obiektu na ścieżce {path_str} nie znaleziono')
         return response
