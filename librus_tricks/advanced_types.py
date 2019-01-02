@@ -33,7 +33,7 @@ class SynergiaGrade:
         self.added_by.get_extra_info()
 
     def __repr__(self):
-        return f'<SynergiaGrade "{self.grade}" for subject {self.subject} added ' \
+        return f'<{self.__class__.__name__} "{self.grade}" for subject {self.subject} added ' \
             f'{self.date.strftime("%Y-%m-%d %H:%M:%S")}>'
 
 
