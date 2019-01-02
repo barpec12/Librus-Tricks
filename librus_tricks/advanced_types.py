@@ -37,6 +37,17 @@ class SynergiaGrade:
             f'{self.date.strftime("%Y-%m-%d %H:%M:%S")}>'
 
 
+class SynergiaAttendanceType:
+    def __init__(self, type_dict):
+        self.oid = type_dict['Id']
+        self.name = type_dict['Name']
+        self.shortname  = type_dict['Short']
+        self.is_standard = type_dict['Standard']
+        self.is_presence_kind = type_dict['IsPresenceKind']
+
+    def __repr__(self):
+        return f'<{self.__class__.__name__} {self.name}>'
+
 class SynergiaTimetableEntry:
     def __init__(self, entry_dict, session, collect_extra=False):
         """
