@@ -108,6 +108,9 @@ class SynergiaSession:
                 print(sg)
         return obj_grades
 
+    def get_attendances(self):
+        pass # TODO: do uzupełnienia
+
     def get_lucky_num(self):
         return self.get(
             'LuckyNumbers'

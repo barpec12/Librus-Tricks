@@ -37,6 +37,10 @@ class SynergiaGrade:
             f'{self.date.strftime("%Y-%m-%d %H:%M:%S")}>'
 
 
+class SynergiaAttendance:
+    pass # TODO: do uzupełnia
+
+
 class SynergiaAttendanceType:
     def __init__(self, type_dict):
         self.oid = type_dict['Id']
