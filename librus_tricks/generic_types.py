@@ -107,3 +107,43 @@ class SynergiaLessonEntry(SynergiaGenericClass):
         self.lesson_no = payload['LessonNo']
         self.classroom = SynergiaClassroom(payload['Classroom']['Id'], self.synergia_session)
         self.have_extra = True
+
+class SynergiaAttendance(SynergiaGenericClass):
+    def __init__(self, atted_dict, session, get_extra_info=False):
+        super().__init__(atted_dict['Id'], session, get_extra_info)
+        self.attendance_date = datetime.datetime.strptime(atted_dict['Date'], '%Y-%m-%d')
+        self.lesson_no = atted_dict['LessonNo']
+        self.attendance_added = datetime.datetime.strptime(atted_dict['Date'], '%Y-%m-%d %H:%M:%S')
+        self.teacher = atted_dict['AddedBy']['Id']
+        self.student = atted_dict['Student']['Id']
+        self.type= atted_dict['Type']['Id']
+
+    def get_extra_info(self):
+        self.teacher = SynergiaTeacher(self.teacher, self.synergia_session)
+        self.type = SynergiaAttendanceType(self.type, self.synergia_session)
+
+        self.have_extra = True
+
+class SynergiaAttendanceType:
+    def __init__(self, type_dict):
+        self.oid=  type_dict['Id']
+        self.name = type_dict['Name']
+        self.short_name = type_dict['Short']
+        self.is_standart = type_dict['Standard']
+        self.color = type_dict['ColorRGB']
+        self.is_presence_kind = type_dict['IsPresenceKind']
+        self.order = type_dict['Order']
+
+    @staticmethod
+    def gen_from_id(oid, session):
+        """
+
+        :param oid:
+        :param session:
+        :type session: librus_tricks.SynergiaSession
+        :return:
+        """
+        response = session.get(
+
+        )
+
