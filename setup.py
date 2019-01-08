@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="librus_tricks",
     python_requires='>3.6.0',
-    version="0.0.1",
+    version="0.0.2",
     author="Krystian Postek",
     author_email="krystian@postek.eu",
     description="A python wrapper of Synergia Librus API",
@@ -14,6 +14,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/Backdoorek/LibrusTricks",
     packages=setuptools.find_packages(),
+    install_requires=[
+        'requests'
+    ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

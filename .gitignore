@@ -9,3 +9,9 @@ venv/
 \.idea/workspace\.xml
 
 examples/login\.json
+
+librus_tricks\.egg-info/
+
+dist/
+
+build/
