@@ -1,7 +1,7 @@
 import requests
 
 from . import errors as li_err
-from .advanced_types import SynergiaGrade, SynergiaTimetableEntry
+from .advanced_types import SynergiaGrade, SynergiaTimetableEntry, SynergiaAttendance
 
 
 class SynergiaSession:
@@ -108,8 +108,27 @@ class SynergiaSession:
                 print(sg)
         return obj_grades
 
-    def get_attendances(self):
-        pass # TODO: do uzupełnienia
+    def get_attendances(self, type='obj', print_on_collect=False, collect_extra=False):
+        if type == 'raw':
+            return self.get('Attendances').text
+        elif type == 'as_dict':
+            return self.get('Attendances').json()
+        elif type == 'obj':
+            attendances_list = self.get('Attendances')
+            attendances_list = attendances_list.json()['Attendances']
+        else:
+            raise li_err.WrongOption('Podana opcja jest nie poprawna, wybierz pomiędzy "obj", "as_dict" i "raw"')
+
+        attendances_dict = {}
+        for att in attendances_list:
+            sa = SynergiaAttendance(att, self, get_extra_info=collect_extra)
+            if not (sa.attendance_date in attendances_dict.keys()):
+                attendances_dict[sa.attendance_date] = list()
+            attendances_dict[sa.attendance_date].append(sa)
+            if print_on_collect:
+                print(att)
+                print(sa)
+        return attendances_dict
 
     def get_lucky_num(self):
         return self.get(

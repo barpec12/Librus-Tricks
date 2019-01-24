@@ -108,25 +108,35 @@ class SynergiaLessonEntry(SynergiaGenericClass):
         self.classroom = SynergiaClassroom(payload['Classroom']['Id'], self.synergia_session)
         self.have_extra = True
 
+
 class SynergiaAttendance(SynergiaGenericClass):
     def __init__(self, atted_dict, session, get_extra_info=False):
         super().__init__(atted_dict['Id'], session, get_extra_info)
         self.attendance_date = datetime.datetime.strptime(atted_dict['Date'], '%Y-%m-%d')
         self.lesson_no = atted_dict['LessonNo']
-        self.attendance_added = datetime.datetime.strptime(atted_dict['Date'], '%Y-%m-%d %H:%M:%S')
-        self.teacher = atted_dict['AddedBy']['Id']
+        self.attendance_added = datetime.datetime.strptime(atted_dict['AddDate'], '%Y-%m-%d %H:%M:%S')
+        self.teacher = SynergiaTeacher(atted_dict['AddedBy']['Id'], self.synergia_session, get_extra_info=get_extra_info)
         self.student = atted_dict['Student']['Id']
-        self.type= atted_dict['Type']['Id']
+        self.att_type = SynergiaAttendanceType.get_from_id(atted_dict['Type']['Id'], self.synergia_session)
+        self.lesson = SynergiaLesson(atted_dict['Lesson']['Id'], self.synergia_session, get_extra_info=get_extra_info)
 
     def get_extra_info(self):
-        self.teacher = SynergiaTeacher(self.teacher, self.synergia_session)
-        self.type = SynergiaAttendanceType(self.type, self.synergia_session)
+        self.teacher = SynergiaTeacher(self.teacher, self.synergia_session, get_extra_info=True)
+        self.student = SynergiaTeacher(self.student, self.synergia_session, get_extra_info=True)
+        self.att_type = SynergiaAttendanceType.get_from_id(self.att_type, self.synergia_session)
+        self.lesson = SynergiaLesson(self.lesson, self.synergia_session, get_extra_info=True)
 
         self.have_extra = True
 
+    @property
+    def to_text(self):
+        response_str = f'<{self.oid} is present: {self.att_type.is_presence_kind} at lesson {self.lesson_no} in {self.attendance_date}>'
+        return response_str
+
+
 class SynergiaAttendanceType:
     def __init__(self, type_dict):
-        self.oid=  type_dict['Id']
+        self.oid = type_dict['Id']
         self.name = type_dict['Name']
         self.short_name = type_dict['Short']
         self.is_standart = type_dict['Standard']
@@ -135,7 +145,7 @@ class SynergiaAttendanceType:
         self.order = type_dict['Order']
 
     @staticmethod
-    def gen_from_id(oid, session):
+    def get_from_id(oid, session):
         """
 
         :param oid:
@@ -144,6 +154,6 @@ class SynergiaAttendanceType:
         :return:
         """
         response = session.get(
-
-        )
-
+            'Attendances', 'Types', oid
+        ).json()['Type']
+        return SynergiaAttendanceType(response)
