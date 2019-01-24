@@ -14,7 +14,7 @@ SYNERGIAAUTHURL = 'https://portal.librus.pl/api/SynergiaAccounts'
 CLIENTID = 'wmSyUMo8llDAs4y9tJVYY92oyZ6h4lAt7KCuy0Gv'
 LIBRUSLOGINURL = f'https://portal.librus.pl/oauth2/authorize?client_id={CLIENTID}&redirect_uri={REDIRURI}&response_type=code'
 
-
+web_crawler = requests.session()
 # Auth utilities
 
 def get_auth_code(email, passwd):
@@ -27,7 +27,6 @@ def get_auth_code(email, passwd):
     :type passwd: str
     :return: kod autoryzacyjny
     """
-    web_crawler = requests.session()
     site = web_crawler.get(LIBRUSLOGINURL)
     csrf_token = site.text[
                  site.text.find('name="csrf-token" content="') + 27:site.text.find('name="csrf-token" content="') + 67]
@@ -63,6 +62,8 @@ def get_access_token(auth_code):
             'redirect_uri': REDIRURI
         }
     ).json()['access_token']
+
+
 
 
 def try_many_times(access_token, print_requests=False, connecting_tries=10):
