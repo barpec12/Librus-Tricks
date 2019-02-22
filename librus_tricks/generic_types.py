@@ -160,3 +160,14 @@ class SynergiaAttendanceType:
             'Attendances', 'Types', oid
         ).json()['Type']
         return SynergiaAttendanceType(response)
+
+
+class SynergiaTeacherFreeDay(SynergiaGenericClass):
+    def get_extra_info(self):
+        response = self.synergia_session.get(
+            'TimetableEntries', self.oid
+        )
+        payload = response.json()['TeacherFreeDays']
+        self.date_from = datetime.datetime.strptime(payload['DateFrom'], '%Y-%m-%d')
+        self.date_to = datetime.datetime.strptime(payload['DateTo'], '%Y-%m-%d')
+        self.teacher = SynergiaTeacher(payload['Teacher']['Id'], self.synergia_session, get_extra_info=True)
