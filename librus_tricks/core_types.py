@@ -18,7 +18,7 @@ class SynergiaSession:
     def __repr__(self):
         return f'<Synergia session for {self.user}>'
 
-    def get(self, *path, params={}):
+    def get(self, *path, params=dict()):
         path_str = f'{self.__api_url}'
         for p in path:
             path_str += f'{p}/'
@@ -29,19 +29,28 @@ class SynergiaSession:
         )
 
         if response.status_code == 401:
-            raise li_err.TokenExpired('Token nagle wygasł, odczekaj 20 minut') # TODO: wejście na https://portal.librus.pl/api/SynergiaAccounts/fresh/6379114u roziwązuje problem
+            raise li_err.TokenExpired(response.text)
+            # print(self.auth_headers)
+            # print('Token wygasł, pozyskiwanie nowego')
+            # print(
+            #     f'https://portal.librus.pl/api/SynergiaAccounts/fresh/{self.user.login}')  # TODO: wejście na https://portal.librus.pl/api/SynergiaAccounts/fresh/6379114u roziwązuje problem
+            # fr = self.session.get(f'https://portal.librus.pl/api/SynergiaAccounts/fresh/{self.user.login}',
+            #                       headers=self.auth_headers)
+            # print(fr.text)
+            # return self.get(*path, params=params)
         elif response.status_code == 404:
-            raise li_err.ObjectNotFound(f'Obiektu na ścieżce {path_str} nie znaleziono')
+            raise li_err.ObjectNotFound(response.text)
         return response
 
     def walk(self, path=''):
         """
         Development function, zostanie w najbliższym czasie usunięta
         """
-        print(requests.get(
+        import json
+        print(json.dumps(requests.get(
             f'{self.__api_url}{path}',
             headers=self.auth_headers
-        ).json())
+        ).json(), indent=2))
 
     def get_timetable(self, week_start_str=None, type='obj', print_on_collect=False, collect_extra=True):
         """
@@ -139,6 +148,7 @@ class SynergiaSession:
 class SynergiaSessionUser:
     def __init__(self, data_dict):
         self.uid = data_dict['id']
+        self.login = data_dict['login']
         self.token = data_dict['accessToken']
         self.name, self.surname = data_dict['studentName'].split(' ')
 

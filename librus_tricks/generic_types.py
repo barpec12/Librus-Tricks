@@ -116,7 +116,7 @@ class SynergiaAttendance(SynergiaGenericClass):
         self.lesson_no = atted_dict['LessonNo']
         self.attendance_added = datetime.datetime.strptime(atted_dict['AddDate'], '%Y-%m-%d %H:%M:%S')
         self.teacher = SynergiaTeacher(atted_dict['AddedBy']['Id'], self.synergia_session, get_extra_info=get_extra_info)
-        self.student = atted_dict['Student']['Id']
+        # self.student = SynergiaTeacher(atted_dict['Student']['Id'], self.synergia_session, get_extra_info=get_extra_info)
         self.att_type = SynergiaAttendanceType.get_from_id(atted_dict['Type']['Id'], self.synergia_session)
         self.lesson = SynergiaLesson(atted_dict['Lesson']['Id'], self.synergia_session, get_extra_info=get_extra_info)
 
@@ -130,6 +130,9 @@ class SynergiaAttendance(SynergiaGenericClass):
 
     @property
     def to_text(self):
+        # if not self.have_extra:
+        #     self.att_type = SynergiaAttendanceType.get_from_id(self.att_type, self.synergia_session)
+
         response_str = f'<{self.oid} is present: {self.att_type.is_presence_kind} at lesson {self.lesson_no} in {self.attendance_date}>'
         return response_str
 

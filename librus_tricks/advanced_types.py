@@ -4,6 +4,7 @@ from .generic_types import *
 class SynergiaGrade:
     def __init__(self, grade_dict, session, get_extra_info=False):
         self.synergia_session = session
+        self.oid = grade_dict['Id']
         self.grade = grade_dict['Grade']
         self.date = datetime.datetime.strptime(grade_dict['AddDate'], '%Y-%m-%d %H:%M:%S')
         self.semester = grade_dict['Semester']
