@@ -15,3 +15,5 @@ librus_tricks\.egg-info/
 dist/
 
 build/
+
+\.idea/
