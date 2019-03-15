@@ -114,4 +114,9 @@ def aio(email, passwd, fetch_index=0):
     oauth_code = oauth_librus_code(email, passwd)
     synergia_token = get_synergia_token(oauth_code)
     api_users = get_avaiable_users(synergia_token)
-    return api_users[fetch_index]
+    u = api_users[fetch_index]
+    if not u.is_authenticated:
+        synergia_token = get_new_token(u.login, email, passwd)
+        api_users = get_avaiable_users(synergia_token)
+        u = api_users[fetch_index]
+    return u
