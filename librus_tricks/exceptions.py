@@ -4,3 +4,7 @@ class LibrusLoginError(Exception):
 
 class LibrusNotHandlerableError(Exception):
     pass
+
+
+class SynergiaEndpointNotFound(Exception):
+    pass

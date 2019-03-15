@@ -3,7 +3,7 @@ from time import sleep
 import json
 import requests
 
-from . import exeptions
+from . import exceptions
 
 # Some globals
 REDIRURI = 'http://localhost/bar'
@@ -20,7 +20,7 @@ auth_session = requests.session()
 
 # Defining auth classes
 
-class SynergiaAuthSession:
+class SynergiaAuthUser:
     def __init__(self, data_dict):
         self.uid = data_dict['id']
         self.login = data_dict['login']
@@ -37,9 +37,6 @@ class SynergiaAuthSession:
 
     def __repr__(self):
         return f'<SynergiaAuthSession for {self.name} {self.surname} based on token {self.token}>'
-
-    def __str__(self):
-        return f'Auth session for {self.name} {self.surname}'
 
 
 def oauth_librus_code(email, passwd, revalidation=False):
@@ -59,7 +56,7 @@ def oauth_librus_code(email, passwd, revalidation=False):
     )
 
     if login_response_redir.status_code == 401:
-        raise exeptions.LibrusLoginError('Zły login lub hasło lub inny błąd związany z autoryzacją')
+        raise exceptions.LibrusLoginError('Zły login lub hasło lub inny błąd związany z autoryzacją')
 
     redir_addr = login_response_redir.json()['redirect']
     access_code = auth_session.get(redir_addr, allow_redirects=False).headers['location'][26:]
@@ -95,7 +92,7 @@ def try_to_fetch_logins(access_token, print_requests=False, connecting_tries=10)
                     print(f'Próba uwierzytelnienia numer {connection_try}')
             sleep(1.5)
     except:
-        raise exeptions.LibrusNotHandlerableError('Serwer librusa ma problem z prostymi zapytaniami...')
+        raise exceptions.LibrusNotHandlerableError('Serwer librusa ma problem z prostymi zapytaniami...')
 
 
 def get_avaiable_users(access_token, print_credentials=False):
@@ -104,7 +101,7 @@ def get_avaiable_users(access_token, print_credentials=False):
     for d in accounts:
         if print_credentials:
             print(json.dumps(d))
-        users.append(SynergiaAuthSession(d))
+        users.append(SynergiaAuthUser(d))
     return users
 
 
