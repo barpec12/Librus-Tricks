@@ -42,8 +42,13 @@ class SynergiaAuthSession:
         return f'Auth session for {self.name} {self.surname}'
 
 
-def oauth_librus_code(email, passwd):
-    site = auth_session.get(LIBRUSLOGINURL)
+def oauth_librus_code(email, passwd, revalidation=False):
+    if revalidation:
+        mini_session = auth_session.get(LIBRUSLOGINURL, allow_redirects=False)
+        access_code = mini_session.headers['location'][26:]
+        return access_code
+    else:
+        site = auth_session.get(LIBRUSLOGINURL)
     csrf_token = site.text[
                  site.text.find('name="csrf-token" content="') + 27:site.text.find('name="csrf-token" content="') + 67
                  ]
@@ -107,7 +112,7 @@ def get_new_token(login, email, passwd):
     auth_session.get(
         FRESHURL.format(login=login)
     )
-    return get_synergia_token(oauth_librus_code(email, passwd))
+    return get_synergia_token(oauth_librus_code(email, passwd, revalidation=True))
 
 
 def aio(email, passwd, fetch_index=0):
