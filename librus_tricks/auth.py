@@ -10,7 +10,7 @@ REDIRURI = 'http://localhost/bar'
 LOGINURL = 'https://portal.librus.pl/rodzina/login/action'
 OAUTHURL = 'https://portal.librus.pl/oauth2/access_token'
 SYNERGIAAUTHURL = 'https://portal.librus.pl/api/SynergiaAccounts'
-FRESHURL = 'ttps://portal.librus.pl/api/SynergiaAccounts/fresh/{login}'
+FRESHURL = 'https://portal.librus.pl/api/SynergiaAccounts/fresh/{login}'
 CLIENTID = 'wmSyUMo8llDAs4y9tJVYY92oyZ6h4lAt7KCuy0Gv'
 LIBRUSLOGINURL = f'https://portal.librus.pl/oauth2/authorize?client_id={CLIENTID}&redirect_uri={REDIRURI}&response_type=code'
 
@@ -103,9 +103,9 @@ def get_avaiable_users(access_token, print_credentials=False):
     return users
 
 
-def get_new_token(user, email, passwd):
+def get_new_token(login, email, passwd):
     auth_session.get(
-        FRESHURL.format(user)
+        FRESHURL.format(login=login)
     )
     return get_synergia_token(oauth_librus_code(email, passwd))
 
