@@ -17,3 +17,5 @@ dist/
 build/
 
 \.idea/
+
+librus_tricks/deprecated/
