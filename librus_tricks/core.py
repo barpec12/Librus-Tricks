@@ -17,7 +17,7 @@ class SynergiaClient:
         for p in path:
             path_str += f'{p}/'
         response = self.session.get(
-            path, headers=self.__auth_headers
+            path_str, headers=self.__auth_headers
         )
 
         if response.status_code == 404:
