@@ -114,3 +114,32 @@ class SynergiaGrade(SynergiaGenericClass):
         for c in self.__payload['Comments']:
             grade_comments.append(SynergiaGradeComment(c['Id'], self._session))
         return grade_comments
+
+
+class SynergiaAttendanceType(SynergiaGenericClass):
+    def __init__(self, oid, session):
+        super().__init__(oid, session)
+        self.__payload = session.get('Attendances', 'Types', oid)['Type']
+        self.color = self.__payload['ColorRGB']
+        self.is_presence_kind = self.__payload['IsPresenceKind']
+        self.name = self.__payload['Name']
+
+
+class SynergiaAttendance(SynergiaGenericClass):
+    def __init__(self, oid, session):
+        super().__init__(oid, session)
+        self.__payload = session.get('Attendances', oid)['Attendance']
+        self.add_date = datetime.strptime(self.__payload['AddDate'], '%Y-%m-%d %H:%M:%S')
+        self.lesson_no = self.__payload['LessonNo']
+
+    @property
+    def teacher(self):
+        return SynergiaTeacher(self.__payload['AddedBy']['Id'], self._session)
+
+    @property
+    def student(self):
+        return SynergiaStudent(self.__payload['Student']['Id'], self._session)
+
+    @property
+    def type(self):
+        return SynergiaAttendanceType(self.__payload['Type']['Id'], self._session)
