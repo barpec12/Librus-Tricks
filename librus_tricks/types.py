@@ -6,6 +6,9 @@ class SynergiaGenericClass:
         self._session = session
         self.oid = oid
 
+    def __repr__(self):
+        return f'<{self.__class__.__name__} {self.oid}>'
+
 
 class SynergiaTeacher(SynergiaGenericClass):
     def __init__(self, oid, session):
