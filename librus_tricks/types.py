@@ -6,12 +6,12 @@ class SynergiaGenericClass:
         self._session = session
         self.oid = oid
         if payload == None:
-            self._payload = self._session.get(
+            self.json_payload = self._session.get(
                 *resource,
                 self.oid
             )[extraction_key]
         else:
-            self._payload = payload
+            self.json_payload = payload
 
 
     def __repr__(self):
@@ -26,8 +26,8 @@ class SynergiaTeacher(SynergiaGenericClass):
         :type session: librus_tricks.core.SynergiaClient
         """
         super().__init__(oid, session, ('Users',), 'User', payload)
-        self.name = self._payload['FirstName']
-        self.last_name = self._payload['LastName']
+        self.name = self.json_payload['FirstName']
+        self.last_name = self.json_payload['LastName']
 
 
 class SynergiaStudent(SynergiaTeacher):
@@ -42,20 +42,20 @@ class SynergiaClass(SynergiaGenericClass):
         :type session: librus_tricks.core.SynergiaClient
         """
         super().__init__(oid, session, ('Classes',), 'Class', payload)
-        self.alias = f'{self._payload["Number"]}{self._payload["Symbol"]}'
-        self.begin_date = datetime.strptime(self._payload['BeginSchoolYear'], '%Y-%m-%d')
-        self.end_date = datetime.strptime(self._payload['EndSchoolYear'], '%Y-%m-%d')
+        self.alias = f'{self.json_payload["Number"]}{self.json_payload["Symbol"]}'
+        self.begin_date = datetime.strptime(self.json_payload['BeginSchoolYear'], '%Y-%m-%d')
+        self.end_date = datetime.strptime(self.json_payload['EndSchoolYear'], '%Y-%m-%d')
 
     @property
     def tutor(self):
-        return SynergiaTeacher(self._payload['ClassTutor']['Id'], self._session)
+        return SynergiaTeacher(self.json_payload['ClassTutor']['Id'], self._session)
 
 
 class SynergiaSubject(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
         super().__init__(oid, session, ('Subjects',), 'Subject', payload)
-        self.name = self._payload['Name']
-        self.short_name = self._payload['Short']
+        self.name = self.json_payload['Name']
+        self.short_name = self.json_payload['Short']
 
 
 class SynergiaLesson(SynergiaGenericClass):
@@ -69,51 +69,51 @@ class SynergiaLesson(SynergiaGenericClass):
 
     @property
     def teacher(self):
-        return SynergiaTeacher(self._payload['Teacher']['Id'], self._session)
+        return SynergiaTeacher(self.json_payload['Teacher']['Id'], self._session)
 
     @property
     def group(self):
-        return SynergiaClass(self._payload['Class']['Id'], self._session)
+        return SynergiaClass(self.json_payload['Class']['Id'], self._session)
 
     @property
     def subject(self):
-        return SynergiaSubject(self._payload['Subject']['Id'], self._session)
+        return SynergiaSubject(self.json_payload['Subject']['Id'], self._session)
 
 
 class SynergiaGradeComment(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
         super().__init__(oid, session, ('Grades', 'Comments',), 'Comment', payload)
-        self.text = self._payload['Text']
+        self.text = self.json_payload['Text']
 
     @property
     def teacher(self):
-        return SynergiaTeacher(self._payload['AddedBy']['Id'], self._session)
+        return SynergiaTeacher(self.json_payload['AddedBy']['Id'], self._session)
 
     @property
     def grade_bind(self):
-        return SynergiaGrade(self._payload['Grade']['Id'], self._session)
+        return SynergiaGrade(self.json_payload['Grade']['Id'], self._session)
 
 
 class SynergiaGrade(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
         super().__init__(oid, session, ('Grades',), 'Grade', payload)
-        self.add_date = datetime.strptime(self._payload['AddDate'], '%Y-%m-%d %H:%M:%S')
-        self.grade = self._payload['Grade']
-        self.have_influence = self._payload['IsConstituent']
-        self.semester = self._payload['Semester']
+        self.add_date = datetime.strptime(self.json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')
+        self.grade = self.json_payload['Grade']
+        self.have_influence = self.json_payload['IsConstituent']
+        self.semester = self.json_payload['Semester']
 
     @property
     def teacher(self):
-        return SynergiaTeacher(self._payload['AddedBy']['Id'], self._session)
+        return SynergiaTeacher(self.json_payload['AddedBy']['Id'], self._session)
 
     @property
     def subject(self):
-        return SynergiaSubject(self._payload['Subject']['Id'], self._session)
+        return SynergiaSubject(self.json_payload['Subject']['Id'], self._session)
 
     @property
     def comments(self):
         grade_comments = []
-        for c in self._payload['Comments']:
+        for c in self.json_payload['Comments']:
             grade_comments.append(SynergiaGradeComment(c['Id'], self._session))
         return grade_comments
 
@@ -121,25 +121,32 @@ class SynergiaGrade(SynergiaGenericClass):
 class SynergiaAttendanceType(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
         super().__init__(oid, session, ('Attendances', 'Types',), 'Type', payload)
-        self.color = self._payload['ColorRGB']
-        self.is_presence_kind = self._payload['IsPresenceKind']
-        self.name = self._payload['Name']
+        self.color = self.json_payload['ColorRGB']
+        self.is_presence_kind = self.json_payload['IsPresenceKind']
+        self.name = self.json_payload['Name']
+        self.short_name = self.json_payload['Short']
+
+    def __repr__(self):
+        return f'<SynergiaAttendanceType {self.short_name}>'
 
 
 class SynergiaAttendance(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
         super().__init__(oid, session, ('Attendances',), 'Attendance', payload)
-        self.add_date = datetime.strptime(self._payload['AddDate'], '%Y-%m-%d %H:%M:%S')
-        self.lesson_no = self._payload['LessonNo']
+        self.add_date = datetime.strptime(self.json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')
+        self.lesson_no = self.json_payload['LessonNo']
 
     @property
     def teacher(self):
-        return SynergiaTeacher(self._payload['AddedBy']['Id'], self._session)
+        return SynergiaTeacher(self.json_payload['AddedBy']['Id'], self._session)
 
     @property
     def student(self):
-        return SynergiaStudent(self._payload['Student']['Id'], self._session)
+        return SynergiaStudent(self.json_payload['Student']['Id'], self._session)
 
     @property
     def type(self):
-        return SynergiaAttendanceType(self._payload['Type']['Id'], self._session)
+        return SynergiaAttendanceType(self.json_payload['Type']['Id'], self._session)
+
+    def __repr__(self):
+        return f'<SynergiaAttendance at {self.add_date}>'
