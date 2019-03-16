@@ -1,11 +1,17 @@
 # LibrusTricks
 A powerful python Librus Synergia API based on RE
 
+## Install
+```text
+pip install git+https://github.com/Backdoorek/LibrusTricks.git@prototype
+```
+
 ## Examples
 ```python
 # Authentication
 from librus_tricks import auth
 user = auth.aio('my.mail@mydoamin.com', 'uniqepass')
+
 ```
 
 
