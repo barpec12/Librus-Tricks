@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 class SynergiaGenericClass:
     def __init__(self, oid, session):
         self._session = session
@@ -106,7 +107,7 @@ class SynergiaGrade(SynergiaGenericClass):
 
     @property
     def comments(self):
-        cmts = []
+        grade_comments = []
         for c in self.__payload['Comments']:
-            cmts.append(SynergiaGradeComment(c['Id'], self._session))
-        return cmts
+            grade_comments.append(SynergiaGradeComment(c['Id'], self._session))
+        return grade_comments
