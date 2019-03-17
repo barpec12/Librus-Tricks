@@ -151,6 +151,7 @@ class SynergiaAttendance(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
         super().__init__(oid, session, ('Attendances',), 'Attendance', payload)
         self.add_date = datetime.strptime(self.json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')
+        self.date = datetime.strptime(self.json_payload['Date'], '%Y-%m-%d')
         self.lesson_no = self.json_payload['LessonNo']
 
     @property
