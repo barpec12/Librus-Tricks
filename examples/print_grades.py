@@ -1,9 +1,10 @@
-from librus_tricks import aio, SynergiaGrade, SynergiaSubject, SynergiaClient
-
+from librus_tricks import aio, SynergiaSubject, SynergiaClient
+import getpass
+from colorama import Fore, init as colorama_init
 
 def ask_for_credentials():
     login = input('E-mail: ')
-    passwd = input('Passwd: ')
+    passwd = getpass.getpass('Passwd: ')
     return {'email': login, 'passwd': passwd}
 
 
@@ -31,13 +32,14 @@ def sort_grades(session):
 
 
 if __name__ == '__main__':
-    print('Logging in')
+    colorama_init(autoreset=True)
+    print(Fore.CYAN + 'Logging in...')
     session = SynergiaClient(aio(**ask_for_credentials()))
-    print('Printing user\'s grades')
+    print(Fore.CYAN + 'Printing user\'s grades')
     gs = sort_grades(session)
     for subject in gs.keys():
-        print(subject.name + ':')
+        print(Fore.MAGENTA + subject.name + ':')
         for grade in gs[subject]:
             if grade.metadata.is_constituent:
                 category = grade.category
-                print(f'    {grade.grade} with category {category.name} ({category.weight}) @ {grade.date}')
+                print(Fore.BLUE + f'    {grade.grade} with category {category.name} ({category.weight}) @ {grade.date}')
