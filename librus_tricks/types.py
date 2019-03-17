@@ -112,10 +112,13 @@ class SynergiaGrade(SynergiaGenericClass):
 
     @property
     def comments(self):
-        grade_comments = []
-        for c in self.json_payload['Comments']:
-            grade_comments.append(SynergiaGradeComment(c['Id'], self._session))
-        return grade_comments
+        if 'Comments' in self.json_payload.keys():
+            grade_comments = []
+            for c in self.json_payload['Comments']:
+                grade_comments.append(SynergiaGradeComment(c['Id'], self._session))
+            return tuple(grade_comments)
+        else:
+            return tuple()
 
 
 class SynergiaAttendanceType(SynergiaGenericClass):
