@@ -22,6 +22,11 @@ auth_session = requests.session()
 
 class SynergiaAuthUser:
     def __init__(self, data_dict):
+        """
+        Tworzy obiekt użytkownika Synergii zawierający dane do uwierzytelniania.
+
+        :param dict data_dict: dict zawierający podstawowe dane do logowania
+        """
         self.uid = data_dict['id']
         self.login = data_dict['login']
         self.token = data_dict['accessToken']
@@ -29,6 +34,7 @@ class SynergiaAuthUser:
 
     @property
     def is_authenticated(self):
+        """Sprawdza czy dany użytkownik zawiera nieprzeterminowane tokeny"""
         test = requests.get('https://api.librus.pl/2.0/Me', headers={'Authorization': f'Bearer {self.token}'})
         if test.status_code == 401:
             return False
@@ -40,6 +46,16 @@ class SynergiaAuthUser:
 
 
 def oauth_librus_code(email, passwd, revalidation=False):
+    """
+    Wrapper podszywa się pod aplikację i próbuje otrzymać kod OAuth
+
+    :param str email: email do aplikacji Librusa
+    :param str passwd: hasło do aplikacji Librusa
+    :param bool revalidation: zmienna odpowiadająca za
+    :return: kod OAUTH
+    :rtype: str
+    :raises librus_tricks.exceptions.LibrusLoginError: zły login lub hasło lub inny błąd związany z autoryzacją
+    """
     if revalidation:
         mini_session = auth_session.get(LIBRUSLOGINURL, allow_redirects=False)
         access_code = mini_session.headers['location'][26:]
@@ -64,6 +80,12 @@ def oauth_librus_code(email, passwd, revalidation=False):
 
 
 def get_synergia_token(auth_code):
+    """
+
+    :param str auth_code: kod OAUTH z aplikacji Librusa
+    :return: Kod ogólny do API Synergii
+    :rtype: str
+    """
     return auth_session.post(
         OAUTHURL,
         data={
@@ -76,6 +98,14 @@ def get_synergia_token(auth_code):
 
 
 def try_to_fetch_logins(access_token, print_requests=False, connecting_tries=10):
+    """
+
+    :param str access_token: token ogólny do API Synergii
+    :param bool print_requests: zmienna warunkująca wyświetlanie kolejnych zapytań
+    :param int connecting_tries: zmienna określająca ilość ewentualnych powtórzeń
+    :return: dict zawierający konta
+    :rtype: dict
+    """
     try:
         for connection_try in range(0, connecting_tries):
             try:
@@ -96,6 +126,14 @@ def try_to_fetch_logins(access_token, print_requests=False, connecting_tries=10)
 
 
 def get_avaiable_users(access_token, print_credentials=False):
+    """
+    Tworzy listę dostępnych użytkowników.
+
+    :param str access_token: token ogólny do API Synergii
+    :param bool print_credentials: wyświetlaj kolejne dostępne tożsamości
+    :return: lista dostępnych użytkowników
+    :rtype: list of librus_tricks.auth.SynergiaAuthUser
+    """
     accounts = try_to_fetch_logins(access_token)
     users = []
     for d in accounts:
@@ -106,6 +144,14 @@ def get_avaiable_users(access_token, print_credentials=False):
 
 
 def get_new_token(login, email, passwd):
+    """
+    Wymusza utworzenie nowego tokenu ogólnego do API Synergii.
+
+    :param str login: login do Synergii
+    :param str email: email do aplikacji Librusa
+    :param str passwd: hasło do aplikacji Librusa
+    :return: nowy token ogólny do API Synergii
+    """
     auth_session.get(
         FRESHURL.format(login=login)
     )
@@ -113,6 +159,15 @@ def get_new_token(login, email, passwd):
 
 
 def aio(email, passwd, fetch_index=0):
+    """
+    aio (All-In-One) ułatwia otrzymanie danych do logowania i utworzenia sesji.
+
+    :param str email: email do aplikacji Librusa
+    :param str passwd: hasło do aplikacji Librusa
+    :param int fetch_index: wybór konta do Synergii
+    :return: użytkownik Synergii
+    :rtype: librus_tricks.auth.SynergiaAuthUser
+    """
     oauth_code = oauth_librus_code(email, passwd)
     synergia_token = get_synergia_token(oauth_code)
     api_users = get_avaiable_users(synergia_token)

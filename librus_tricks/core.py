@@ -4,7 +4,14 @@ from librus_tricks.types import *
 
 
 class SynergiaClient:
+    """Sesja z API Synergii"""
     def __init__(self, user, api_url='https://api.librus.pl/2.0/'):
+        """
+        Tworzy obiekt sesji z API Synergii.
+
+        :param librus_tricks.auth.SynergiaAuthUser user: użytkownik Synergii
+        :param str api_url: url do API, NIE ZMIENIAJ GO JEŚLI NIE WIESZ DO CZEGO SŁUŻY
+        """
         self.user = user
         self.session = requests.session()
         self.__auth_headers = {'Authorization': f'Bearer {user.token}'}
@@ -14,6 +21,17 @@ class SynergiaClient:
         return f'<Synergia session for {self.user}>'
 
     def get(self, *path):
+        """
+        Zwraca json'a przekonwertowany na dict'a po podaniu prawidłowego węzła
+
+        przykład: ``session.get('Grades', '42690')``
+
+        :param path: Ścieżka zawierająca węzeł API
+        :type path: str
+        :return: json przekonwertowany na dict'a
+        :rtype: dict
+        :raise librus_tricks.exceptions.SynergiaEndpointNotFound: nie zaleziono określonego węzła
+        """
         path_str = f'{self.__api_url}'
         for p in path:
             path_str += f'{p}/'
@@ -27,9 +45,28 @@ class SynergiaClient:
         return response.json()
 
     def get_grade(self, grade_id):
+        """
+        Zwraca podaną ocenę
+
+        przykład: ``session.get_grade('42690')``
+
+        :param str grade_id: id oceny
+        :return: obiekt oceny
+        :rtype: librus_tricks.types.SynergiaGrade
+        """
         return SynergiaGrade(grade_id, self)
 
     def get_grades(self, selected=None):
+        """
+        Zwraca daną listę ocen
+
+        :param selected: lista lub krotka z wybranymi ocenami, zostawienie tego parametru
+        powoduje pobranie wszystkich ocen
+        :type selected: list of str
+        :type selected: tuple of str
+        :return: krotka z ocenami
+        :rtype: tuple of librus_tricks.types.SynergiaGrade
+        """
         if selected == None:
             return utils.get_all_grades(self)
         else:

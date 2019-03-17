@@ -26,11 +26,6 @@ class SynergiaGenericClass:
 
 class SynergiaTeacher(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
-        """
-        Klasa reprezentująca nauczyciela
-
-        :type session: librus_tricks.core.SynergiaClient
-        """
         super().__init__(oid, session, ('Users',), 'User', payload)
         self.name = self.json_payload['FirstName']
         self.last_name = self.json_payload['LastName']
@@ -41,11 +36,14 @@ class SynergiaStudent(SynergiaTeacher):
 
 
 class SynergiaClass(SynergiaGenericClass):
+    """Klasa reprezentująca klasę"""
     def __init__(self, oid, session, payload=None):
         """
-        Klasa reprezentująca klasę (jako zbiór uczniów)
+        Tworzy obiekt reprezentujący klasę (jako zbiór uczniów)
 
-        :type session: librus_tricks.core.SynergiaClient
+        :param str oid: id klasy
+        :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
+        :param dict payload: dane z json'a
         """
         super().__init__(oid, session, ('Classes',), 'Class', payload)
         self.alias = f'{self.json_payload["Number"]}{self.json_payload["Symbol"]}'

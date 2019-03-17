@@ -3,8 +3,11 @@ from librus_tricks.types import SynergiaAttendance, SynergiaAttendanceType, Syne
 
 def get_all_grades(session):
     """
+    Zwraca krotkę wszystkich ocen
 
-    :type session: librus_tricks.core.SynergiaClient
+    :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
+    :return: krotka z ocenami
+    :rtype: tuple of librus_tricks.types.SynergiaGrade
     """
     grades_raw = session.get('Grades')['Grades']
     grades_list = []
@@ -17,8 +20,11 @@ def get_all_grades(session):
 
 def get_all_attendance(session):
     """
+    Zwraca krotkę z całą frekwencją
 
-    :type session: librus_tricks.core.SynergiaClient
+    :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
+    :return: krotka z obecnościami
+    :rtype: tuple of librus_tricks.SynergiaAttendance
     """
     attendance_raw = session.get('Attendances')['Attendances']
     attendance_list = []
@@ -31,8 +37,11 @@ def get_all_attendance(session):
 
 def get_all_attendance_types(session):
     """
+    Zwraca krotkę wszystkich typów obecności.
 
-    :type session: librus_tricks.core.SynergiaClient
+    :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
+    :return: zbiór typów obecności
+    :rtype: set of librus_tricks.types.SynergiaAttendanceType
     """
     a_types_raw = session.get('Attendances', 'Types')['Types']
     a_types_set = set()
@@ -45,8 +54,12 @@ def get_all_attendance_types(session):
 
 def get_filtered_attendance(session, *a_types):
     """
+    Zwraca tylko wybrane typy obecności
 
-    :type session: librus_tricks.core.SynergiaClient
+    :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
+    :param librus_tricks.types.SynergiaAttendanceType a_types: obiekty typów obecności
+    :return: zbiór wybranych obecności
+    :rtype: set of librus_tricks.types.SynergiaAttendanceType
     """
     attendance_raw = session.get('Attendances')['Attendances']
     attendance_list = []
@@ -68,8 +81,15 @@ def get_filtered_attendance(session, *a_types):
 
 def get_objects(session, path_computed, ids_computed, extraction_key, cls):
     """
+    Zwraca krotkę z obiektami danej klasy, na podstawie pełnego json'a
 
-    :type session: librus_tricks.core.SynergiaClient
+    :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
+    :param str path_computed: gotowa do wklejenia ścieżka
+    :param str ids_computed: gotowe do wklejenia idiki
+    :param str extraction_key: klucz to "wydłubania" danych
+    :param any cls: klasa w którą ma zostać opakowany json
+    :return: krotka wybranych obiektów klasy ``cls``
+    :rtype: tuple
     """
     response = session.get(path_computed, ids_computed)[extraction_key]
     objects = []
