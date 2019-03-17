@@ -1,5 +1,6 @@
 import requests
-from librus_tricks import exceptions
+from librus_tricks import exceptions, utils
+from librus_tricks.types import *
 
 
 class SynergiaClient:
@@ -24,3 +25,16 @@ class SynergiaClient:
             raise exceptions.SynergiaEndpointNotFound(path_str)
 
         return response.json()
+
+    def get_grade(self, grade_id):
+        return SynergiaGrade(grade_id, self)
+
+    def get_grades(self, selected=None):
+        if selected == None:
+            return utils.get_all_grades(self)
+        else:
+            ids_computed = ''
+            for i in selected:
+                ids_computed += f'{i},'
+            ids_computed += f'{selected[-1]}'
+            return utils.get_objects(self, 'Grades', ids_computed, 'Grades', SynergiaGrade)

@@ -1,6 +1,13 @@
 from datetime import datetime
 
 
+def _try_to_extract(payload, extraction_key):
+    if extraction_key in payload.keys():
+        return payload[extraction_key]
+    else:
+        return None
+
+
 class SynergiaGenericClass:
     def __init__(self, oid, session, resource, extraction_key, payload=None):
         self._session = session
@@ -86,11 +93,11 @@ class SynergiaGradeCategory(SynergiaGenericClass):
         self.name = self.json_payload['Name']
         self.obligation_to_perform = self.json_payload['ObligationToPerform']
         self.standard = self.json_payload['Standard']
-        self.weight = self.json_payload['Weight']
+        self.weight = _try_to_extract(self.json_payload, 'Weight')
 
     @property
     def for_lessons(self):
-        return (SynergiaLesson(x['Id'], self._session) for x in self.json_payload['ForLessons'])
+        return [SynergiaLesson(x['Id'], self._session) for x in self.json_payload['ForLessons']]
 
     @property
     def teacher(self):
@@ -147,9 +154,9 @@ class SynergiaGrade(SynergiaGenericClass):
     @property
     def comments(self):
         if 'Comments' in self.json_payload.keys():
-            return (SynergiaGradeComment(x['Id'], self._session) for x in self.json_payload['Comments'])
+            return [SynergiaGradeComment(x['Id'], self._session) for x in self.json_payload['Comments']]
         else:
-            return tuple()
+            return []
 
     @property
     def category(self):
