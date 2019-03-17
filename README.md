@@ -3,7 +3,19 @@ A powerful python Librus Synergia API based on RE
 
 ## Install
 ```text
+# Windows
+# Latest stable alpha
+pip install git+https://github.com/Backdoorek/LibrusTricks.git@proto-0.0.2
+
+# Latest alpha
 pip install git+https://github.com/Backdoorek/LibrusTricks.git@prototype
+
+# Linux
+# Latest stable alpha
+sudo -H pip3 install git+https://github.com/Backdoorek/LibrusTricks.git@proto-0.0.2
+
+# Latest alpha
+sudo -H pip3 install git+https://github.com/Backdoorek/LibrusTricks.git@prototype
 ```
 
 ## Examples
@@ -26,6 +38,9 @@ For more examples check the [examples](https://github.com/Backdoorek/LibrusTrick
 
 ## Screenshots from debugger
 ![Grade](https://github.com/Backdoorek/public-files/blob/master/pycharm64_2019-03-17_11-29-56.png?raw=true)
+
+## Wrapper in real use
+![Example with grades](https://github.com/Backdoorek/public-files/blob/master/2019-03-17_14-32-19.gif?raw=true)
 
 > Written with ❤ from a scratch by Krystian _`Backdoorek`_ Postek
 
