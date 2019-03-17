@@ -97,10 +97,27 @@ class SynergiaGradeComment(SynergiaGenericClass):
 class SynergiaGrade(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
         super().__init__(oid, session, ('Grades',), 'Grade', payload)
+
+        class GradeMetadata:
+            def __init__(self, is_c, is_s, is_sp, is_f, is_fp):
+                self.is_constituent = is_c
+                self.is_semester_grade = is_s
+                self.is_semester_grade_proposition = is_sp
+                self.is_final_grade = is_f
+                self.is_final_grade_proposition = is_fp
+
         self.add_date = datetime.strptime(self.json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')
+        self.date = datetime.strptime(self.json_payload['Date'], '%Y-%m-%d')
         self.grade = self.json_payload['Grade']
-        self.have_influence = self.json_payload['IsConstituent']
+        self.is_constituent = self.json_payload['IsConstituent']
         self.semester = self.json_payload['Semester']
+        self.metadata = GradeMetadata(
+            self.json_payload['IsConstituent'],
+            self.json_payload['IsSemester'],
+            self.json_payload['IsSemesterProposition'],
+            self.json_payload['IsFinal'],
+            self.json_payload['IsFinalProposition']
+        )
 
     @property
     def teacher(self):
@@ -113,10 +130,7 @@ class SynergiaGrade(SynergiaGenericClass):
     @property
     def comments(self):
         if 'Comments' in self.json_payload.keys():
-            grade_comments = []
-            for c in self.json_payload['Comments']:
-                grade_comments.append(SynergiaGradeComment(c['Id'], self._session))
-            return tuple(grade_comments)
+            return (SynergiaGradeComment(x['Id'], self._session) for x in self.json_payload['Comments'])
         else:
             return tuple()
 
