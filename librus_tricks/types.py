@@ -13,7 +13,6 @@ class SynergiaGenericClass:
         else:
             self.json_payload = payload
 
-
     def __repr__(self):
         return f'<{self.__class__.__name__} {self.oid}>'
 
@@ -80,6 +79,24 @@ class SynergiaLesson(SynergiaGenericClass):
         return SynergiaSubject(self.json_payload['Subject']['Id'], self._session)
 
 
+class SynergiaGradeCategory(SynergiaGenericClass):
+    def __init__(self, oid, session, payload=None):
+        super().__init__(oid, session, ('Grades', 'Categories',), 'Category', payload)
+        self.count_to_the_average = self.json_payload['CountToTheAverage']
+        self.name = self.json_payload['Name']
+        self.obligation_to_perform = self.json_payload['ObligationToPerform']
+        self.standard = self.json_payload['Standard']
+        self.weight = self.json_payload['Weight']
+
+    @property
+    def for_lessons(self):
+        return (SynergiaLesson(x['Id'], self._session) for x in self.json_payload['ForLessons'])
+
+    @property
+    def teacher(self):
+        return SynergiaTeacher(self.json_payload['Teacher']['Id'], self._session)
+
+
 class SynergiaGradeComment(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
         super().__init__(oid, session, ('Grades', 'Comments',), 'Comment', payload)
@@ -133,6 +150,10 @@ class SynergiaGrade(SynergiaGenericClass):
             return (SynergiaGradeComment(x['Id'], self._session) for x in self.json_payload['Comments'])
         else:
             return tuple()
+
+    @property
+    def category(self):
+        return SynergiaGradeCategory(self.json_payload['Category']['Id'], self._session)
 
 
 class SynergiaAttendanceType(SynergiaGenericClass):
