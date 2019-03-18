@@ -17,7 +17,7 @@ def sort_grades(session):
     grades_sorted = {}
     grades = {}
     for g in obj_grades:
-        grade_subject_id = g.json_payload['Subject']['Id']
+        grade_subject_id = g._json_payload['Subject']['Id']
         print(grade_subject_id)
         if not (str(grade_subject_id) in grades_sorted.keys()):
             print('Id not found')
