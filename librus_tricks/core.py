@@ -5,7 +5,7 @@ from librus_tricks.types import *
 
 class SynergiaClient:
     """Sesja z API Synergii"""
-    def __init__(self, user, api_url='https://api.librus.pl/2.0/'):
+    def __init__(self, user, api_url='https://api.librus.pl/2.0/', user_agent='LibrusMobileApp'):
         """
         Tworzy obiekt sesji z API Synergii.
 
@@ -14,7 +14,7 @@ class SynergiaClient:
         """
         self.user = user
         self.session = requests.session()
-        self.__auth_headers = {'Authorization': f'Bearer {user.token}'}
+        self.__auth_headers = {'Authorization': f'Bearer {user.token}', 'User-Agent': user_agent}
         self.__api_url = api_url
 
     def __repr__(self):
