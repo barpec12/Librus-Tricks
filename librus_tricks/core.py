@@ -1,6 +1,6 @@
 import requests
-from librus_tricks import exceptions, utils
-from librus_tricks.types import *
+from librus_tricks import exceptions, utilities
+from librus_tricks.classes import *
 
 
 class SynergiaClient:
@@ -52,7 +52,7 @@ class SynergiaClient:
 
         :param str grade_id: id oceny
         :return: obiekt oceny
-        :rtype: librus_tricks.types.SynergiaGrade
+        :rtype: librus_tricks.classes.SynergiaGrade
         """
         return SynergiaGrade(grade_id, self)
 
@@ -65,13 +65,13 @@ class SynergiaClient:
         :type selected: list of str
         :type selected: tuple of str
         :return: krotka z ocenami
-        :rtype: tuple of librus_tricks.types.SynergiaGrade
+        :rtype: tuple of librus_tricks.classes.SynergiaGrade
         """
         if selected == None:
-            return utils.get_all_grades(self)
+            return utilities.get_all_grades(self)
         else:
             ids_computed = ''
             for i in selected:
                 ids_computed += f'{i},'
             ids_computed += f'{selected[-1]}'
-            return utils.get_objects(self, 'Grades', ids_computed, 'Grades', SynergiaGrade)
+            return utilities.get_objects(self, 'Grades', ids_computed, 'Grades', SynergiaGrade)

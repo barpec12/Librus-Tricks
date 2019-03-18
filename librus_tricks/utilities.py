@@ -1,4 +1,4 @@
-from librus_tricks.types import SynergiaAttendance, SynergiaAttendanceType, SynergiaGrade
+from librus_tricks.classes import SynergiaAttendance, SynergiaAttendanceType, SynergiaGrade
 
 
 def get_all_grades(session):
@@ -7,7 +7,7 @@ def get_all_grades(session):
 
     :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
     :return: krotka z ocenami
-    :rtype: tuple of librus_tricks.types.SynergiaGrade
+    :rtype: tuple of librus_tricks.classes.SynergiaGrade
     """
     grades_raw = session.get('Grades')['Grades']
     grades_list = []
@@ -41,7 +41,7 @@ def get_all_attendance_types(session):
 
     :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
     :return: zbiór typów obecności
-    :rtype: set of librus_tricks.types.SynergiaAttendanceType
+    :rtype: set of librus_tricks.classes.SynergiaAttendanceType
     """
     a_types_raw = session.get('Attendances', 'Types')['Types']
     a_types_set = set()
@@ -57,9 +57,9 @@ def get_filtered_attendance(session, *a_types):
     Zwraca tylko wybrane typy obecności
 
     :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
-    :param librus_tricks.types.SynergiaAttendanceType a_types: obiekty typów obecności
+    :param librus_tricks.classes.SynergiaAttendanceType a_types: obiekty typów obecności
     :return: zbiór wybranych obecności
-    :rtype: set of librus_tricks.types.SynergiaAttendanceType
+    :rtype: set of librus_tricks.classes.SynergiaAttendanceType
     """
     attendance_raw = session.get('Attendances')['Attendances']
     attendance_list = []
@@ -98,3 +98,56 @@ def get_objects(session, path_computed, ids_computed, extraction_key, cls):
             cls(i['Id'], session, payload=i)
         )
     return tuple(objects)
+
+def get_timetable(session, week_start=None):
+    """
+    Zwraca uporządkowany plan lekcji
+
+    :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
+    :param week_start: data poniedziałku dla wybranego tygodnia
+    :return:
+    """
+
+    class ObjectsIds:
+        def __init__(self, id_clss, clss_type, id_clsr, id_lesn, id_sub, id_tea, id_tte):
+            self.group = id_clss
+            self.group_type = clss_type
+            self.classroom = id_clsr
+            self.lesson = id_lesn,
+            self.subject = id_sub,
+            self.teacher = id_tea,
+            self.timetable_entry = id_tte
+
+    class ObjectsPreview:
+        def __init__(self, teacher_name, teacher_lastname, subject_name):
+            self.teacher_name = teacher_name
+            self.teacher_lastname = teacher_lastname
+            self.subject_name = subject_name
+
+    class TimetableEntry:
+        def __init__(self):
+            pass
+
+    class Timetable:
+        def __init__(self, ordered_table):
+            pass
+
+    timetable_raw = session.get('Timetables')
+    ordered_table = dict()
+    for day in timetable_raw.keys():
+        for frame in timetable_raw[day]:
+            for lessons in frame:
+                for lesson in lessons:
+                    if not (day in ordered_table.keys()):
+                        ordered_table[day] = []
+                    ordered_table[day].append(
+
+                    )
+
+
+    return
+
+if __name__ == '__main__':
+    from librus_tricks import aio, SynergiaClient
+    session = SynergiaClient(aio('krystian@postek.eu', '$Un10ck_lib'))
+    get_timetable(session)

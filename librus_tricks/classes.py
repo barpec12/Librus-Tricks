@@ -36,8 +36,8 @@ class SynergiaStudent(SynergiaTeacher):
     pass
 
 
-class SynergiaClass(SynergiaGenericClass):
-    """Klasa reprezentująca klasę"""
+class SynergiaGlobalClass(SynergiaGenericClass):
+    """Klasa reprezentująca klasę (np. 1C)"""
 
     def __init__(self, oid, session, payload=None):
         """
@@ -99,7 +99,7 @@ class SynergiaLesson(SynergiaGenericClass):
 
     @property
     def group(self):
-        return SynergiaClass(self.objects_ids.group, self._session)
+        return SynergiaGlobalClass(self.objects_ids.group, self._session)
 
     @property
     def subject(self):
@@ -309,7 +309,7 @@ class SynergiaExam(SynergiaGenericClass):
 
     @property
     def group(self):
-        return SynergiaClass(self.objects_ids.group, self._session)
+        return SynergiaGlobalClass(self.objects_ids.group, self._session)
 
     @property
     def subject(self):
