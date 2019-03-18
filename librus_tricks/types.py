@@ -261,3 +261,63 @@ class SynergiaAttendance(SynergiaGenericClass):
 
     def __repr__(self):
         return f'<SynergiaAttendance at {self.add_date}>'
+
+
+class SynergiaExamCategory(SynergiaGenericClass):
+    def __init__(self, oid, session, payload=None):
+        super().__init__(oid, session, ('HomeWorks', 'Categories'), 'Category', payload)
+
+        class ObjectsIds:
+            def __init__(self, id_col):
+                self.color = id_col
+
+        self.name = self._json_payload['Name']
+        self.objects_ids = ObjectsIds(self._json_payload['Color']['Id'])
+
+    @property
+    def color(self):
+        return SynergiaColor(self.objects_ids.color, self._session)
+
+
+class SynergiaExam(SynergiaGenericClass):
+    def __init__(self, oid, session, payload=None):
+        super().__init__(oid, session, ('HomeWorks',), 'HomeWork', payload)
+
+        class ObjectsIds:
+            def __init__(self, id_tea, id_cls, id_cat, id_sub):
+                self.teacher = id_tea
+                self.group = id_cls,
+                self.category = id_cat,
+                self.subject = id_sub
+
+        self.add_date = datetime.strptime(self._json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')
+        self.content = self._json_payload['Content']
+        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d')
+        self.lesson = self._json_payload['LessonNo']
+        self.time_start = self._json_payload['TimeFrom']
+        self.time_end = self._json_payload['TimeTo']
+        self.objects_ids = ObjectsIds(
+            self._json_payload['CreatedBy']['Id'],
+            self._json_payload['Class']['Id'],
+            self._json_payload['Category']['Id'],
+            self._json_payload['Subjects']['Id']
+        )
+
+    @property
+    def teacher(self):
+        return SynergiaTeacher(self.objects_ids.teacher, self._session)
+
+    @property
+    def group(self):
+        return SynergiaClass(self.objects_ids.group, self._session)
+
+    @property
+    def subject(self):
+        return SynergiaSubject(self.objects_ids.subject, self._session)
+
+
+class SynergiaColor(SynergiaGenericClass):
+    def __init__(self, oid, session, payload=None):
+        super().__init__(oid, session, ('Colors',), 'Color', payload)
+        self.name = self._json_payload['Name']
+        self.hex_rgb = self._json_payload['RGB']
