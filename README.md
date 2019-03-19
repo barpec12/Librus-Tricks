@@ -41,6 +41,7 @@ For more examples check the [examples](https://github.com/Backdoorek/LibrusTrick
 
 ## Wrapper in real use
 ![Example with grades](https://github.com/Backdoorek/public-files/blob/master/2019-03-17_14-32-19.gif?raw=true)
+![Example with timetable](https://github.com/Backdoorek/public-files/blob/master/ConEmu64_2019-03-19_18-49-26.png?raw=true)
 
 > Written with ❤ from a scratch by Krystian _`Backdoorek`_ Postek
 
