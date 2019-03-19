@@ -1,4 +1,6 @@
-from librus_tricks.classes import SynergiaAttendance, SynergiaAttendanceType, SynergiaGrade
+from librus_tricks.classes import SynergiaAttendance, SynergiaAttendanceType, SynergiaGrade, SynergiaGlobalClass, \
+    SynergiaVirtualClass, SynergiaLesson, SynergiaSubject, SynergiaTeacher
+from datetime import datetime, time
 
 
 def get_all_grades(session):
@@ -99,6 +101,7 @@ def get_objects(session, path_computed, ids_computed, extraction_key, cls):
         )
     return tuple(objects)
 
+
 def get_timetable(session, week_start=None):
     """
     Zwraca uporządkowany plan lekcji
@@ -106,48 +109,105 @@ def get_timetable(session, week_start=None):
     :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
     :param week_start: data poniedziałku dla wybranego tygodnia
     :return:
+    :rtype: dict
     """
 
-    class ObjectsIds:
-        def __init__(self, id_clss, clss_type, id_clsr, id_lesn, id_sub, id_tea, id_tte):
-            self.group = id_clss
-            self.group_type = clss_type
-            self.classroom = id_clsr
-            self.lesson = id_lesn,
-            self.subject = id_sub,
-            self.teacher = id_tea,
-            self.timetable_entry = id_tte
+    def _define_group_and_type(payload):
+        """
 
-    class ObjectsPreview:
-        def __init__(self, teacher_name, teacher_lastname, subject_name):
-            self.teacher_name = teacher_name
-            self.teacher_lastname = teacher_lastname
-            self.subject_name = subject_name
+        :param dict payload:
+        :return:
+        """
+        if 'VirtualClass' in payload.keys():
+            return {'Id': payload['VirtualClass']['Id'], 'type': SynergiaVirtualClass}
+        elif 'Class' in payload.keys():
+            return {'Id': payload['Class']['Id'], 'type': SynergiaGlobalClass}
+        else:
+            raise AttributeError('Wrong object type')
 
-    class TimetableEntry:
-        def __init__(self):
-            pass
+    def _select_classroom(payload):
+        if 'Classroom' in payload.keys():
+            return payload['Classroom']['Id']
+        elif 'OrgClassroom' in payload.keys():
+            return payload['OrgClassroom']['Id']
+        else:
+            return None
 
-    class Timetable:
-        def __init__(self, ordered_table):
-            pass
+    class TimetableFrame:
+        def __init__(self, lesson_payload, session):
+            self._session = session
 
-    timetable_raw = session.get('Timetables')
+            class ObjectsIds:
+                def __init__(self, group_id, group_type, classroom_id, lesson_id, subject_id, teacher_id, timetable_entry):
+                    self.group = group_id
+                    self.group_type = group_type
+                    self.classroom = classroom_id
+                    self.lesson = lesson_id
+                    self.subject = subject_id
+                    self.teacher = teacher_id
+                    self.timetable_entry = timetable_entry
+
+            class ObjectsPreview:
+                def __init__(self, teacher_name, teacher_lastname, subject_name):
+                    self.teacher_name = teacher_name
+                    self.teacher_lastname = teacher_lastname
+                    self.subject_name = subject_name
+
+            self.start = datetime.strptime(lesson_payload['HourFrom'], '%H:%M').time()
+            self.end = datetime.strptime(lesson_payload['HourTo'], '%H:%M').time()
+            self.is_canceled = lesson_payload['IsCanceled']
+            self.is_substitution = lesson_payload['IsSubstitutionClass']
+            self.lesson_no = int(lesson_payload['LessonNo'])
+            self.preloaded_data = ObjectsPreview(
+                lesson_payload['Teacher']['FirstName'],
+                lesson_payload['Teacher']['LastName'],
+                lesson_payload['Subject']['Name']
+            )
+            self.objects_ids = ObjectsIds(
+                _define_group_and_type(lesson_payload)['Id'],
+                _define_group_and_type(lesson_payload)['type'],
+                _select_classroom(lesson_payload),
+                lesson_payload['Lesson']['Id'],
+                lesson_payload['Subject']['Id'],
+                lesson_payload['Teacher']['Id'],
+                lesson_payload['TimetableEntry']['Id']
+            )
+
+        @property
+        def group(self):
+            if self.objects_ids.group_type is SynergiaGlobalClass:
+                return SynergiaGlobalClass(self.objects_ids.group, self._session)
+            else:
+                return SynergiaVirtualClass(self.objects_ids.group, self._session)
+
+        # @property
+        # def classroom(self):
+        #     return  # TODO: Dodać klasę w classes.py
+
+        @property
+        def lesson(self):
+            return SynergiaLesson(self.objects_ids.lesson, self._session)
+
+        @property
+        def subject(self):
+            return SynergiaSubject(self.objects_ids.subject, self._session)
+
+        @property
+        def teacher(self):
+            return SynergiaTeacher(self.objects_ids.teacher, self._session)
+
+        def __repr__(self):
+            return f'<TimetableFrame {self.start.strftime("%H:%M")}->{self.end.strftime("%H:%M")} {self.preloaded_data.subject_name} with {self.preloaded_data.teacher_name} {self.preloaded_data.teacher_lastname }>'
+
+    timetable_raw = session.get('Timetables')['Timetable']
     ordered_table = dict()
     for day in timetable_raw.keys():
         for frame in timetable_raw[day]:
-            for lessons in frame:
-                for lesson in lessons:
-                    if not (day in ordered_table.keys()):
-                        ordered_table[day] = []
-                    ordered_table[day].append(
+            for lesson in frame:
+                if not (day in ordered_table.keys()):
+                    ordered_table[day] = []
+                ordered_table[day].append(
+                    TimetableFrame(lesson, session)
+                )
 
-                    )
-
-
-    return
-
-if __name__ == '__main__':
-    from librus_tricks import aio, SynergiaClient
-    session = SynergiaClient(aio('krystian@postek.eu', '$Un10ck_lib'))
-    get_timetable(session)
+    return ordered_table

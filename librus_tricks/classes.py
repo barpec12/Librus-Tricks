@@ -64,6 +64,38 @@ class SynergiaGlobalClass(SynergiaGenericClass):
     def tutor(self):
         return SynergiaTeacher(self.objects_ids.tutor, self._session)
 
+class SynergiaVirtualClass(SynergiaGenericClass):
+    def __init__(self, oid, session, payload=None):
+        """
+        Tworzy obiekt reprezentujący grupę uczniów
+
+        :param str oid: id klasy
+        :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
+        :param dict payload: dane z json'a
+        """
+        super().__init__(oid, session, ('VirtualClasses',), 'VirtualClass', payload)
+
+        class ObjectsIds:
+            def __init__(self, id_sub, id_tea):
+                self.subject = id_sub
+                self.teacher = id_tea
+
+        self.name = self._json_payload['Name']
+        self.number = self._json_payload['Number']
+        self.symbol = self._json_payload['Symbol']
+        self.objects_ids = ObjectsIds(
+            self._json_payload['Subject']['Id'],
+            self._json_payload['Teacher']['Id']
+        )
+
+    @property
+    def teacher(self):
+        return SynergiaTeacher(self.objects_ids.teacher, self._session)
+
+    @property
+    def subject(self):
+        return SynergiaSubject(self.objects_ids.subject, self._session)
+
 
 class SynergiaSubject(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
