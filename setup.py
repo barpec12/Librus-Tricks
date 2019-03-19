@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="librus_tricks",
     python_requires='>3.6.0',
-    version="proto-0.0.3",
+    version="proto-0.0.4",
     author="Krystian Postek",
     author_email="krystian@postek.eu",
     description="A python wrapper of Synergia Librus API",
