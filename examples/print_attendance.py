@@ -29,7 +29,7 @@ if __name__ == '__main__':
     attd_filt = utilities.get_filtered_attendance(session, *chosen)
     stats = dict()
     for a in attd_filt:
-        if not (a.objects_ids.type in stats.keys()):
+        if not (a.objects_ids.type.__str__() in stats.keys()):
             stats[a.objects_ids.type.__str__()] = 0
         stats[a.objects_ids.type.__str__()] += 1
         print(f'{a.type.short_name} - {a.date.strftime("%Y-%m-%d")} lekcja {a.lesson_no}')
