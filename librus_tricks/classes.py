@@ -267,7 +267,7 @@ class SynergiaAttendance(SynergiaGenericClass):
         class ObjectsIds:
             def __init__(self, id_tea, id_stu, id_typ):
                 self.teacher = id_tea
-                self.student = id_stu,
+                self.student = id_stu
                 self.type = id_typ
 
         self.add_date = datetime.strptime(self._json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')

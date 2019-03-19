@@ -69,13 +69,13 @@ def get_filtered_attendance(session, *a_types):
 
     for t in a_types:
         allowed_types.add(
-            t.oid
+            t
         )
 
     for record in attendance_raw:
-        if record['Type']['Id'] in allowed_types:
+        if record['Type']['Id'].__str__() in allowed_types:
             attendance_list.append(
-                SynergiaAttendance(record['Id'], session, payload=record)
+                SynergiaAttendance(record['Id'].__str__(), session, payload=record)
             )
 
     return attendance_list
