@@ -1,6 +1,6 @@
 from librus_tricks.classes import SynergiaAttendance, SynergiaAttendanceType, SynergiaGrade, SynergiaGlobalClass, \
     SynergiaVirtualClass, SynergiaLesson, SynergiaSubject, SynergiaTeacher
-from datetime import datetime, time
+from datetime import datetime
 
 
 def get_all_grades(session):
