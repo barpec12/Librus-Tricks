@@ -5,14 +5,14 @@ A powerful python Librus Synergia API based on RE
 ```text
 # Windows
 # Latest stable alpha
-pip install git+https://github.com/Backdoorek/LibrusTricks.git@proto-0.0.2
+pip install git+https://github.com/Backdoorek/LibrusTricks.git@proto-0.1.0
 
 # Latest alpha
 pip install git+https://github.com/Backdoorek/LibrusTricks.git@prototype
 
 # Linux
 # Latest stable alpha
-sudo -H pip3 install git+https://github.com/Backdoorek/LibrusTricks.git@proto-0.0.2
+sudo -H pip3 install git+https://github.com/Backdoorek/LibrusTricks.git@proto-0.1.0
 
 # Latest alpha
 sudo -H pip3 install git+https://github.com/Backdoorek/LibrusTricks.git@prototype
