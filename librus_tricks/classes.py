@@ -11,7 +11,7 @@ def _try_to_extract(payload, extraction_key, false_return=None):
 class SynergiaGenericClass:
     def __init__(self, oid, session, resource, extraction_key, payload=None):
         self._session = session
-        self.oid = oid
+        self.oid = int(oid)
         self.objects_ids = None
         if payload == None:
             self._json_payload = self._session.get(

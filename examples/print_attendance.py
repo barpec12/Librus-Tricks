@@ -12,7 +12,7 @@ def ask_for_credentials():
 def create_name_dict(*a_types):
     names = dict()
     for a in a_types:
-        names[a.oid] = a.name
+        names[a.oid.__str__()] = a.name
     return names
 
 
@@ -25,8 +25,9 @@ if __name__ == '__main__':
     for at in attd_types:
         print(Fore.CYAN + f'{at.name} ({at.short_name}) - {at.oid}')
     chosen = input('Podaj id\'ki (przedziel spacjami kolejne id\'ki): ').split(" ")
-    chosen_name = create_name_dict(*[SynergiaAttendanceType(x, session) for x in chosen])
-    attd_filt = utilities.get_filtered_attendance(session, *chosen)
+    req_types = [SynergiaAttendanceType(x, session) for x in chosen]
+    chosen_name = create_name_dict(*req_types)
+    attd_filt = utilities.get_filtered_attendance(session, *req_types)
     stats = dict()
     for a in attd_filt:
         if not (a.objects_ids.type.__str__() in stats.keys()):
