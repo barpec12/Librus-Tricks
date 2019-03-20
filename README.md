@@ -38,7 +38,6 @@ For more examples check the [examples](https://github.com/Backdoorek/LibrusTrick
 
 ## Screenshots from debugger
 ![Grade](https://github.com/Backdoorek/public-files/blob/master/pycharm64_2019-03-17_11-29-56.png?raw=true)
-![Chart](https://raw.githubusercontent.com/Backdoorek/public-files/master/classes.svg)
 
 ## Wrapper in real use
 ![Example with grades](https://github.com/Backdoorek/public-files/blob/master/2019-03-17_14-32-19.gif?raw=true)
