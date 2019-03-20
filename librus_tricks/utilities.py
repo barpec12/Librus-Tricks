@@ -199,7 +199,10 @@ def get_timetable(session, week_start=None):
         def __repr__(self):
             return f'<TimetableFrame {self.start.strftime("%H:%M")}->{self.end.strftime("%H:%M")} {self.preloaded_data.subject_name} with {self.preloaded_data.teacher_name} {self.preloaded_data.teacher_lastname }>'
 
-    timetable_raw = session.get('Timetables')['Timetable']
+    if week_start == None:
+        timetable_raw = session.get('Timetables')['Timetable']
+    else:
+        timetable_raw = session.get('Timetables', request_params={'weekStart': week_start})['Timetable']
     ordered_table = dict()
     for day in timetable_raw.keys():
         for frame in timetable_raw[day]:

@@ -20,7 +20,7 @@ class SynergiaClient:
     def __repr__(self):
         return f'<Synergia session for {self.user}>'
 
-    def get(self, *path):
+    def get(self, *path, request_params=dict()):
         """
         Zwraca json'a przekonwertowany na dict'a po podaniu prawidłowego węzła
 
@@ -36,7 +36,7 @@ class SynergiaClient:
         for p in path:
             path_str += f'{p}/'
         response = self.session.get(
-            path_str, headers=self.__auth_headers
+            path_str, headers=self.__auth_headers, params=request_params
         )
 
         if response.status_code == 404:
