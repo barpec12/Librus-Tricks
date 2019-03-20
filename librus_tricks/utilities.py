@@ -1,5 +1,5 @@
 from librus_tricks.classes import SynergiaAttendance, SynergiaAttendanceType, SynergiaGrade, SynergiaGlobalClass, \
-    SynergiaVirtualClass, SynergiaLesson, SynergiaSubject, SynergiaTeacher
+    SynergiaVirtualClass, SynergiaLesson, SynergiaSubject, SynergiaTeacher, SynergiaExam
 from datetime import datetime
 
 
@@ -211,3 +211,21 @@ def get_timetable(session, week_start=None):
                 )
 
     return ordered_table
+
+
+def get_exams(session, *selected_calendars):
+    """
+
+    :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
+    :param selected_calendars:
+    :return:
+    """
+    exams = []
+    if selected_calendars.__len__() == 0:
+        selected_calendars = [x['Id'] for x in session.get('Calendars')['Calendars']]
+    for cal in selected_calendars:
+        raw_exams = session.get('Calendars', cal)['Calendar']['HomeWorks']
+        cal_exams = [SynergiaExam(x['Id'], session) for x in raw_exams]
+        for e in cal_exams:
+            exams.append(e)
+    return exams
