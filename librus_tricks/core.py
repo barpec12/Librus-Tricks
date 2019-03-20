@@ -41,6 +41,8 @@ class SynergiaClient:
 
         if response.status_code == 404:
             raise exceptions.SynergiaEndpointNotFound(path_str)
+        elif response.status_code == 403:
+            raise exceptions.SynergiaEndpointRequireMorePermissions(path_str)
 
         return response.json()
 

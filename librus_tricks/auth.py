@@ -72,7 +72,9 @@ def oauth_librus_code(email, passwd, revalidation=False):
     )
 
     if login_response_redir.status_code == 401:
-        raise exceptions.LibrusLoginError('Zły login lub hasło lub inny błąd związany z autoryzacją')
+        raise exceptions.LibrusLoginError(f'Zły login lub hasło lub inny błąd związany z autoryzacją ({login_response_redir.json()})')
+    elif login_response_redir.status_code == 403:
+        raise exceptions.LibrusWrongPasswordError(f'403 - złe hasło lub email ({login_response_redir.json()["errors"]})')
 
     redir_addr = login_response_redir.json()['redirect']
     access_code = auth_session.get(redir_addr, allow_redirects=False).headers['location'][26:]

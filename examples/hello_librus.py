@@ -1,4 +1,4 @@
-from librus_tricks.auth import aio
+from librus_tricks.auth import aio, exceptions
 import getpass
 from colorama import Fore, init as colorama_init
 
@@ -12,7 +12,11 @@ def ask_for_credentials():
 if __name__ == '__main__':
     colorama_init(autoreset=True)
     print(Fore.BLUE + 'Logging in')
-    user = aio(**ask_for_credentials())
+    try:
+        user = aio(**ask_for_credentials())
+    except exceptions.LibrusWrongPasswordError:
+        print(Fore.RED + 'Złe hasło')
+        user = aio(**ask_for_credentials())
     print(Fore.CYAN + 'Checking user auth')
     if user.is_authenticated:
         print(Fore.GREEN + 'Authenticated')
