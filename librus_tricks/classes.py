@@ -143,9 +143,8 @@ class SynergiaGradeCategory(SynergiaGenericClass):
         super().__init__(oid, session, ('Grades', 'Categories',), 'Category', payload)
 
         class ObjectsIds:
-            def __init__(self, id_tea, ids_4ls):
+            def __init__(self, id_tea):
                 self.teacher = id_tea
-                self.for_lessons = ids_4ls
 
         self.count_to_the_average = self._json_payload['CountToTheAverage']
         self.name = self._json_payload['Name']
@@ -153,13 +152,8 @@ class SynergiaGradeCategory(SynergiaGenericClass):
         self.standard = self._json_payload['Standard']
         self.weight = _try_to_extract(self._json_payload, 'Weight')
         self.objects_ids = ObjectsIds(
-            self._json_payload['Teacher']['Id'],
-            [x['Id'] for x in self._json_payload['ForLessons']]
+            _try_to_extract(self._json_payload, 'Teacher', {'Id': None})['Id']
         )
-
-    @property
-    def for_lessons(self):
-        return [SynergiaLesson(x['Id'], self._session) for x in self._json_payload['ForLessons']]
 
     @property
     def teacher(self):
@@ -315,11 +309,24 @@ class SynergiaExam(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
         super().__init__(oid, session, ('HomeWorks',), 'HomeWork', payload)
 
+        def _define_group_and_type(payload):
+            """
+
+            :param dict payload:
+            :return:
+            """
+            if 'VirtualClass' in payload.keys():
+                return {'Id': payload['VirtualClass']['Id'], 'type': SynergiaVirtualClass}
+            elif 'Class' in payload.keys():
+                return {'Id': payload['Class']['Id'], 'type': SynergiaGlobalClass}
+            else:
+                raise AttributeError('Wrong object type')
+
         class ObjectsIds:
             def __init__(self, id_tea, id_cls, id_cat, id_sub):
                 self.teacher = id_tea
-                self.group = id_cls,
-                self.category = id_cat,
+                self.group = id_cls
+                self.category = id_cat
                 self.subject = id_sub
 
         self.add_date = datetime.strptime(self._json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')
@@ -330,9 +337,9 @@ class SynergiaExam(SynergiaGenericClass):
         self.time_end = self._json_payload['TimeTo']
         self.objects_ids = ObjectsIds(
             self._json_payload['CreatedBy']['Id'],
-            self._json_payload['Class']['Id'],
+            _define_group_and_type(self._json_payload),
             self._json_payload['Category']['Id'],
-            self._json_payload['Subjects']['Id']
+            _try_to_extract(self._json_payload, 'Subject', {'Id': None})['Id']
         )
 
     @property
