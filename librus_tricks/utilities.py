@@ -54,6 +54,16 @@ def get_all_attendance_types(session):
     return a_types_set
 
 
+def get_all_absence_types(session):
+    non_present_types_raw = get_objects(session, 'Attendances/Types', '', 'Types', SynergiaAttendanceType)
+    non_present_types = set()
+    for t in non_present_types_raw:
+        if not t.is_presence_kind:
+            non_present_types.add(t)
+
+    return tuple(non_present_types)
+
+
 def get_filtered_attendance(session, *a_types):
     """
     Zwraca tylko wybrane typy obecności

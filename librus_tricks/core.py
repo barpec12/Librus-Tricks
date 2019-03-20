@@ -77,3 +77,21 @@ class SynergiaClient:
                 ids_computed += f'{i},'
             ids_computed += f'{selected[-1]}'
             return utilities.get_objects(self, 'Grades', ids_computed, 'Grades', SynergiaGrade)
+
+    def get_exams(self, *calendars):
+        return utilities.get_exams(self, *calendars)
+
+    def get_attendances(self, *att_ids):
+        computed_ids = ''
+        for atid in att_ids:
+            computed_ids += atid + ','
+        return utilities.get_objects(self, 'Attendances', computed_ids, 'Attendances', SynergiaAttendance)
+
+    def get_absences(self):
+        return utilities.get_filtered_attendance(self, *utilities.get_all_absence_types(self))
+
+    def get_timetable(self, week_start=None):
+        if week_start == None:
+            return utilities.get_timetable(self)
+        else:
+            return utilities.get_timetable(self, week_start)
