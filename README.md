@@ -1,4 +1,6 @@
 # LibrusTricks
+[![Build Status](https://travis-ci.org/Backdoorek/LibrusTricks.svg?branch=prototype)](https://travis-ci.org/Backdoorek/LibrusTricks)
+
 A powerful python Librus Synergia API based on RE
 
 ## Install
