@@ -199,7 +199,7 @@ class SynergiaGrade(SynergiaGenericClass):
         class ObjectsIds:
             def __init__(self, id_tea, id_sub, ids_com, id_cat):
                 self.teacher = id_tea
-                self.subject = id_sub,
+                self.subject = id_sub
                 self.comments = ids_com
                 self.category = id_cat
 
