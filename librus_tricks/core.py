@@ -5,6 +5,7 @@ from librus_tricks.classes import *
 
 class SynergiaClient:
     """Sesja z API Synergii"""
+
     def __init__(self, user, api_url='https://api.librus.pl/2.0/', user_agent='LibrusMobileApp'):
         """
         Tworzy obiekt sesji z API Synergii.
@@ -80,6 +81,16 @@ class SynergiaClient:
 
     def get_exams(self, *calendars):
         return utilities.get_exams(self, *calendars)
+
+    def get_future_exams(self, *calendars, now=datetime.now()):
+        exams_all = utilities.get_exams(self, *calendars)
+        exams_future = []
+        for ex in exams_all:
+            if ex.date > now:
+                exams_future.append(
+                    ex
+                )
+        return exams_future
 
     def get_attendances(self, *att_ids):
         computed_ids = ''
