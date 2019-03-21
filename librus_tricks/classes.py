@@ -31,6 +31,9 @@ class SynergiaTeacher(SynergiaGenericClass):
         self.name = self._json_payload['FirstName']
         self.last_name = self._json_payload['LastName']
 
+    def __repr__(self):
+        return f'<{self.__class__.__name__} {self.name} {self.last_name}>'
+
 
 class SynergiaStudent(SynergiaTeacher):
     pass
@@ -60,9 +63,13 @@ class SynergiaGlobalClass(SynergiaGenericClass):
             self._json_payload['ClassTutor']['Id']
         )
 
+    def __repr__(self):
+        return f'<{self.__class__.__name__} {self.alias}>'
+
     @property
     def tutor(self):
         return SynergiaTeacher(self.objects_ids.tutor, self._session)
+
 
 class SynergiaVirtualClass(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
@@ -88,6 +95,9 @@ class SynergiaVirtualClass(SynergiaGenericClass):
             self._json_payload['Teacher']['Id']
         )
 
+    def __repr__(self):
+        return f'<{self.__class__.__name__} {self.name}>'
+
     @property
     def teacher(self):
         return SynergiaTeacher(self.objects_ids.teacher, self._session)
@@ -102,6 +112,9 @@ class SynergiaSubject(SynergiaGenericClass):
         super().__init__(oid, session, ('Subjects',), 'Subject', payload)
         self.name = self._json_payload['Name']
         self.short_name = self._json_payload['Short']
+
+    def __repr__(self):
+        return f'<{self.__class__.__name__} {self.name}>'
 
 
 class SynergiaLesson(SynergiaGenericClass):
@@ -154,6 +167,9 @@ class SynergiaGradeCategory(SynergiaGenericClass):
         self.objects_ids = ObjectsIds(
             _try_to_extract(self._json_payload, 'Teacher', {'Id': None})['Id']
         )
+
+    def __repr__(self):
+        return f'<{self.__class__.__name__} {self.name}>'
 
     @property
     def teacher(self):
@@ -222,6 +238,9 @@ class SynergiaGrade(SynergiaGenericClass):
             self._json_payload['Category']['Id']
         )
 
+    def __repr__(self):
+        return f'<{self.__class__.__name__} {self.grade} from SynergiaSubject with id {self.objects_ids.subject} added {self.add_date}>'
+
     @property
     def teacher(self):
         return SynergiaTeacher(self.objects_ids.teacher, self._session)
@@ -251,7 +270,7 @@ class SynergiaAttendanceType(SynergiaGenericClass):
         self.short_name = self._json_payload['Short']
 
     def __repr__(self):
-        return f'<SynergiaAttendanceType {self.short_name}>'
+        return f'<{self.__class__.__name__} {self.short_name}>'
 
 
 class SynergiaAttendance(SynergiaGenericClass):
@@ -286,7 +305,7 @@ class SynergiaAttendance(SynergiaGenericClass):
         return SynergiaAttendanceType(self.objects_ids.type, self._session)
 
     def __repr__(self):
-        return f'<SynergiaAttendance at {self.add_date}>'
+        return f'<SynergiaAttendance at {self.add_date} ({self.oid})>'
 
 
 class SynergiaExamCategory(SynergiaGenericClass):
@@ -342,6 +361,9 @@ class SynergiaExam(SynergiaGenericClass):
             _try_to_extract(self._json_payload, 'Subject', {'Id': None})['Id']
         )
 
+    def __repr__(self):
+        return f'<{self.__class__.__name__} {self.date} for subject with id {self.objects_ids.subject}>'
+
     @property
     def teacher(self):
         return SynergiaTeacher(self.objects_ids.teacher, self._session)
@@ -360,3 +382,6 @@ class SynergiaColor(SynergiaGenericClass):
         super().__init__(oid, session, ('Colors',), 'Color', payload)
         self.name = self._json_payload['Name']
         self.hex_rgb = self._json_payload['RGB']
+
+    def __repr__(self):
+        return f'<{self.__class__.__name__} {self.hex_rgb}>'
