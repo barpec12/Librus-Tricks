@@ -19,3 +19,5 @@ build/
 \.idea/
 
 librus_tricks/deprecated/
+
+librus_tricks/cache\.sqlite
