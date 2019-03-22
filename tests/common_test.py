@@ -8,7 +8,7 @@ password = os.environ['librus_password']
 
 from librus_tricks import aio, SynergiaClient
 
-session = SynergiaClient(aio(email, password), cache_location='../librus_tricks/cache.sqlite')
+session = SynergiaClient(aio(email, password), cache_location=':memory:')
 
 
 def test_auth():
