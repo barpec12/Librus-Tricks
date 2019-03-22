@@ -65,8 +65,8 @@ class SynergiaClient:
 
         :param selected: lista lub krotka z wybranymi ocenami, zostawienie tego parametru
         powoduje pobranie wszystkich ocen
-        :type selected: list of str
-        :type selected: tuple of str
+        :type selected: list of int
+        :type selected: tuple of int
         :return: krotka z ocenami
         :rtype: tuple of librus_tricks.classes.SynergiaGrade
         """
@@ -93,6 +93,12 @@ class SynergiaClient:
         return exams_future
 
     def get_attendances(self, *att_ids):
+        """
+
+        :param att_ids:
+        :return:
+        :rtype: tuple of librus_tricks.classes.SynergiaAttendance
+        """
         computed_ids = ''
         for atid in att_ids:
             computed_ids += atid + ','
