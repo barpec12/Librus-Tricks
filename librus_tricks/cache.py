@@ -58,23 +58,10 @@ class Cache:
     def sync(self, oid, cls, session):
         cache_response = self.get_object(oid, cls.__name__)
         if cache_response == None:
-            print(f'Tworzę kopię dla {oid}')
+            # print(f'Tworzę kopię dla {oid}')
             c = cls(oid, session)
             self.insert_and_commit(c.oid, c.__class__.__name__, json.dumps(c._json_payload, ensure_ascii=True))
             return c
         else:
-            print(f'Znaleziono kopię dla {oid}')
+            # print(f'Znaleziono kopię dla {oid}')
             return cls(cache_response[0], session, json.loads(cache_response[2]))
-
-
-if __name__ == '__main__':
-    from librus_tricks import aio, SynergiaClient, utilities, SynergiaTeacher
-
-    session = SynergiaClient(aio('krystian@postek.eu', '$Un10ck_lib'))
-    # grades = session.get_grades((27208160, 24040273, 21172894))[0]
-
-    cache = Cache()
-
-    for n in utilities.get_objects(session, 'Users', '', 'Users', SynergiaTeacher):
-        k = cache.sync(n.oid, n.__class__, session)
-        print(str(k.name) + ' ' + str(k.last_name))

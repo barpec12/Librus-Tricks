@@ -10,6 +10,15 @@ def _try_to_extract(payload, extraction_key, false_return=None):
 
 class SynergiaGenericClass:
     def __init__(self, oid, session, resource, extraction_key, payload=None):
+        """
+
+        :param str oid: Id żądanego obiektu
+        :param session:
+        :param resource:
+        :type resource: tuple of str
+        :param str extraction_key:
+        :param dict payload:
+        """
         self._session = session
         self.oid = int(oid)
         self.objects_ids = None
@@ -100,11 +109,19 @@ class SynergiaVirtualClass(SynergiaGenericClass):
 
     @property
     def teacher(self):
-        return SynergiaTeacher(self.objects_ids.teacher, self._session)
+        """
+
+        :rtype: SynergiaTeacher
+        """
+        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
 
     @property
     def subject(self):
-        return SynergiaSubject(self.objects_ids.subject, self._session)
+        """
+
+        :rtype: SynergiaSubject
+        """
+        return self._session.csync(self.objects_ids.subject, SynergiaSubject)
 
 
 class SynergiaSubject(SynergiaGenericClass):
@@ -140,7 +157,11 @@ class SynergiaLesson(SynergiaGenericClass):
 
     @property
     def teacher(self):
-        return SynergiaTeacher(self.objects_ids.teacher, self._session)
+        """
+
+        :rtype: SynergiaTeacher
+        """
+        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
 
     @property
     def group(self):
@@ -148,7 +169,7 @@ class SynergiaLesson(SynergiaGenericClass):
 
     @property
     def subject(self):
-        return SynergiaSubject(self.objects_ids.subject, self._session)
+        return self._session.csync(self.objects_ids.subject, SynergiaSubject)
 
 
 class SynergiaGradeCategory(SynergiaGenericClass):
@@ -173,7 +194,11 @@ class SynergiaGradeCategory(SynergiaGenericClass):
 
     @property
     def teacher(self):
-        return SynergiaTeacher(self.objects_ids.teacher, self._session)
+        """
+
+        :rtype: SynergiaTeacher
+        """
+        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
 
 
 class SynergiaGradeComment(SynergiaGenericClass):
@@ -193,7 +218,11 @@ class SynergiaGradeComment(SynergiaGenericClass):
 
     @property
     def teacher(self):
-        return SynergiaTeacher(self.objects_ids, self._session)
+        """
+
+        :rtype: SynergiaTeacher
+        """
+        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
 
     @property
     def grade_bind(self):
@@ -243,22 +272,38 @@ class SynergiaGrade(SynergiaGenericClass):
 
     @property
     def teacher(self):
-        return SynergiaTeacher(self.objects_ids.teacher, self._session)
+        """
+
+        :rtype: SynergiaTeacher
+        """
+        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
 
     @property
     def subject(self):
-        return SynergiaSubject(self.objects_ids.subject, self._session)
+        """
+
+        :rtype: SynergiaSubject
+        """
+        return self._session.csync(self.objects_ids.subject, SynergiaSubject)
 
     @property
     def comments(self):
+        """
+
+        :rtype: list of SynergiaGradeComment
+        """
         if 'Comments' in self._json_payload.keys():
-            return [SynergiaGradeComment(i, self._session) for i in self.objects_ids.comments]
+            return [self._session.csync(i, SynergiaGradeComment) for i in self.objects_ids.comments]
         else:
             return []
 
     @property
     def category(self):
-        return SynergiaGradeCategory(self.objects_ids.category, self._session)
+        """
+
+        :rtype: SynergiaGradeCategory
+        """
+        return self._session.csync(self.objects_ids.category, SynergiaGradeCategory)
 
 
 class SynergiaAttendanceType(SynergiaGenericClass):
@@ -294,15 +339,27 @@ class SynergiaAttendance(SynergiaGenericClass):
 
     @property
     def teacher(self):
-        return SynergiaTeacher(self.objects_ids.teacher, self._session)
+        """
+
+        :rtype: SynergiaTeacher
+        """
+        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
 
     @property
     def student(self):
-        return SynergiaStudent(self.objects_ids.student, self._session)
+        """
+
+        :rtype: SynergiaStudent
+        """
+        return self._session.csync(self.objects_ids.student, SynergiaStudent)
 
     @property
     def type(self):
-        return SynergiaAttendanceType(self.objects_ids.type, self._session)
+        """
+
+        :rtype: SynergiaAttendanceType
+        """
+        return self._session.csync(self.objects_ids.type, SynergiaAttendanceType)
 
     def __repr__(self):
         return f'<SynergiaAttendance at {self.add_date} ({self.oid})>'
@@ -356,7 +413,7 @@ class SynergiaExam(SynergiaGenericClass):
         self.time_end = self._json_payload['TimeTo']
         self.objects_ids = ObjectsIds(
             self._json_payload['CreatedBy']['Id'],
-            _define_group_and_type(self._json_payload),
+            _define_group_and_type(self._json_payload)['Id'],
             self._json_payload['Category']['Id'],
             _try_to_extract(self._json_payload, 'Subject', {'Id': None})['Id']
         )
@@ -366,7 +423,11 @@ class SynergiaExam(SynergiaGenericClass):
 
     @property
     def teacher(self):
-        return SynergiaTeacher(self.objects_ids.teacher, self._session)
+        """
+
+        :rtype: SynergiaTeacher
+        """
+        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
 
     @property
     def group(self):
@@ -374,7 +435,7 @@ class SynergiaExam(SynergiaGenericClass):
 
     @property
     def subject(self):
-        return SynergiaSubject(self.objects_ids.subject, self._session)
+        return self._session.csync(self.objects_ids.subject, SynergiaSubject)
 
 
 class SynergiaColor(SynergiaGenericClass):
