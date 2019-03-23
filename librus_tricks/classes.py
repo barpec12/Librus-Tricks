@@ -141,13 +141,17 @@ class SynergiaLesson(SynergiaGenericClass):
 
         :type session: librus_tricks.core.SynergiaClient
         """
-        super().__init__(oid, session, ('Users',), 'User', payload)
+        super().__init__(oid, session, ('Lessons',), 'Lesson', payload)
 
         class ObjectsIds:
             def __init__(self, id_tea, id_grp, id_sub):
                 self.teacher = id_tea
                 self.group = id_grp
                 self.subject = id_sub
+
+        if not 'Class' in self._json_payload.keys():
+            self._json_payload['Class'] = {}
+            self._json_payload['Class']['Id'] = None
 
         self.objects_ids = ObjectsIds(
             self._json_payload['Teacher']['Id'],
@@ -165,7 +169,10 @@ class SynergiaLesson(SynergiaGenericClass):
 
     @property
     def group(self):
-        return SynergiaGlobalClass(self.objects_ids.group, self._session)
+        if self.objects_ids.group == None:
+            return None
+        else:
+            return SynergiaGlobalClass(self.objects_ids.group, self._session)
 
     @property
     def subject(self):
@@ -378,7 +385,7 @@ class SynergiaExamCategory(SynergiaGenericClass):
 
     @property
     def color(self):
-        return SynergiaColor(self.objects_ids.color, self._session)
+        return self._session.csync(self.objects_ids.color, SynergiaColor)
 
 
 class SynergiaExam(SynergiaGenericClass):
@@ -399,9 +406,10 @@ class SynergiaExam(SynergiaGenericClass):
                 raise AttributeError('Wrong object type')
 
         class ObjectsIds:
-            def __init__(self, id_tea, id_cls, id_cat, id_sub):
+            def __init__(self, id_tea, group_id, group_type, id_cat, id_sub):
                 self.teacher = id_tea
-                self.group = id_cls
+                self.group = group_id
+                self.group_type = group_type
                 self.category = id_cat
                 self.subject = id_sub
 
@@ -414,6 +422,7 @@ class SynergiaExam(SynergiaGenericClass):
         self.objects_ids = ObjectsIds(
             self._json_payload['CreatedBy']['Id'],
             _define_group_and_type(self._json_payload)['Id'],
+            _define_group_and_type(self._json_payload)['type'],
             self._json_payload['Category']['Id'],
             _try_to_extract(self._json_payload, 'Subject', {'Id': None})['Id']
         )
@@ -431,11 +440,17 @@ class SynergiaExam(SynergiaGenericClass):
 
     @property
     def group(self):
-        return SynergiaGlobalClass(self.objects_ids.group, self._session)
+        if self.objects_ids.group_type is SynergiaGlobalClass:
+            return SynergiaGlobalClass(self.objects_ids.group, self._session)
+        else:
+            return SynergiaVirtualClass(self.objects_ids.group, self._session)
 
     @property
     def subject(self):
-        return self._session.csync(self.objects_ids.subject, SynergiaSubject)
+        if self.objects_ids.subject == None:
+            return None
+        else:
+            return self._session.csync(self.objects_ids.subject, SynergiaSubject)
 
 
 class SynergiaColor(SynergiaGenericClass):

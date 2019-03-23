@@ -186,9 +186,9 @@ def get_timetable(session, week_start=None):
         @property
         def group(self):
             if self.objects_ids.group_type is SynergiaGlobalClass:
-                return SynergiaGlobalClass(self.objects_ids.group, self._session)
+                return session.csync(self.objects_ids.group, SynergiaGlobalClass)
             else:
-                return SynergiaVirtualClass(self.objects_ids.group, self._session)
+                return session.csync(self.objects_ids.group, SynergiaVirtualClass)
 
         # @property
         # def classroom(self):
@@ -200,11 +200,11 @@ def get_timetable(session, week_start=None):
 
         @property
         def subject(self):
-            return SynergiaSubject(self.objects_ids.subject, self._session)
+            return self._session.csync(self.objects_ids.subject, SynergiaSubject)
 
         @property
         def teacher(self):
-            return SynergiaTeacher(self.objects_ids.teacher, self._session)
+            return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
 
         def __repr__(self):
             return f'<TimetableFrame {self.start.strftime("%H:%M")}->{self.end.strftime("%H:%M")} {self.preloaded_data.subject_name} with {self.preloaded_data.teacher_name} {self.preloaded_data.teacher_lastname }>'
