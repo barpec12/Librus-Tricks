@@ -15,16 +15,19 @@ A powerful python Librus Synergia API based on RE
 ## Install
 ```text
 # Windows
-# Latest stable beta
+# Latest stable
+pip install librus-tricks
+# Latest dev-stable from git
 pip install git+https://github.com/Backdoorek/LibrusTricks.git@beta-0.2.0
-# Latest beta
+# Latest upstream
 pip install git+https://github.com/Backdoorek/LibrusTricks.git@prototype
 
 # Linux
-# Latest stable beta
+# Latest stable
+sudo -H pip3 install librus-tricks
+# Latest dev-stable beta
 sudo -H pip3 install git+https://github.com/Backdoorek/LibrusTricks.git@beta-0.2.0
-
-# Latest beta
+# Latest upstream
 sudo -H pip3 install git+https://github.com/Backdoorek/LibrusTricks.git@prototype
 ```
 
