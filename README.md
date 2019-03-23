@@ -3,18 +3,26 @@
 
 A powerful python Librus Synergia API based on RE
 
+## What is inside the box?
+ - Caching system (based on SQLite)
+ - Lazy object loading
+ - Simplified objects
+ - Errors handlers
+ - All-In-One login mechanism
+ - Many buitt-in solutions (get future exams, get timetable etc.)
+ - Docstrings (help for PyCharm, VS Codem, IDLE etc.)
+
 ## Install
 ```text
 # Windows
 # Latest stable beta
-pip install git+https://github.com/Backdoorek/LibrusTricks.git@1bf167cc25e7ef3709c21c3b43d4558c6d96bce7
-
+pip install git+https://github.com/Backdoorek/LibrusTricks.git@beta-0.2.0
 # Latest beta
 pip install git+https://github.com/Backdoorek/LibrusTricks.git@prototype
 
 # Linux
 # Latest stable beta
-sudo -H pip3 install git+https://github.com/Backdoorek/LibrusTricks.git@1bf167cc25e7ef3709c21c3b43d4558c6d96bce7
+sudo -H pip3 install git+https://github.com/Backdoorek/LibrusTricks.git@beta-0.2.0
 
 # Latest beta
 sudo -H pip3 install git+https://github.com/Backdoorek/LibrusTricks.git@prototype
