@@ -60,8 +60,7 @@ def oauth_librus_code(email, passwd, revalidation=False):
         mini_session = auth_session.get(LIBRUSLOGINURL, allow_redirects=False)
         access_code = mini_session.headers['location'][26:]
         return access_code
-    else:
-        site = auth_session.get(LIBRUSLOGINURL)
+    site = auth_session.get(LIBRUSLOGINURL)
     csrf_token = site.text[
                  site.text.find('name="csrf-token" content="') + 27:site.text.find('name="csrf-token" content="') + 67
                  ]
@@ -160,7 +159,7 @@ def get_new_token(login, email, passwd):
     return get_synergia_token(oauth_librus_code(email, passwd, revalidation=True))
 
 
-def aio(email, passwd, fetch_index=0):
+def aio(email, passwd, fetch_index=0, force_revalidation_method=False):
     """
     aio (All-In-One) ułatwia otrzymanie danych do logowania i utworzenia sesji.
 
@@ -170,7 +169,7 @@ def aio(email, passwd, fetch_index=0):
     :return: użytkownik Synergii
     :rtype: librus_tricks.auth.SynergiaAuthUser
     """
-    oauth_code = oauth_librus_code(email, passwd)
+    oauth_code = oauth_librus_code(email, passwd, revalidation=force_revalidation_method)
     synergia_token = get_synergia_token(oauth_code)
     api_users = get_avaiable_users(synergia_token)
     u = api_users[fetch_index]
