@@ -461,3 +461,5 @@ class SynergiaColor(SynergiaGenericClass):
 
     def __repr__(self):
         return f'<{self.__class__.__name__} {self.hex_rgb}>'
+
+# TODO: Dodać klasę dla `SynergiaClassroom`

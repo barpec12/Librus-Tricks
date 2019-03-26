@@ -83,9 +83,23 @@ class SynergiaClient:
             return utilities.get_objects(self, 'Grades', ids_computed, 'Grades', SynergiaGrade)
 
     def get_exams(self, *calendars):
+        """
+        Zwraca listę wszystkich egzaminów w obecnym miesiącu
+
+        :param calendars:
+        :return:
+        :rtype: list of librus_tricks.classes.SynergiaExam
+        """
         return utilities.get_exams(self, *calendars)
 
     def get_future_exams(self, *calendars, now=datetime.now()):
+        """
+        Zwraca listę wszystkich przyszłych (zapowiedzianych) egzaminów
+
+        :param calendars:
+        :return:
+        :rtype: list of librus_tricks.classes.SynergiaExam
+        """
         exams_all = utilities.get_exams(self, *calendars)
         exams_future = []
         for ex in exams_all:
@@ -118,3 +132,6 @@ class SynergiaClient:
 
     def csync(self, oid, cls):
         return self.cache.sync(oid, cls, self)
+
+    # TODO: Dodać pobranie wybranego przedmiotu `get_subject`
+    # TODO: Dodać pobieranie wszystkich przedmiotów `get_subjects`

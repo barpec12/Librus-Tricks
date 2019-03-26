@@ -4,6 +4,7 @@ import json
 
 class Cache:
     def __init__(self, db_location='cache.sqlite'):
+        # TODO: Dodać możliwość wyłączenia cache'ownia (każda rzecz jest pobierana z serwera)
         db_conn = sqlite3.connect(db_location)
         self.cur = db_conn.cursor()
 

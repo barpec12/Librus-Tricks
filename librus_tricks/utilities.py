@@ -192,7 +192,7 @@ def get_timetable(session, week_start=None):
 
         # @property
         # def classroom(self):
-        #     return  # TODO: Dodać klasę w classes.py
+        #     return
 
         @property
         def lesson(self):

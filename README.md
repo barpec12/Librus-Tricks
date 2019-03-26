@@ -1,5 +1,6 @@
 # LibrusTricks
 [![Build Status](https://travis-ci.org/Backdoorek/LibrusTricks.svg?branch=prototype)](https://travis-ci.org/Backdoorek/LibrusTricks)
+[![PyPI version](https://badge.fury.io/py/librus-tricks.svg)](https://badge.fury.io/py/librus-tricks)
 
 A powerful python Librus Synergia API based on RE
 
@@ -19,7 +20,7 @@ A powerful python Librus Synergia API based on RE
 pip install librus-tricks
 # Latest dev-stable from git
 pip install git+https://github.com/Backdoorek/LibrusTricks.git@beta-0.2.0
-# Latest upstream
+# Latest sources
 pip install git+https://github.com/Backdoorek/LibrusTricks.git@prototype
 
 # Linux
@@ -27,7 +28,7 @@ pip install git+https://github.com/Backdoorek/LibrusTricks.git@prototype
 sudo -H pip3 install librus-tricks
 # Latest dev-stable beta
 sudo -H pip3 install git+https://github.com/Backdoorek/LibrusTricks.git@beta-0.2.0
-# Latest upstream
+# Latest sources
 sudo -H pip3 install git+https://github.com/Backdoorek/LibrusTricks.git@prototype
 ```
 
