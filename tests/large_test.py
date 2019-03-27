@@ -54,6 +54,8 @@ def test_attendances():
             a.type
         )
 
+    return teachers, types
+
 
 def test_exams():
     exams = session.get_exams()
@@ -71,12 +73,15 @@ def test_exams():
             e.group
         )
 
+    return teachers, subjects, groups
+
 def test_timetable():
     week = session.get_timetable()
     subjects = []
     teachers = []
     lessons = []
     groups = []
+    classrooms = []
     for day in week.keys():
         for frame in week[day]:
             subjects.append(
@@ -91,3 +96,8 @@ def test_timetable():
             groups.append(
                 frame.group
             )
+            classrooms.append(
+                frame.classroom
+            )
+
+    return subjects, teachers, lessons, groups, classrooms
