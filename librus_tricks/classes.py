@@ -417,8 +417,8 @@ class SynergiaExam(SynergiaGenericClass):
         self.content = self._json_payload['Content']
         self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d')
         self.lesson = self._json_payload['LessonNo']
-        self.time_start = self._json_payload['TimeFrom']
-        self.time_end = self._json_payload['TimeTo']
+        self.time_start = self._json_payload['TimeFrom'] # TODO: Stworzyć obiekt datetime
+        self.time_end = self._json_payload['TimeTo'] # TODO: Stworzyć obiekt datetime
         self.objects_ids = ObjectsIds(
             self._json_payload['CreatedBy']['Id'],
             _define_group_and_type(self._json_payload)['Id'],
@@ -462,4 +462,9 @@ class SynergiaColor(SynergiaGenericClass):
     def __repr__(self):
         return f'<{self.__class__.__name__} {self.hex_rgb}>'
 
-# TODO: Dodać klasę dla `SynergiaClassroom`
+
+class SynergiaClassroom(SynergiaGenericClass):
+    def __init__(self, oid, session, payload=None):
+        super().__init__(oid, session, ('Classrooms',), 'Classroom', payload)
+        self.name = self._json_payload['Name']
+        self.symbol = self._json_payload['Symbol']

@@ -16,3 +16,7 @@ class LibrusWrongPasswordError(Exception):
 
 class SynergiaEndpointRequireMorePermissions(Exception):
     pass
+
+
+class WrongHTTPMethod(Exception):
+    pass

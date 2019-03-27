@@ -50,6 +50,25 @@ class SynergiaClient:
 
         return response.json()
 
+    def do_request(self, *path, method='POST', request_params=dict()):
+        path_str = f'{self.__api_url}'
+        for p in path:
+            path_str += f'{p}/'
+        if method == 'POST':
+            response = self.session.post(
+                path_str, headers=self.__auth_headers, params=request_params
+            )
+        else:
+            raise exceptions.WrongHTTPMethod('Nie obsługiwane zapytanie HTTP')
+
+        if response.status_code == 404:
+            raise exceptions.SynergiaEndpointNotFound(path_str)
+        elif response.status_code == 403:
+            raise exceptions.SynergiaEndpointRequireMorePermissions(path_str)
+
+        return response.json()
+
+
     def get_grade(self, grade_id):
         """
         Zwraca podaną ocenę
