@@ -1,5 +1,5 @@
 from librus_tricks.classes import SynergiaAttendance, SynergiaAttendanceType, SynergiaGrade, SynergiaGlobalClass, \
-    SynergiaVirtualClass, SynergiaLesson, SynergiaSubject, SynergiaTeacher, SynergiaExam
+    SynergiaVirtualClass, SynergiaLesson, SynergiaSubject, SynergiaTeacher, SynergiaExam, SynergiaClassroom
 from datetime import datetime
 
 
@@ -148,7 +148,8 @@ def get_timetable(session, week_start=None):
             self._session = session
 
             class ObjectsIds:
-                def __init__(self, group_id, group_type, classroom_id, lesson_id, subject_id, teacher_id, timetable_entry):
+                def __init__(self, group_id, group_type, classroom_id, lesson_id, subject_id, teacher_id,
+                             timetable_entry):
                     self.group = group_id
                     self.group_type = group_type
                     self.classroom = classroom_id
@@ -190,9 +191,9 @@ def get_timetable(session, week_start=None):
             else:
                 return session.csync(self.objects_ids.group, SynergiaVirtualClass)
 
-        # @property
-        # def classroom(self):
-        #     return
+        @property
+        def classroom(self):
+            return session.csync(self.objects_ids.classroom, SynergiaClassroom)
 
         @property
         def lesson(self):
@@ -207,7 +208,10 @@ def get_timetable(session, week_start=None):
             return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
 
         def __repr__(self):
-            return f'<TimetableFrame {self.start.strftime("%H:%M")}->{self.end.strftime("%H:%M")} {self.preloaded_data.subject_name} with {self.preloaded_data.teacher_name} {self.preloaded_data.teacher_lastname }>'
+            return f'<TimetableFrame ' \
+                f'{self.start.strftime("%H:%M")}->{self.end.strftime("%H:%M")} ' \
+                f'{self.preloaded_data.subject_name} with ' \
+                f'{self.preloaded_data.teacher_name} {self.preloaded_data.teacher_lastname}>'
 
     if week_start == None:
         timetable_raw = session.get('Timetables')['Timetable']
@@ -242,3 +246,49 @@ def get_exams(session, *selected_calendars):
         for e in cal_exams:
             exams.append(e)
     return exams
+
+
+def get_school_feed(session):
+    """
+
+    :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
+    """
+
+    class SynergiaNews:
+        def __init__(self, news_payload, session):
+            """
+
+            :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
+            """
+            self._session = session
+
+            class ObjectsIds:
+                def __init__(self, tea_id):
+                    self.teacher = tea_id
+
+            self.content = news_payload['Content']
+            self.created = datetime.strptime(news_payload['CreationDate'], '%Y-%m-%d %H:%M:%S')
+            self.unique_id = news_payload['Id']
+            self.topic = news_payload['Subject']
+            self.was_read = news_payload['WasRead']
+            self.starts = news_payload['StartDate']  # TODO: Stworzyć obiekt datetime
+            self.ends = news_payload['EndDate']  # TODO: Stworzyć obiekt datetime
+            self.objects_ids = ObjectsIds(
+                news_payload['AddedBy']['Id']
+            )
+
+        @property
+        def teacher(self):
+            return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
+
+        def mark_as_read(self):
+            self._session.do_request('SchoolNotices', 'MarkAsRead', self.unique_id)
+
+        # TODO: Dodać __repr__()
+
+    all_news = []
+    for message in session.get('SchoolNotices')['SchoolNotices']:
+        all_news.append(
+            SynergiaNews(message, session)
+        )
+    return all_news
