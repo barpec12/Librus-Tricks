@@ -4,6 +4,8 @@
 
 A powerful python Librus Synergia API based on RE
 
+## Polaczków szukających szczegółów zapraszam [tutaj](https://github.com/Backdoorek/LibrusTricks/wiki)
+
 ## What is inside the box?
  - Caching system (based on SQLite)
  - Lazy object loading
