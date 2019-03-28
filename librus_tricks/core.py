@@ -149,6 +149,13 @@ class SynergiaClient:
         else:
             return utilities.get_timetable(self, week_start)
 
+    def get_news(self, unseen_only=False):
+        ns = utilities.get_school_feed(self)
+        if unseen_only:
+            return [x for x in ns if x.was_read == False]
+        else:
+            return ns
+
     def csync(self, oid, cls):
         return self.cache.sync(oid, cls, self)
 
