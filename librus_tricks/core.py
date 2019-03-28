@@ -8,7 +8,7 @@ class SynergiaClient:
     """Sesja z API Synergii"""
 
     def __init__(self, user, api_url='https://api.librus.pl/2.0/', user_agent='LibrusMobileApp',
-                 cache_location='cache.sqlite'):
+                 cache_location='cache.sqlite', custom_cache_object=None):
         """
         Tworzy obiekt sesji z API Synergii.
 
@@ -17,7 +17,8 @@ class SynergiaClient:
         """
         self.user = user
         self.session = requests.session()
-        self.cache = cache.Cache(db_location=cache_location)
+        self.cache = cache.SQLiteCache(db_location=cache_location)
+        # TODO: Dodać wsparcie dla własnego mechanizmu cache'owania
         self.__auth_headers = {'Authorization': f'Bearer {user.token}', 'User-Agent': user_agent}
         self.__api_url = api_url
 
@@ -44,9 +45,9 @@ class SynergiaClient:
         )
 
         if response.status_code == 404:
-            raise exceptions.SynergiaEndpointNotFound(path_str)
+            raise exceptions.SynergiaNotFound(path_str)
         elif response.status_code == 403:
-            raise exceptions.SynergiaEndpointRequireMorePermissions(path_str)
+            raise exceptions.SynergiaAccessDenied(path_str)
 
         return response.json()
 
@@ -62,9 +63,9 @@ class SynergiaClient:
             raise exceptions.WrongHTTPMethod('Nie obsługiwane zapytanie HTTP')
 
         if response.status_code == 404:
-            raise exceptions.SynergiaEndpointNotFound(path_str)
+            raise exceptions.SynergiaNotFound(path_str)
         elif response.status_code == 403:
-            raise exceptions.SynergiaEndpointRequireMorePermissions(path_str)
+            raise exceptions.SynergiaAccessDenied(path_str)
 
         return response.json()
 

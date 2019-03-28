@@ -6,7 +6,7 @@ class LibrusNotHandlerableError(Exception):
     pass
 
 
-class SynergiaEndpointNotFound(Exception):
+class SynergiaNotFound(Exception):
     pass
 
 
@@ -14,7 +14,7 @@ class LibrusWrongPasswordError(Exception):
     pass
 
 
-class SynergiaEndpointRequireMorePermissions(Exception):
+class SynergiaAccessDenied(Exception):
     pass
 
 
