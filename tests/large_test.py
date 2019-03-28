@@ -75,6 +75,7 @@ def test_exams():
 
     return teachers, subjects, groups
 
+
 def test_timetable():
     week = session.get_timetable()
     subjects = []
@@ -101,3 +102,14 @@ def test_timetable():
             )
 
     return subjects, teachers, lessons, groups, classrooms
+
+
+def test_newsfeed():
+    feed = session.get_news()
+    teachers = []
+    for n in feed:
+        teachers.append(
+            n.teacher
+        )
+
+    return teachers

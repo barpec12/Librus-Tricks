@@ -29,3 +29,7 @@ def test_grades():
 
 def test_timetable():
     return session.get_timetable()
+
+
+def test_newsfeed():
+    return session.get_news()
