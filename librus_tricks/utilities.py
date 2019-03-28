@@ -242,6 +242,7 @@ def get_exams(session, *selected_calendars):
         selected_calendars = [x['Id'] for x in session.get('Calendars')['Calendars']]
     for cal in selected_calendars:
         raw_exams = session.get('Calendars', cal)['Calendar']['HomeWorks']
+        # TODO: Pobierz egzaminy również z przyszłego miesiąca
         cal_exams = [SynergiaExam(x['Id'], session) for x in raw_exams]
         for e in cal_exams:
             exams.append(e)
@@ -271,8 +272,8 @@ def get_school_feed(session):
             self.unique_id = news_payload['Id']
             self.topic = news_payload['Subject']
             self.was_read = news_payload['WasRead']
-            self.starts = news_payload['StartDate']  # TODO: Stworzyć obiekt datetime
-            self.ends = news_payload['EndDate']  # TODO: Stworzyć obiekt datetime
+            self.starts = datetime.strptime(news_payload['StartDate'], '%Y-%m-%d')
+            self.ends = datetime.strptime(news_payload['EndDate'], '%Y-%m-%d')
             self.objects_ids = ObjectsIds(
                 news_payload['AddedBy']['Id']
             )
@@ -284,7 +285,8 @@ def get_school_feed(session):
         def mark_as_read(self):
             self._session.do_request('SchoolNotices', 'MarkAsRead', self.unique_id)
 
-        # TODO: Dodać __repr__()
+        def __repr__(self):
+            return f'<SynergiaNews {self.topic}>'
 
     all_news = []
     for message in session.get('SchoolNotices')['SchoolNotices']:
@@ -292,3 +294,6 @@ def get_school_feed(session):
             SynergiaNews(message, session)
         )
     return all_news
+
+# TODO: Dodać funkcję do zbierania dni wolnych od nauki
+# TODO: Dodać funkcję zbierającą zwolnienia nauczycieli

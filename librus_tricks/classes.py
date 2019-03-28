@@ -417,8 +417,8 @@ class SynergiaExam(SynergiaGenericClass):
         self.content = self._json_payload['Content']
         self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d')
         self.lesson = self._json_payload['LessonNo']
-        self.time_start = self._json_payload['TimeFrom'] # TODO: Stworzyć obiekt datetime
-        self.time_end = self._json_payload['TimeTo'] # TODO: Stworzyć obiekt datetime
+        self.time_start = datetime.strptime(self._json_payload['TimeFrom'], '%H:%M:%S').time()
+        self.time_end = datetime.strptime(self._json_payload['TimeTo'], '%H:%M:%S').time()
         self.objects_ids = ObjectsIds(
             self._json_payload['CreatedBy']['Id'],
             _define_group_and_type(self._json_payload)['Id'],
