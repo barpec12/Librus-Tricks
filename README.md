@@ -1,6 +1,6 @@
 # LibrusTricks
-[![Build Status](https://travis-ci.org/Backdoorek/LibrusTricks.svg?branch=prototype)](https://travis-ci.org/Backdoorek/LibrusTricks)
-[![PyPI version](https://badge.fury.io/py/librus-tricks.svg)](https://badge.fury.io/py/librus-tricks)
+
+[![Tests](https://img.shields.io/travis/Backdoorek/LibrusTricks.svg?logo=travis&style=for-the-badge)](https://travis-ci.org/Backdoorek/LibrusTricks)![Implementation](https://img.shields.io/pypi/implementation/librus-tricks.svg?logo=python&logoColor=yellow&style=for-the-badge)![PyPI - Downloads](https://img.shields.io/pypi/dm/librus-tricks.svg?style=for-the-badge)![PyPI - Version](https://img.shields.io/pypi/v/librus-tricks.svg?style=for-the-badge)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Backdoorek/LibrusTricks.svg?color=gray&logo=git&style=for-the-badge)
 
 A powerful python Librus Synergia API based on RE
 
