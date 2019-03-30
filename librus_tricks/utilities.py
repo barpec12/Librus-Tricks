@@ -1,6 +1,6 @@
 from librus_tricks.classes import SynergiaAttendance, SynergiaAttendanceType, SynergiaGrade, SynergiaGlobalClass, \
     SynergiaVirtualClass, SynergiaLesson, SynergiaSubject, SynergiaTeacher, SynergiaExam, SynergiaClassroom
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 def get_all_grades(session):
@@ -242,8 +242,13 @@ def get_exams(session, *selected_calendars):
         selected_calendars = [x['Id'] for x in session.get('Calendars')['Calendars']]
     for cal in selected_calendars:
         raw_exams = session.get('Calendars', cal)['Calendar']['HomeWorks']
-        # TODO: Pobierz egzaminy również z przyszłego miesiąca
+        raw_exams_nx_month = session.get(
+            'Calendars', cal,
+            request_params={'month': (datetime.now() + timedelta(365/12)).month,
+                            'year': (datetime.now() + timedelta(365/12)).year}
+        )['Calendar']['HomeWorks']
         cal_exams = [SynergiaExam(x['Id'], session) for x in raw_exams]
+        cal_exams += [SynergiaExam(x['Id'], session) for x in raw_exams_nx_month]
         for e in cal_exams:
             exams.append(e)
     return exams

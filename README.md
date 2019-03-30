@@ -1,10 +1,13 @@
 # LibrusTricks
 
-[![Tests](https://img.shields.io/travis/Backdoorek/LibrusTricks.svg?logo=travis&style=for-the-badge)](https://travis-ci.org/Backdoorek/LibrusTricks)![Implementation](https://img.shields.io/pypi/implementation/librus-tricks.svg?logo=python&logoColor=yellow&style=for-the-badge)![PyPI - Downloads](https://img.shields.io/pypi/dm/librus-tricks.svg?style=for-the-badge)![PyPI - Version](https://img.shields.io/pypi/v/librus-tricks.svg?style=for-the-badge)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Backdoorek/LibrusTricks.svg?color=gray&logo=git&style=for-the-badge)
+[![Tests](https://img.shields.io/travis/Backdoorek/Librus-Tricks.svg?logo=travis&style=for-the-badge)](https://travis-ci.org/Backdoorek/Librus-Tricks)![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Backdoorek/Librus-Tricks.svg?color=gray&logo=git&style=for-the-badge)![Implementation](https://img.shields.io/pypi/implementation/librus-tricks.svg?logo=python&logoColor=yellow&style=for-the-badge)
+
+![PyPI - Downloads](https://img.shields.io/pypi/dm/librus-tricks.svg?style=for-the-badge)![PyPI - Version](https://img.shields.io/pypi/v/librus-tricks.svg?style=for-the-badge)
+
 
 A powerful python Librus Synergia API based on RE
 
-## Polaczków szukających szczegółów zapraszam [tutaj](https://github.com/Backdoorek/LibrusTricks/wiki)
+## Polaczków szukających szczegółów zapraszam [tutaj](https://github.com/Backdoorek/Librus-Tricks/wiki)
 
 ## What is inside the box?
  - Caching system (based on SQLite)
@@ -20,18 +23,14 @@ A powerful python Librus Synergia API based on RE
 # Windows
 # Latest stable
 pip install librus-tricks
-# Latest dev-stable from git
-pip install git+https://github.com/Backdoorek/LibrusTricks.git@beta-0.2.0
 # Latest sources
-pip install git+https://github.com/Backdoorek/LibrusTricks.git@prototype
+pip install git+https://github.com/Backdoorek/Librus-Tricks.git@prototype
 
 # Linux
 # Latest stable
 sudo -H pip3 install librus-tricks
-# Latest dev-stable beta
-sudo -H pip3 install git+https://github.com/Backdoorek/LibrusTricks.git@beta-0.2.0
 # Latest sources
-sudo -H pip3 install git+https://github.com/Backdoorek/LibrusTricks.git@prototype
+sudo -H pip3 install git+https://github.com/Backdoorek/Librus-Tricks.git@prototype
 ```
 
 ## Examples
@@ -58,7 +57,7 @@ session.get_timetable()
 
 ```
 
-For more examples check the [examples](https://github.com/Backdoorek/LibrusTricks/tree/prototype/examples) folder
+For more examples check the [examples](https://github.com/Backdoorek/Librus-Tricks/tree/prototype/examples) folder
 
 ## Screenshots from debugger
 ![Grade](https://github.com/Backdoorek/public-files/blob/master/pycharm64_2019-03-17_11-29-56.png?raw=true)

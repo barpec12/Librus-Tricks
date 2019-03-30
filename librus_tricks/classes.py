@@ -31,7 +31,7 @@ class SynergiaGenericClass:
             self._json_payload = payload
 
     def __repr__(self):
-        return f'<{self.__class__.__name__} {self.oid}>'
+        return f'<{self.__class__.__name__} {self.oid} at {id(self)}>'
 
 
 class SynergiaTeacher(SynergiaGenericClass):
@@ -275,7 +275,7 @@ class SynergiaGrade(SynergiaGenericClass):
         )
 
     def __repr__(self):
-        return f'<{self.__class__.__name__} {self.grade} from SynergiaSubject with id {self.objects_ids.subject} added {self.add_date}>'
+        return f'<{self.__class__.__name__} {self.grade} from SynergiaSubject with id {self.objects_ids.subject} added {self.add_date.strftime("%Y-%m-%d %H:%M:%S")}>'
 
     @property
     def teacher(self):
@@ -369,7 +369,7 @@ class SynergiaAttendance(SynergiaGenericClass):
         return self._session.csync(self.objects_ids.type, SynergiaAttendanceType)
 
     def __repr__(self):
-        return f'<SynergiaAttendance at {self.add_date} ({self.oid})>'
+        return f'<SynergiaAttendance at {self.add_date.strftime("%Y-%m-%d %H:%M:%S")} ({self.oid})>'
 
 
 class SynergiaExamCategory(SynergiaGenericClass):
@@ -434,7 +434,7 @@ class SynergiaExam(SynergiaGenericClass):
         )
 
     def __repr__(self):
-        return f'<{self.__class__.__name__} {self.date} for subject with id {self.objects_ids.subject}>'
+        return f'<{self.__class__.__name__} {self.date.strftime("%Y-%m-%d")} for subject with id {self.objects_ids.subject}>'
 
     @property
     def teacher(self):

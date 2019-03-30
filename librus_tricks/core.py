@@ -157,6 +157,9 @@ class SynergiaClient:
         else:
             return ns
 
+    def get_lucky_number(self):
+        return self.get('LuckyNumbers')['LuckyNumber']['LuckyNumber']
+
     def csync(self, oid, cls):
         return self.cache.sync(oid, cls, self)
 
