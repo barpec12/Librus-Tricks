@@ -17,7 +17,7 @@ class SynergiaClient:
         """
         self.user = user
         self.session = requests.session()
-        if custom_cache_object != None:
+        if custom_cache_object is not None:
             self.cache = custom_cache_object
         else:
             self.cache = cache.SQLiteCache(db_location=cache_location)
@@ -27,7 +27,7 @@ class SynergiaClient:
     def __repr__(self):
         return f'<Synergia session for {self.user}>'
 
-    def get(self, *path, request_params=dict()):
+    def get(self, *path, request_params=None):
         """
         Zwraca json'a przekonwertowany na dict'a po podaniu prawidłowego węzła
 
@@ -39,6 +39,8 @@ class SynergiaClient:
         :rtype: dict
         :raise librus_tricks.exceptions.SynergiaEndpointNotFound: nie zaleziono określonego węzła
         """
+        if request_params is None:
+            request_params = dict()
         path_str = f'{self.__api_url}'
         for p in path:
             path_str += f'{p}/'
@@ -53,7 +55,9 @@ class SynergiaClient:
 
         return response.json()
 
-    def do_request(self, *path, method='POST', request_params=dict()):
+    def do_request(self, *path, method='POST', request_params=None):
+        if request_params is None:
+            request_params = dict()
         path_str = f'{self.__api_url}'
         for p in path:
             path_str += f'{p}/'
@@ -70,7 +74,6 @@ class SynergiaClient:
             raise exceptions.SynergiaAccessDenied(path_str)
 
         return response.json()
-
 
     def get_grade(self, grade_id):
         """
@@ -95,7 +98,7 @@ class SynergiaClient:
         :return: krotka z ocenami
         :rtype: tuple of librus_tricks.classes.SynergiaGrade
         """
-        if selected == None:
+        if selected is None:
             return utilities.get_all_grades(self)
         else:
             ids_computed = ''
@@ -147,7 +150,7 @@ class SynergiaClient:
         return utilities.get_filtered_attendance(self, *utilities.get_all_absence_types(self))
 
     def get_timetable(self, week_start=None):
-        if week_start == None:
+        if week_start is None:
             return utilities.get_timetable(self)
         else:
             return utilities.get_timetable(self, week_start)
@@ -155,12 +158,18 @@ class SynergiaClient:
     def get_news(self, unseen_only=False):
         ns = utilities.get_school_feed(self)
         if unseen_only:
-            return [x for x in ns if x.was_read == False]
+            return [x for x in ns if not x.was_read]
         else:
             return ns
 
     def get_lucky_number(self):
         return self.get('LuckyNumbers')['LuckyNumber']['LuckyNumber']
+
+    def get_teacher_free_days(self, only_future=True, now=datetime.now()):
+        return utilities.get_teachers_free_days(self, only_future, now)
+
+    def get_school_free_days(self, only_future=True, now=datetime.now()):
+        return utilities.get_free_days(self, only_future, now)
 
     def csync(self, oid, cls):
         return self.cache.sync(oid, cls, self)
