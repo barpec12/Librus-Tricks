@@ -17,8 +17,10 @@ class SynergiaClient:
         """
         self.user = user
         self.session = requests.session()
-        self.cache = cache.SQLiteCache(db_location=cache_location)
-        # TODO: Dodać wsparcie dla własnego mechanizmu cache'owania
+        if custom_cache_object != None:
+            self.cache = custom_cache_object
+        else:
+            self.cache = cache.SQLiteCache(db_location=cache_location)
         self.__auth_headers = {'Authorization': f'Bearer {user.token}', 'User-Agent': user_agent}
         self.__api_url = api_url
 
