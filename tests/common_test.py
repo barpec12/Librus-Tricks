@@ -8,7 +8,13 @@ password = os.environ['librus_password']
 
 from librus_tricks import aio, SynergiaClient
 
-session = SynergiaClient(aio(email, password), cache_location=':memory:')
+# Trying to handle strange pytest errors/bugs
+try:
+    session = SynergiaClient(aio(email, password), cache_location=':memory:')
+except KeyError:
+    session = SynergiaClient(aio(email, password, force_revalidation_method=True), cache_location=':memory:')
+except requests.exceptions.ConnectionError:
+    session = SynergiaClient(aio(email, password, force_revalidation_method=True), cache_location=':memory:')
 
 
 def test_auth():

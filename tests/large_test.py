@@ -7,7 +7,7 @@ sys.path.extend(['./'])
 email = os.environ['librus_email']
 password = os.environ['librus_password']
 
-from librus_tricks import aio, SynergiaClient
+from librus_tricks import aio, SynergiaClient, utilities
 
 # Trying to handle strange pytest errors/bugs
 try:
@@ -28,7 +28,7 @@ def test_grades():
         teachers.append(
             g.teacher
         )
-        if not g.subject == None:
+        if not g.subject is None:
             subjects.append(
                 g.subject
             )
@@ -39,6 +39,10 @@ def test_grades():
             g.category
         )
 
+    print(*teachers)
+    print(*subjects)
+    print(*comments)
+    print(*categories)
     return grade, teachers, subjects, comments, categories
 
 
@@ -54,6 +58,8 @@ def test_attendances():
             a.type
         )
 
+    print(*teachers)
+    print(*types)
     return teachers, types
 
 
@@ -73,6 +79,9 @@ def test_exams():
             e.group
         )
 
+    print(*subjects)
+    print(*teachers)
+    print(*groups)
     return teachers, subjects, groups
 
 
@@ -101,6 +110,11 @@ def test_timetable():
                 frame.classroom
             )
 
+    print(*subjects)
+    print(*teachers)
+    print(*lessons)
+    print(*groups)
+    print(*classrooms)
     return subjects, teachers, lessons, groups, classrooms
 
 
@@ -112,4 +126,25 @@ def test_newsfeed():
             n.teacher
         )
 
+    print(*teachers)
     return teachers
+
+
+def test_freedays():
+    teacherss = []
+    for_all = []
+    for f in utilities.get_teachers_free_days(session, False):
+        teacherss.append(
+            f
+        )
+        teacherss.append(
+            f.teacher
+        )
+    for f in utilities.get_free_days(session, False):
+        for_all.append(
+            f
+        )
+
+    print(*teacherss)
+    print(*for_all)
+    return teacherss, for_all
