@@ -474,3 +474,49 @@ class SynergiaClassroom(SynergiaGenericClass):
         super().__init__(oid, session, ('Classrooms',), 'Classroom', payload)
         self.name = self._json_payload['Name']
         self.symbol = self._json_payload['Symbol']
+
+
+class SynergiaTeacherFreeDaysTypes(SynergiaGenericClass):
+    def __init__(self, oid, session, payload=None):
+        super().__init__(oid, session, ('TeacherFreeDays', 'Types'), 'Types', payload)
+        self.name = self._json_payload[0]['Name']
+
+
+class SynergiaTeacherFreeDays(SynergiaGenericClass):
+    def __init__(self, oid, session, payload=None):
+        super().__init__(oid, session, ('TeacherFreeDays',), 'TeacherFreeDay', payload)
+
+        class ObjectsIds:
+            def __init__(self, tea_id, type_id):
+                self.teacher = tea_id
+                self.type = type_id
+
+        self.starts = datetime.strptime(self._json_payload['DateFrom'], '%Y-%m-%d')
+        self.ends = datetime.strptime(self._json_payload['DateTo'], '%Y-%m-%d')
+        self.objects_ids = ObjectsIds(
+            self._json_payload['Teacher']['Id'],
+            self._json_payload['Type']['Id']
+        )
+
+    # TODO: Dodać __repr__()
+
+    @property
+    def teacher(self):
+        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
+
+    @property
+    def type(self):
+        return self._session.csync(self.objects_ids.type, SynergiaTeacherFreeDaysTypes)
+
+
+class SynergiaSchoolFreeDays(SynergiaGenericClass):
+    def __init__(self, oid, session, payload=None, from_origin=False):
+        super().__init__(oid, session, ('SchoolFreeDays',), 'SchoolFreeDays', payload)
+        if from_origin:
+            self._json_payload = self._json_payload[0]
+        self.starts = datetime.strptime(self._json_payload['DateFrom'], '%Y-%m-%d')
+        self.ends = datetime.strptime(self._json_payload['DateTo'], '%Y-%m-%d')
+        self.name = self._json_payload['Name']  # TODO: Dodać Units
+    # TODO: Wymagany debug oraz test
+
+    # TODO: Dodać __repr__()

@@ -1,5 +1,6 @@
 from librus_tricks.classes import SynergiaAttendance, SynergiaAttendanceType, SynergiaGrade, SynergiaGlobalClass, \
-    SynergiaVirtualClass, SynergiaLesson, SynergiaSubject, SynergiaTeacher, SynergiaExam, SynergiaClassroom
+    SynergiaVirtualClass, SynergiaLesson, SynergiaSubject, SynergiaTeacher, SynergiaExam, SynergiaClassroom, \
+    SynergiaTeacherFreeDays, SynergiaSchoolFreeDays
 from datetime import datetime, timedelta
 
 
@@ -300,5 +301,28 @@ def get_school_feed(session):
         )
     return all_news
 
-# TODO: Dodać funkcję do zbierania dni wolnych od nauki
-# TODO: Dodać funkcję zbierającą zwolnienia nauczycieli
+
+def get_teachers_free_days(session, only_future=True, now=datetime.now()):
+    """
+
+    :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
+    """
+    raw_free_days = session.get('TeacherFreeDays')['TeacherFreeDays']
+    free_days = [SynergiaTeacherFreeDays(x['Id'], session, x) for x in raw_free_days]
+    if only_future:
+        return [x for x in free_days if x.ends >= now]
+    else:
+        return free_days # TODO: Dodać do core.py
+
+
+def get_free_days(session, only_future=True, now=datetime.now()):
+    """
+
+    :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
+    """
+    raw_free_days = session.get('SchoolFreeDays')['SchoolFreeDays']
+    free_days = [SynergiaSchoolFreeDays(x['Id'], session, x) for x in raw_free_days]
+    if only_future:
+        return [x for x in free_days if x.ends >= now]
+    else:
+        return free_days # TODO: Dodać do core.py
