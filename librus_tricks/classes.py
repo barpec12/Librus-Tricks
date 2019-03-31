@@ -9,6 +9,7 @@ def _try_to_extract(payload, extraction_key, false_return=None):
 
 
 class SynergiaGenericClass:
+    # TODO: Uzupełnić docstring
     def __init__(self, oid, session, resource, extraction_key, payload=None):
         """
 
@@ -22,7 +23,7 @@ class SynergiaGenericClass:
         self._session = session
         self.oid = int(oid)
         self.objects_ids = None
-        if payload == None:
+        if payload is None:
             self._json_payload = self._session.get(
                 *resource,
                 self.oid
@@ -31,11 +32,13 @@ class SynergiaGenericClass:
             self._json_payload = payload
 
     def __repr__(self):
-        return f'<{self.__class__.__name__} {self.oid} at {id(self)}>'
+        return f'<{self.__class__.__name__} {self.oid} at {hex(id(self))}>'
 
 
 class SynergiaTeacher(SynergiaGenericClass):
+    # TODO: Uzupełnić docstring
     def __init__(self, oid, session, payload=None):
+        # TODO: Uzupełnić docstring
         super().__init__(oid, session, ('Users',), 'User', payload)
         self.name = self._json_payload['FirstName']
         self.last_name = self._json_payload['LastName']
@@ -77,10 +80,12 @@ class SynergiaGlobalClass(SynergiaGenericClass):
 
     @property
     def tutor(self):
+        # TODO: Uzupełnić docstring
         return SynergiaTeacher(self.objects_ids.tutor, self._session)
 
 
 class SynergiaVirtualClass(SynergiaGenericClass):
+    # TODO: Uzupełnić docstring
     def __init__(self, oid, session, payload=None):
         """
         Tworzy obiekt reprezentujący grupę uczniów
@@ -125,7 +130,9 @@ class SynergiaVirtualClass(SynergiaGenericClass):
 
 
 class SynergiaSubject(SynergiaGenericClass):
+    # TODO: Uzupełnić docstring
     def __init__(self, oid, session, payload=None):
+        # TODO: Uzupełnić docstring
         super().__init__(oid, session, ('Subjects',), 'Subject', payload)
         self.name = self._json_payload['Name']
         self.short_name = self._json_payload['Short']
@@ -135,6 +142,7 @@ class SynergiaSubject(SynergiaGenericClass):
 
 
 class SynergiaLesson(SynergiaGenericClass):
+    # TODO: Uzupełnić docstring
     def __init__(self, oid, session, payload=None):
         """
         Klasa reprezentująca jednostkową lekcję
@@ -149,7 +157,7 @@ class SynergiaLesson(SynergiaGenericClass):
                 self.group = id_grp
                 self.subject = id_sub
 
-        if not 'Class' in self._json_payload.keys():
+        if 'Class' not in self._json_payload.keys():
             self._json_payload['Class'] = {}
             self._json_payload['Class']['Id'] = None
 
@@ -169,18 +177,22 @@ class SynergiaLesson(SynergiaGenericClass):
 
     @property
     def group(self):
-        if self.objects_ids.group == None:
+        # TODO: Uzupełnić docstring
+        if self.objects_ids.group is None:
             return None
         else:
             return SynergiaGlobalClass(self.objects_ids.group, self._session)
 
     @property
     def subject(self):
+        # TODO: Uzupełnić docstring
         return self._session.csync(self.objects_ids.subject, SynergiaSubject)
 
 
 class SynergiaGradeCategory(SynergiaGenericClass):
+    # TODO: Uzupełnić docstring
     def __init__(self, oid, session, payload=None):
+        # TODO: Uzupełnić docstring
         super().__init__(oid, session, ('Grades', 'Categories',), 'Category', payload)
 
         class ObjectsIds:
@@ -209,7 +221,9 @@ class SynergiaGradeCategory(SynergiaGenericClass):
 
 
 class SynergiaGradeComment(SynergiaGenericClass):
+    # TODO: Uzupełnić docstring
     def __init__(self, oid, session, payload=None):
+        # TODO: Uzupełnić docstring
         super().__init__(oid, session, ('Grades', 'Comments',), 'Comment', payload)
 
         class ObjectsIds:
@@ -237,7 +251,9 @@ class SynergiaGradeComment(SynergiaGenericClass):
 
 
 class SynergiaGrade(SynergiaGenericClass):
+    # TODO: Uzupełnić docstring
     def __init__(self, oid, session, payload=None):
+        # TODO: Uzupełnić docstring
         super().__init__(oid, session, ('Grades',), 'Grade', payload)
 
         class GradeMetadata:
@@ -275,7 +291,8 @@ class SynergiaGrade(SynergiaGenericClass):
         )
 
     def __repr__(self):
-        return f'<{self.__class__.__name__} {self.grade} from SynergiaSubject with id {self.objects_ids.subject} added {self.add_date.strftime("%Y-%m-%d %H:%M:%S")}>'
+        return f'<{self.__class__.__name__} {self.grade} from SynergiaSubject with id {self.objects_ids.subject} ' \
+            f'added {self.add_date.strftime("%Y-%m-%d %H:%M:%S")}>'
 
     @property
     def teacher(self):
@@ -314,7 +331,9 @@ class SynergiaGrade(SynergiaGenericClass):
 
 
 class SynergiaAttendanceType(SynergiaGenericClass):
+    # TODO: Uzupełnić docstring
     def __init__(self, oid, session, payload=None):
+        # TODO: Uzupełnić docstring
         super().__init__(oid, session, ('Attendances', 'Types',), 'Type', payload)
         self.color = self._json_payload['ColorRGB']
         self.is_presence_kind = self._json_payload['IsPresenceKind']
@@ -326,7 +345,9 @@ class SynergiaAttendanceType(SynergiaGenericClass):
 
 
 class SynergiaAttendance(SynergiaGenericClass):
+    # TODO: Uzupełnić docstring
     def __init__(self, oid, session, payload=None):
+        # TODO: Uzupełnić docstring
         super().__init__(oid, session, ('Attendances',), 'Attendance', payload)
 
         class ObjectsIds:
@@ -373,7 +394,9 @@ class SynergiaAttendance(SynergiaGenericClass):
 
 
 class SynergiaExamCategory(SynergiaGenericClass):
+    # TODO: Uzupełnić docstring
     def __init__(self, oid, session, payload=None):
+        # TODO: Uzupełnić docstring
         super().__init__(oid, session, ('HomeWorks', 'Categories'), 'Category', payload)
 
         class ObjectsIds:
@@ -389,19 +412,21 @@ class SynergiaExamCategory(SynergiaGenericClass):
 
 
 class SynergiaExam(SynergiaGenericClass):
+    # TODO: Uzupełnić docstring
     def __init__(self, oid, session, payload=None):
+        # TODO: Uzupełnić docstring
         super().__init__(oid, session, ('HomeWorks',), 'HomeWork', payload)
 
-        def _define_group_and_type(payload):
+        def _define_group_and_type(exam_payload):
             """
 
-            :param dict payload:
+            :param dict exam_payload:
             :return:
             """
-            if 'VirtualClass' in payload.keys():
-                return {'Id': payload['VirtualClass']['Id'], 'type': SynergiaVirtualClass}
-            elif 'Class' in payload.keys():
-                return {'Id': payload['Class']['Id'], 'type': SynergiaGlobalClass}
+            if 'VirtualClass' in exam_payload.keys():
+                return {'Id': exam_payload['VirtualClass']['Id'], 'type': SynergiaVirtualClass}
+            elif 'Class' in exam_payload.keys():
+                return {'Id': exam_payload['Class']['Id'], 'type': SynergiaGlobalClass}
             else:
                 raise AttributeError('Wrong object type')
 
@@ -417,11 +442,11 @@ class SynergiaExam(SynergiaGenericClass):
         self.content = self._json_payload['Content']
         self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d')
         self.lesson = self._json_payload['LessonNo']
-        if self._json_payload['TimeFrom'] == None:
+        if self._json_payload['TimeFrom'] is None:
             self.time_start = None
         else:
             self.time_start = datetime.strptime(self._json_payload['TimeFrom'], '%H:%M:%S').time()
-        if self._json_payload['TimeTo'] == None:
+        if self._json_payload['TimeTo'] is None:
             self.time_end = None
         else:
             self.time_end = datetime.strptime(self._json_payload['TimeTo'], '%H:%M:%S').time()
@@ -434,7 +459,8 @@ class SynergiaExam(SynergiaGenericClass):
         )
 
     def __repr__(self):
-        return f'<{self.__class__.__name__} {self.date.strftime("%Y-%m-%d")} for subject with id {self.objects_ids.subject}>'
+        return f'<{self.__class__.__name__} ' \
+            f'{self.date.strftime("%Y-%m-%d")} for subject with id {self.objects_ids.subject}>'
 
     @property
     def teacher(self):
@@ -446,6 +472,7 @@ class SynergiaExam(SynergiaGenericClass):
 
     @property
     def group(self):
+        # TODO: Uzupełnić docstring
         if self.objects_ids.group_type is SynergiaGlobalClass:
             return SynergiaGlobalClass(self.objects_ids.group, self._session)
         else:
@@ -453,14 +480,17 @@ class SynergiaExam(SynergiaGenericClass):
 
     @property
     def subject(self):
-        if self.objects_ids.subject == None:
+        # TODO: Uzupełnić docstring
+        if self.objects_ids.subject is None:
             return None
         else:
             return self._session.csync(self.objects_ids.subject, SynergiaSubject)
 
 
 class SynergiaColor(SynergiaGenericClass):
+    # TODO: Uzupełnić docstring
     def __init__(self, oid, session, payload=None):
+        # TODO: Uzupełnić docstring
         super().__init__(oid, session, ('Colors',), 'Color', payload)
         self.name = self._json_payload['Name']
         self.hex_rgb = self._json_payload['RGB']
@@ -470,20 +500,26 @@ class SynergiaColor(SynergiaGenericClass):
 
 
 class SynergiaClassroom(SynergiaGenericClass):
+    # TODO: Uzupełnić docstring
     def __init__(self, oid, session, payload=None):
+        # TODO: Uzupełnić docstring
         super().__init__(oid, session, ('Classrooms',), 'Classroom', payload)
         self.name = self._json_payload['Name']
         self.symbol = self._json_payload['Symbol']
 
 
 class SynergiaTeacherFreeDaysTypes(SynergiaGenericClass):
+    # TODO: Uzupełnić docstring
     def __init__(self, oid, session, payload=None):
+        # TODO: Uzupełnić docstring
         super().__init__(oid, session, ('TeacherFreeDays', 'Types'), 'Types', payload)
         self.name = self._json_payload[0]['Name']
 
 
 class SynergiaTeacherFreeDays(SynergiaGenericClass):
+    # TODO: Uzupełnić docstring
     def __init__(self, oid, session, payload=None):
+        # TODO: Uzupełnić docstring
         super().__init__(oid, session, ('TeacherFreeDays',), 'TeacherFreeDay', payload)
 
         class ObjectsIds:
@@ -502,15 +538,19 @@ class SynergiaTeacherFreeDays(SynergiaGenericClass):
 
     @property
     def teacher(self):
+        # TODO: Uzupełnić docstring
         return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
 
     @property
     def type(self):
+        # TODO: Uzupełnić docstring
         return self._session.csync(self.objects_ids.type, SynergiaTeacherFreeDaysTypes)
 
 
 class SynergiaSchoolFreeDays(SynergiaGenericClass):
+    # TODO: Uzupełnić docstring
     def __init__(self, oid, session, payload=None, from_origin=False):
+        # TODO: Uzupełnić docstring
         super().__init__(oid, session, ('SchoolFreeDays',), 'SchoolFreeDays', payload)
         if from_origin:
             self._json_payload = self._json_payload[0]
