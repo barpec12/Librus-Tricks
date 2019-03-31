@@ -12,7 +12,7 @@ A powerful python Librus Synergia API based on RE
 Wiki was written in polish, checkout it [here](https://github.com/Backdoorek/Librus-Tricks/wiki)
 </div>
 
-##What is inside the box?
+## What is inside the box?
  - Caching system (based on SQLite)
  - Lazy object loading
  - Simplified objects
@@ -21,7 +21,7 @@ Wiki was written in polish, checkout it [here](https://github.com/Backdoorek/Lib
  - Many buitt-in solutions (get future exams, get timetable etc.)
  - Docstrings (help for PyCharm, VS Codem, IDLE etc.)
 
-##Install
+## Install
 ```text
 # Windows
 # Latest stable
@@ -36,7 +36,7 @@ sudo -H pip3 install librus-tricks
 sudo -H pip3 install git+https://github.com/Backdoorek/Librus-Tricks.git@prototype
 ```
 
-##Examples
+## Examples
 ```python
 # Authentication
 from librus_tricks import auth
@@ -62,10 +62,10 @@ session.get_timetable()
 
 For more examples check the [examples](https://github.com/Backdoorek/Librus-Tricks/tree/prototype/examples) folder
 
-##Screenshots from debugger
+## Screenshots from debugger
 ![Grade](https://github.com/Backdoorek/public-files/blob/master/pycharm64_2019-03-17_11-29-56.png?raw=true)
 
-##Wrapper in real use
+## Wrapper in real use
 ![Example with grades](https://github.com/Backdoorek/public-files/blob/master/2019-03-17_14-32-19.gif?raw=true)
 ![Example with timetable](https://github.com/Backdoorek/public-files/blob/master/ConEmu64_2019-03-19_18-49-26.png?raw=true)
 ![Example with attendance](https://github.com/Backdoorek/public-files/blob/master/2019-03-19_19-47-56.gif?raw=true)
