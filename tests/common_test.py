@@ -7,6 +7,7 @@ email = os.environ['librus_email']
 password = os.environ['librus_password']
 
 from librus_tricks import aio, SynergiaClient
+import requests
 
 # Trying to handle strange pytest errors/bugs
 try:
