@@ -312,7 +312,7 @@ def get_teachers_free_days(session, only_future=True, now=datetime.now()):
     if only_future:
         return [x for x in free_days if x.ends >= now]
     else:
-        return free_days # TODO: Dodać do core.py
+        return free_days
 
 
 def get_free_days(session, only_future=True, now=datetime.now()):
@@ -325,4 +325,4 @@ def get_free_days(session, only_future=True, now=datetime.now()):
     if only_future:
         return [x for x in free_days if x.ends >= now]
     else:
-        return free_days # TODO: Dodać do core.py
+        return free_days

@@ -46,6 +46,9 @@ class SynergiaTeacher(SynergiaGenericClass):
     def __repr__(self):
         return f'<{self.__class__.__name__} {self.name} {self.last_name}>'
 
+    def __str__(self):
+        return f'{self.name} {self.last_name}'
+
 
 class SynergiaStudent(SynergiaTeacher):
     pass
@@ -237,6 +240,9 @@ class SynergiaGradeComment(SynergiaGenericClass):
             self._json_payload['Grade']['Id']
         )
 
+    def __str__(self):
+        return self.text
+
     @property
     def teacher(self):
         """
@@ -293,6 +299,9 @@ class SynergiaGrade(SynergiaGenericClass):
     def __repr__(self):
         return f'<{self.__class__.__name__} {self.grade} from SynergiaSubject with id {self.objects_ids.subject} ' \
             f'added {self.add_date.strftime("%Y-%m-%d %H:%M:%S")}>'
+
+    def __str__(self):
+        return self.grade
 
     @property
     def teacher(self):
@@ -391,6 +400,9 @@ class SynergiaAttendance(SynergiaGenericClass):
 
     def __repr__(self):
         return f'<SynergiaAttendance at {self.add_date.strftime("%Y-%m-%d %H:%M:%S")} ({self.oid})>'
+
+    def __str__(self):
+        return self.type
 
 
 class SynergiaExamCategory(SynergiaGenericClass):
@@ -497,6 +509,9 @@ class SynergiaColor(SynergiaGenericClass):
 
     def __repr__(self):
         return f'<{self.__class__.__name__} {self.hex_rgb}>'
+
+    def __str__(self):
+        return self.hex_rgb
 
 
 class SynergiaClassroom(SynergiaGenericClass):
