@@ -52,6 +52,8 @@ class SynergiaClient:
             raise exceptions.SynergiaNotFound(path_str)
         elif response.status_code == 403:
             raise exceptions.SynergiaAccessDenied(path_str)
+        elif response.status_code == 400:
+            raise exceptions.SynergiaInvalidRequest(response.json()['Message'])
 
         return response.json()
 

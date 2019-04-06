@@ -10,7 +10,7 @@ class SynergiaNotFound(Exception):
     pass
 
 
-class LibrusWrongPasswordError(Exception):
+class LibrusInvalidPasswordError(Exception):
     pass
 
 
@@ -19,4 +19,8 @@ class SynergiaAccessDenied(Exception):
 
 
 class WrongHTTPMethod(Exception):
+    pass
+
+
+class SynergiaInvalidRequest(Exception):
     pass

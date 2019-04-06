@@ -14,7 +14,7 @@ if __name__ == '__main__':
     print(Fore.BLUE + 'Logging in')
     try:
         user = aio(**ask_for_credentials())
-    except exceptions.LibrusWrongPasswordError:
+    except exceptions.LibrusInvalidPasswordError:
         print(Fore.RED + 'Złe hasło')
         user = aio(**ask_for_credentials())
     print(Fore.CYAN + 'Checking user auth')
