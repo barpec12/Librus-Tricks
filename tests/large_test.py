@@ -68,6 +68,7 @@ def test_exams():
     teachers = []
     subjects = []
     groups = []
+    cats = []
     for e in exams:
         teachers.append(
             e.teacher
@@ -77,6 +78,9 @@ def test_exams():
         )
         groups.append(
             e.group
+        )
+        cats.append(
+            e.category
         )
 
     print(*subjects)
