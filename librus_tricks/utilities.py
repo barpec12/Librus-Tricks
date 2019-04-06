@@ -326,3 +326,14 @@ def get_free_days(session, only_future=True, now=datetime.now()):
         return [x for x in free_days if x.ends >= now]
     else:
         return free_days
+
+
+def get_first_day_of_week(date, first_day='Monday'):
+    """
+
+    :param datetime date:
+    :return:
+    """
+    while date.strftime('%A') != first_day:
+        date = date - timedelta(days=1)
+    return date
