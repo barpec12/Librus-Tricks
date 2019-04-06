@@ -237,6 +237,7 @@ def get_exams(session, *selected_calendars):
     :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
     :param selected_calendars:
     :return:
+    :rtype: list of SynergiaExam
     """
     exams = []
     if selected_calendars.__len__() == 0:

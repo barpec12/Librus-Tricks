@@ -14,6 +14,9 @@ class SynergiaClient:
 
         :param librus_tricks.auth.SynergiaAuthUser user: użytkownik Synergii
         :param str api_url: url do API, NIE ZMIENIAJ GO JEŚLI NIE WIESZ DO CZEGO SŁUŻY
+        :param str user_agent: określa jak ma się przedstawiać nasza sesja
+        :param str cache_location: określa lokalizację bazy danych z cache, ustaw ``:memory:``
+        aby utworzyć bazę danych w pamięci operacyjnej
         """
         self.user = user
         self.session = requests.session()
@@ -79,7 +82,7 @@ class SynergiaClient:
 
     def get_grade(self, grade_id):
         """
-        Zwraca podaną ocenę
+        Zwraca podaną ocenę.
 
         przykład: ``session.get_grade('42690')``
 
@@ -91,7 +94,7 @@ class SynergiaClient:
 
     def get_grades(self, selected=None):
         """
-        Zwraca daną listę ocen
+        Zwraca daną listę ocen.
 
         :param selected: lista lub krotka z wybranymi ocenami, zostawienie tego parametru
         powoduje pobranie wszystkich ocen
@@ -111,7 +114,8 @@ class SynergiaClient:
 
     def get_exams(self, *calendars):
         """
-        Zwraca listę wszystkich egzaminów w obecnym miesiącu
+        Zwraca listę wszystkich egzaminów w obecnym miesiącu. Pozostawienie ``calendars`` pustym pobiera
+        sprawdziany z wszystkich kalendarzy.
 
         :param calendars:
         :return:
@@ -121,9 +125,10 @@ class SynergiaClient:
 
     def get_future_exams(self, *calendars, now=datetime.now()):
         """
-        Zwraca listę wszystkich przyszłych (zapowiedzianych) egzaminów
+        Zwraca listę wszystkich przyszłych (zapowiedzianych) egzaminów. Pozostawienie ``calendars`` pustym pobiera
+        sprawdziany z wszystkich kalendarzy.
 
-        :param calendars:
+        :param calendars: id kalendarzy
         :return:
         :rtype: list of librus_tricks.classes.SynergiaExam
         """
@@ -138,9 +143,11 @@ class SynergiaClient:
 
     def get_attendances(self, *att_ids):
         """
+        Zwraca krotkę z wszystkimi (nie)obecnościami lub zwolnieniami. Jeśli parametr ``att_ids`` zawiera id,
+        pobiera tylko podaną frekwencję.
 
-        :param att_ids:
-        :return:
+        :param att_ids: id danych obiektów frekwencji
+        :return: krotka z frekwencją
         :rtype: tuple of librus_tricks.classes.SynergiaAttendance
         """
         computed_ids = ''
@@ -165,6 +172,12 @@ class SynergiaClient:
             return ns
 
     def get_lucky_number(self):
+        """
+        Zwraca szczęśliwy numerek.
+
+        :return: szczęśliwy numerek
+        :rtype: int
+        """
         return self.get('LuckyNumbers')['LuckyNumber']['LuckyNumber']
 
     def get_teacher_free_days(self, only_future=True, now=datetime.now()):
