@@ -42,7 +42,7 @@ class SynergiaAuthUser:
             return True
 
     def __repr__(self):
-        return f'<SynergiaAuthSession for {self.name} {self.surname} based on token {self.token}>'
+        return f'<SynergiaAuthSession for {self.name} {self.surname} based on token {self.token[:6] + "..." + self.token[-6:]}>'
 
 
 def oauth_librus_code(email, passwd, revalidation=False):
