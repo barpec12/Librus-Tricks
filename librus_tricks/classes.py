@@ -197,7 +197,7 @@ class SynergiaGradeCategory(SynergiaGenericClass):
         self.name = self._json_payload['Name']
         self.obligation_to_perform = self._json_payload['ObligationToPerform']
         self.standard = self._json_payload['Standard']
-        self.weight = _try_to_extract(self._json_payload, 'Weight')
+        self.weight = _try_to_extract(self._json_payload, 'Weight', false_return=0)
         self.objects_ids = ObjectsIds(
             _try_to_extract(self._json_payload, 'Teacher', {'Id': None})['Id']
         )
