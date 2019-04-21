@@ -132,14 +132,7 @@ class SynergiaClient:
         :return:
         :rtype: list of librus_tricks.classes.SynergiaExam
         """
-        exams_all = utilities.get_exams(self, *calendars)
-        exams_future = []
-        for ex in exams_all:
-            if ex.date > now:
-                exams_future.append(
-                    ex
-                )
-        return exams_future
+        return [ex for ex in utilities.get_exams(self, *calendars) if ex.date > now]
 
     def get_attendances(self, *att_ids):
         """
