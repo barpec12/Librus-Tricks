@@ -188,5 +188,15 @@ class SynergiaClient:
     def csync(self, oid, cls):
         return self.cache.sync(oid, cls, self)
 
+    def preload_cache(self):
+        objs = (
+            *utilities.get_all_attendance_types(self),
+            *self.get_all_teachers(),
+            *utilities.get_objects(self, 'Subjects', '', 'Subjects', SynergiaSubject)
+        )
+        for at in objs:
+            self.csync(at.oid, at.__class__)
+
+
     # TODO: Dodać pobranie wybranego przedmiotu `get_subject`
     # TODO: Dodać pobieranie wszystkich przedmiotów `get_subjects`
