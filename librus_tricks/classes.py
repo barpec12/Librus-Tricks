@@ -326,6 +326,30 @@ class SynergiaGrade(SynergiaGenericClass):
         """
         return self._session.csync(self.objects_ids.category, SynergiaGradeCategory)
 
+    @property
+    def real_value(self):
+        try:
+            return {
+                '1': 1,
+                '1+': 1.5,
+                '2-': 1.75,
+                '2': 2,
+                '2+': 2.5,
+                '3-': 2.75,
+                '3': 3,
+                '3+': 3.5,
+                '4-': 4.75,
+                '4': 4,
+                '4+': 4.5,
+                '5-': 4.75,
+                '5': 5,
+                '5+': 5.5,
+                '6-': 5.75,
+                '6': 6
+            }[self.grade]
+        except KeyError:
+            return None
+
 
 class SynergiaAttendanceType(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
