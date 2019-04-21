@@ -179,6 +179,12 @@ class SynergiaClient:
     def get_school_free_days(self, only_future=True, now=datetime.now()):
         return utilities.get_free_days(self, only_future, now)
 
+    def get_all_teachers(self, *teachers_ids):
+        computed_ids = ''
+        for atid in teachers_ids:
+            computed_ids += atid + ','
+        return utilities.get_objects(self, 'Users', computed_ids, 'Users', SynergiaTeacher)
+
     def csync(self, oid, cls):
         return self.cache.sync(oid, cls, self)
 
