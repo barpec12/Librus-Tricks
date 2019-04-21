@@ -1,6 +1,6 @@
 import sqlite3
 import json
-
+import logging
 
 class SQLiteCache:
     def __init__(self, db_location='cache.sqlite'):
@@ -18,7 +18,7 @@ class SQLiteCache:
 
     def create_table(self):
         self.cur.execute(
-            '''create table cache
+'''create table cache
 (
 	object_id int not null,
 	class_name text not null,
@@ -57,12 +57,15 @@ class SQLiteCache:
         return response
 
     def sync(self, oid, cls, session):
+        logging.debug(f'Checking existence of object {cls.__name__} with id {oid}')
         cache_response = self.get_object(oid, cls.__name__)
         if cache_response == None:
+            logging.debug(f'Object not found, creating new one')
             # print(f'Tworzę kopię dla {oid}')
             c = cls(oid, session)
             self.insert_and_commit(c.oid, c.__class__.__name__, json.dumps(c._json_payload, ensure_ascii=True))
+            logging.debug(f'Object created')
             return c
         else:
-            # print(f'Znaleziono kopię dla {oid}')
+            logging.debug(f'Object found, using cached data')
             return cls(cache_response[0], session, json.loads(cache_response[2]))
