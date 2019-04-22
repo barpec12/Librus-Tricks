@@ -69,8 +69,8 @@ class SynergiaGlobalClass(SynergiaGenericClass):
                 self.tutor = id_tut
 
         self.alias = f'{self._json_payload["Number"]}{self._json_payload["Symbol"]}'
-        self.begin_date = datetime.strptime(self._json_payload['BeginSchoolYear'], '%Y-%m-%d')
-        self.end_date = datetime.strptime(self._json_payload['EndSchoolYear'], '%Y-%m-%d')
+        self.begin_date = datetime.strptime(self._json_payload['BeginSchoolYear'], '%Y-%m-%d').date()
+        self.end_date = datetime.strptime(self._json_payload['EndSchoolYear'], '%Y-%m-%d').date()
         self.objects_ids = ObjectsIds(
             self._json_payload['ClassTutor']['Id']
         )
@@ -266,7 +266,7 @@ class SynergiaGrade(SynergiaGenericClass):
                 self.category = id_cat
 
         self.add_date = datetime.strptime(self._json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')
-        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d')
+        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d').date()
         self.grade = self._json_payload['Grade']
         self.is_constituent = self._json_payload['IsConstituent']
         self.semester = self._json_payload['Semester']
@@ -374,7 +374,7 @@ class SynergiaAttendance(SynergiaGenericClass):
                 self.type = id_typ
 
         self.add_date = datetime.strptime(self._json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')
-        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d')
+        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d').date()
         self.lesson_no = self._json_payload['LessonNo']
         self.objects_ids = ObjectsIds(
             self._json_payload['AddedBy']['Id'],
@@ -457,7 +457,7 @@ class SynergiaExam(SynergiaGenericClass):
 
         self.add_date = datetime.strptime(self._json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')
         self.content = self._json_payload['Content']
-        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d')
+        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d').date()
         self.lesson = self._json_payload['LessonNo']
         if self._json_payload['TimeFrom'] is None:
             self.time_start = None
@@ -554,8 +554,8 @@ class SynergiaTeacherFreeDays(SynergiaGenericClass):
                 self.teacher = tea_id
                 self.type = type_id
 
-        self.starts = datetime.strptime(self._json_payload['DateFrom'], '%Y-%m-%d')
-        self.ends = datetime.strptime(self._json_payload['DateTo'], '%Y-%m-%d')
+        self.starts = datetime.strptime(self._json_payload['DateFrom'], '%Y-%m-%d').date()
+        self.ends = datetime.strptime(self._json_payload['DateTo'], '%Y-%m-%d').date()
         self.objects_ids = ObjectsIds(
             self._json_payload['Teacher']['Id'],
             self._json_payload['Type']['Id']
@@ -577,8 +577,8 @@ class SynergiaSchoolFreeDays(SynergiaGenericClass):
         super().__init__(oid, session, ('SchoolFreeDays',), 'SchoolFreeDays', payload)
         if from_origin:
             self._json_payload = self._json_payload[0]
-        self.starts = datetime.strptime(self._json_payload['DateFrom'], '%Y-%m-%d')
-        self.ends = datetime.strptime(self._json_payload['DateTo'], '%Y-%m-%d')
+        self.starts = datetime.strptime(self._json_payload['DateFrom'], '%Y-%m-%d').date()
+        self.ends = datetime.strptime(self._json_payload['DateTo'], '%Y-%m-%d').date()
         self.name = self._json_payload['Name']  # TODO: Dodać Units
     # TODO: Wymagany debug oraz test
 
