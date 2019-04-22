@@ -1,6 +1,6 @@
+import json
 from time import sleep
 
-import json
 import requests
 
 from . import exceptions
@@ -42,7 +42,8 @@ class SynergiaAuthUser:
             return True
 
     def __repr__(self):
-        return f'<SynergiaAuthSession for {self.name} {self.surname} based on token {self.token[:6] + "..." + self.token[-6:]}>'
+        return f'<SynergiaAuthSession for {self.name} {self.surname} based on token {self.token[
+                                                                                     :6] + "..." + self.token[-6:]}>'
 
 
 def oauth_librus_code(email, passwd, revalidation=False):
@@ -71,9 +72,11 @@ def oauth_librus_code(email, passwd, revalidation=False):
     )
 
     if login_response_redir.status_code == 401:
-        raise exceptions.LibrusLoginError(f'Zły login lub hasło lub inny błąd związany z autoryzacją ({login_response_redir.json()})')
+        raise exceptions.LibrusLoginError(
+            f'Zły login lub hasło lub inny błąd związany z autoryzacją ({login_response_redir.json()})')
     elif login_response_redir.status_code == 403:
-        raise exceptions.LibrusInvalidPasswordError(f'403 - złe hasło lub email ({login_response_redir.json()["errors"]})')
+        raise exceptions.LibrusInvalidPasswordError(
+            f'403 - złe hasło lub email ({login_response_redir.json()["errors"]})')
 
     redir_addr = login_response_redir.json()['redirect']
     access_code = auth_session.get(redir_addr, allow_redirects=False).headers['location'][26:]

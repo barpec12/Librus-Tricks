@@ -1,7 +1,8 @@
+from datetime import datetime, timedelta
+
 from librus_tricks.classes import SynergiaAttendance, SynergiaAttendanceType, SynergiaGrade, SynergiaGlobalClass, \
     SynergiaVirtualClass, SynergiaLesson, SynergiaSubject, SynergiaTeacher, SynergiaExam, SynergiaClassroom, \
     SynergiaTeacherFreeDays, SynergiaSchoolFreeDays
-from datetime import datetime, timedelta
 
 
 def get_all_grades(session):

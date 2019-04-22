@@ -1,7 +1,8 @@
 import requests
+
+from librus_tricks import cache
 from librus_tricks import exceptions, utilities
 from librus_tricks.classes import *
-from librus_tricks import cache
 
 
 class SynergiaClient:
@@ -196,7 +197,6 @@ class SynergiaClient:
         )
         for at in objs:
             self.csync(at.oid, at.__class__)
-
 
     # TODO: Dodać pobranie wybranego przedmiotu `get_subject`
     # TODO: Dodać pobieranie wszystkich przedmiotów `get_subjects`

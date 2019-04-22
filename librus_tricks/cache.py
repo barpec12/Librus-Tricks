@@ -1,6 +1,7 @@
-import sqlite3
 import json
 import logging
+import sqlite3
+
 
 class SQLiteCache:
     def __init__(self, db_location='cache.sqlite'):
@@ -18,12 +19,12 @@ class SQLiteCache:
 
     def create_table(self):
         self.cur.execute(
-'''create table cache
-(
-	object_id int not null,
-	class_name text not null,
-	json_payload text not null
-);'''
+            '''create table cache
+            (
+                object_id int not null,
+                class_name text not null,
+                json_payload text not null
+            );'''
         )
 
     def delete_table(self):
