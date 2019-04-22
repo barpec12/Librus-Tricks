@@ -180,6 +180,20 @@ class SynergiaClient:
             computed_ids += atid + ','
         return utilities.get_objects(self, 'Users', computed_ids, 'Users', SynergiaTeacher)
 
+    def is_school_free_date(self, now=datetime.now()):
+        """
+        Zwraca czy dzisiejszy dzień jest dniem wolnym, jeśli jest zwracany jest obiekt dnia wolnego, jeśli jest to
+        normalny dzień, zwracany jest False.
+
+        :param datetime.datetime now: obiekt datetime, który określa od teraźniejszość
+        :rtype: librus_tricks.classes.SynergiaSchoolFreeDays
+        """
+        free_days = self.get_school_free_days(only_future=False)
+        for free_day in free_days:
+            if free_day.starts <= now.date() <= free_day.ends:
+                return free_day
+        return False
+
     def csync(self, oid, cls):
         return self.cache.sync(oid, cls, self)
 
