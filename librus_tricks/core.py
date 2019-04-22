@@ -125,7 +125,7 @@ class SynergiaClient:
         :rtype: list of librus_tricks.classes.SynergiaExam
         """
         if only_future:
-            return [ex for ex in utilities.get_exams(self, *calendars) if ex.date > now]
+            return [ex for ex in utilities.get_exams(self, *calendars) if ex.date > now.date()]
         else:
             return utilities.get_exams(self, *calendars)
 
