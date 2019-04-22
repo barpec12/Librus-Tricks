@@ -1,6 +1,8 @@
-from librus_tricks import utilities, aio, SynergiaClient
 import getpass
+
 from colorama import init as colorama_init, Fore
+
+from librus_tricks import utilities, aio, SynergiaClient
 
 
 def ask_for_credentials():

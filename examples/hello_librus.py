@@ -1,6 +1,8 @@
-from librus_tricks.auth import aio, exceptions
 import getpass
+
 from colorama import Fore, init as colorama_init
+
+from librus_tricks.auth import aio, exceptions
 
 
 def ask_for_credentials():
