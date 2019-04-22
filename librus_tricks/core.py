@@ -2,6 +2,7 @@ import requests
 from librus_tricks import exceptions, utilities
 from librus_tricks.classes import *
 from librus_tricks import cache
+import logging
 
 
 class SynergiaClient:
@@ -47,6 +48,8 @@ class SynergiaClient:
         path_str = f'{self.__api_url}'
         for p in path:
             path_str += f'{p}/'
+        logging.debug(f'computed path is {path_str}')
+        logging.debug(f'parameters is {request_params}')
         response = self.session.get(
             path_str, headers=self.__auth_headers, params=request_params
         )

@@ -2,6 +2,7 @@ from time import sleep
 
 import json
 import requests
+import logging
 
 from . import exceptions
 
@@ -43,6 +44,9 @@ class SynergiaAuthUser:
 
     def __repr__(self):
         return f'<SynergiaAuthSession for {self.name} {self.surname} based on token {self.token[:6] + "..." + self.token[-6:]}>'
+
+    def __str__(self):
+        return f'{self.name} {self.surname}'
 
 
 def oauth_librus_code(email, passwd, revalidation=False):
@@ -98,7 +102,7 @@ def get_synergia_token(auth_code):
     ).json()['access_token']
 
 
-def try_to_fetch_logins(access_token, print_requests=False, connecting_tries=10):
+def try_to_fetch_logins(access_token, connecting_tries=10):
     """
 
     :param str access_token: token ogólny do API Synergii
@@ -107,6 +111,7 @@ def try_to_fetch_logins(access_token, print_requests=False, connecting_tries=10)
     :return: dict zawierający konta
     :rtype: dict
     """
+    logging.debug('connecting_tries is set to 10 tries')
     try:
         for connection_try in range(0, connecting_tries):
             try:
@@ -114,19 +119,17 @@ def try_to_fetch_logins(access_token, print_requests=False, connecting_tries=10)
                     SYNERGIAAUTHURL,
                     headers={'Authorization': f'Bearer {access_token}'}
                 ).json()
-                if print_requests:
-                    print(response)
+                logging.debug(response)
                 accounts = response['accounts']
                 return accounts
             except:
-                if print_requests:
-                    print(f'Próba uwierzytelnienia numer {connection_try}')
+                logging.debug(f'try numer {connection_try}')
             sleep(1.5)
     except:
         raise exceptions.LibrusNotHandlerableError('Serwer librusa ma problem z prostymi zapytaniami...')
 
 
-def get_avaiable_users(access_token, print_credentials=False):
+def get_avaiable_users(access_token):
     """
     Tworzy listę dostępnych użytkowników.
 
@@ -138,8 +141,7 @@ def get_avaiable_users(access_token, print_credentials=False):
     accounts = try_to_fetch_logins(access_token)
     users = []
     for d in accounts:
-        if print_credentials:
-            print(json.dumps(d))
+        logging.debug(json.dumps(d))
         users.append(SynergiaAuthUser(d))
     return users
 
@@ -170,10 +172,16 @@ def aio(email, passwd, fetch_index=0, force_revalidation_method=False):
     :rtype: librus_tricks.auth.SynergiaAuthUser
     """
     oauth_code = oauth_librus_code(email, passwd, revalidation=force_revalidation_method)
+    logging.debug(f'oauth code starts with {oauth_code[:11]}')
     synergia_token = get_synergia_token(oauth_code)
+    logging.debug(f'synergia master token starts with {synergia_token[:11]}')
     api_users = get_avaiable_users(synergia_token)
+    logging.debug(f'users fetched {[au.__str__() for au in api_users]}')
     u = api_users[fetch_index]
+    logging.debug(f'selected user with index {fetch_index} -> {[au.__str__() for au in api_users][0]}')
+    logging.debug(f'checking user\'s credentials')
     if not u.is_authenticated:
+        logging.debug('renewing user\'s token...')
         synergia_token = get_new_token(u.login, email, passwd)
         api_users = get_avaiable_users(synergia_token)
         u = api_users[fetch_index]
