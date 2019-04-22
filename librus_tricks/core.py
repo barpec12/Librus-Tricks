@@ -166,7 +166,7 @@ class SynergiaClient:
         :return: szczęśliwy numerek
         :rtype: int
         """
-        return self.get('LuckyNumbers')['LuckyNumber']['LuckyNumber']
+        return int(self.get('LuckyNumbers')['LuckyNumber']['LuckyNumber'])
 
     def get_teacher_free_days(self, only_future=True, now=datetime.now()):
         return utilities.get_teachers_free_days(self, only_future, now)
