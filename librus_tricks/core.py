@@ -113,27 +113,21 @@ class SynergiaClient:
             ids_computed += f'{selected[-1]}'
             return utilities.get_objects(self, 'Grades', ids_computed, 'Grades', SynergiaGrade)
 
-    def get_exams(self, *calendars):
+    def get_exams(self, *calendars, only_future=True, now=datetime.now()):
         """
         Zwraca listę wszystkich egzaminów w obecnym miesiącu. Pozostawienie ``calendars`` pustym pobiera
         sprawdziany z wszystkich kalendarzy.
 
-        :param calendars:
-        :return:
+        :param str calendars: str zawierające id kalendarza
+        :param bool only_future: bool określający czy ma pobierać tylko przyszłe sprawdziany
+        :param datetime.datetime now: obiekt datetime, który określa od którego momentu ma pobierać przyszłe sprawdziany
+        :return: lista zawierająca sprawdziany
         :rtype: list of librus_tricks.classes.SynergiaExam
         """
-        return utilities.get_exams(self, *calendars)
-
-    def get_future_exams(self, *calendars, now=datetime.now()):
-        """
-        Zwraca listę wszystkich przyszłych (zapowiedzianych) egzaminów. Pozostawienie ``calendars`` pustym pobiera
-        sprawdziany z wszystkich kalendarzy.
-
-        :param calendars: id kalendarzy
-        :return:
-        :rtype: list of librus_tricks.classes.SynergiaExam
-        """
-        return [ex for ex in utilities.get_exams(self, *calendars) if ex.date > now]
+        if only_future:
+            return [ex for ex in utilities.get_exams(self, *calendars) if ex.date > now]
+        else:
+            return utilities.get_exams(self, *calendars)
 
     def get_attendances(self, *att_ids):
         """
