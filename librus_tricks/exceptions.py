@@ -24,3 +24,7 @@ class WrongHTTPMethod(Exception):
 
 class SynergiaInvalidRequest(Exception):
     pass
+
+
+class TokenExpired(Exception):
+    pass
