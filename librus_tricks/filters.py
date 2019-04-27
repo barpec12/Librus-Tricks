@@ -33,3 +33,20 @@ def categorize_grades(grades):
         )
 
     return grades_dict
+
+
+def categorize_attendance(attendances):
+    """
+
+    :type attendances: list of librus_tricks.classes.SynergiaAttendance
+    """
+    attendance_dict = dict()
+
+    for att in attendances:
+        if att.type not in attendance_dict.keys():
+            attendance_dict[att.type] = []
+        attendance_dict[att.type].append(
+            att
+        )
+
+    return attendance_dict
