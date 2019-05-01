@@ -247,8 +247,8 @@ def get_exams(session, *selected_calendars):
         raw_exams = session.get('Calendars', cal)['Calendar']['HomeWorks']
         raw_exams_nx_month = session.get(
             'Calendars', cal,
-            request_params={'month': (datetime.now() + timedelta(365 / 12)).month,
-                            'year': (datetime.now() + timedelta(365 / 12)).year}
+            request_params={'month': (datetime.now() + timedelta(31)).month,
+                            'year': (datetime.now() + timedelta(31)).year}
         )['Calendar']['HomeWorks']
         cal_exams = [SynergiaExam(x['Id'], session) for x in raw_exams]
         cal_exams += [SynergiaExam(x['Id'], session) for x in raw_exams_nx_month]

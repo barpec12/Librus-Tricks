@@ -506,7 +506,11 @@ class SynergiaExam(SynergiaGenericClass):
         :rtype: SynergiaSubject
         """
         if self.objects_ids.subject is None:
-            return None
+            class FakeSynergiaSubject:
+                def __init__(self):
+                    self.name = 'Przedmiot nie określony'
+                    self.short_name = None
+            return FakeSynergiaSubject()
         else:
             return self._session.csync(self.objects_ids.subject, SynergiaSubject)
 
