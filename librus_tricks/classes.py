@@ -587,3 +587,21 @@ class SynergiaSchoolFreeDays(SynergiaGenericClass):
     # TODO: Wymagany debug oraz test
 
     # TODO: Dodać __repr__()
+
+
+class SynergiaSchool(SynergiaGenericClass):
+    def __init__(self, oid, session, payload=None):
+        super().__init__(oid, session, ('School', ), 'School', payload)
+        self.name = self._json_payload['Name']
+        self.school_location = {
+            'street': self._json_payload['Street'],
+            'street_no': self._json_payload['BuildingNumber'],
+            'state': self._json_payload['State'],
+            'town': self._json_payload['Town']
+        }
+
+    def __repr__(self):
+        return f'<SynergiaSchool {self.name}>'
+
+    def __str__(self):
+        return self.name

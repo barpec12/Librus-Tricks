@@ -196,6 +196,10 @@ class SynergiaClient:
                 return free_day
         return False
 
+    def get_school(self):
+        temporary_r = self.get('Schools')['School']
+        return SynergiaSchool(temporary_r['Id'], self, temporary_r)
+
     def csync(self, oid, cls):
         return self.cache.sync(oid, cls, self)
 
