@@ -13,7 +13,7 @@ class SynergiaGenericClass:
         """
 
         :param str oid: Id żądanego obiektu
-        :param session:
+        :param librus_tricks.core.SynergiaClient session:
         :param resource:
         :type resource: tuple of str
         :param str extraction_key:
@@ -25,7 +25,7 @@ class SynergiaGenericClass:
         if payload is None:
             self._json_payload = self._session.get(
                 *resource,
-                self.oid
+                str(self.oid)
             )[extraction_key]
         else:
             self._json_payload = payload
@@ -137,6 +137,9 @@ class SynergiaSubject(SynergiaGenericClass):
     def __repr__(self):
         return f'<{self.__class__.__name__} {self.name}>'
 
+    def __str__(self):
+        return self.name
+
 
 class SynergiaLesson(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
@@ -173,7 +176,6 @@ class SynergiaLesson(SynergiaGenericClass):
 
     @property
     def group(self):
-
         if self.objects_ids.group is None:
             return None
         else:
@@ -181,7 +183,6 @@ class SynergiaLesson(SynergiaGenericClass):
 
     @property
     def subject(self):
-
         return self._session.csync(self.objects_ids.subject, SynergiaSubject)
 
 
@@ -426,7 +427,14 @@ class SynergiaExamCategory(SynergiaGenericClass):
 
     @property
     def color(self):
+        """
+
+        :rtype: SynergiaColor
+        """
         return self._session.csync(self.objects_ids.color, SynergiaColor)
+
+    def __str__(self):
+        return self.name
 
 
 class SynergiaExam(SynergiaGenericClass):
@@ -542,6 +550,12 @@ class SynergiaClassroom(SynergiaGenericClass):
         self.name = self._json_payload['Name']
         self.symbol = self._json_payload['Symbol']
 
+    def __repr__(self):
+        return f'<SynergiaClassroom {self.symbol}>'
+
+    def __str__(self):
+        return self.name
+
 
 class SynergiaTeacherFreeDaysTypes(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
@@ -565,15 +579,24 @@ class SynergiaTeacherFreeDays(SynergiaGenericClass):
             self._json_payload['Type']['Id']
         )
 
-    # TODO: Dodać __repr__()
-
     @property
     def teacher(self):
+        """
+
+        :rtype: SynergiaTeacher
+        """
         return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
 
     @property
     def type(self):
+        """
+
+        :rtype: SynergiaTeacherFreeDaysTypes
+        """
         return self._session.csync(self.objects_ids.type, SynergiaTeacherFreeDaysTypes)
+
+    def __repr__(self):
+        return f'<SynergiaTeacherFreeDays {self.starts.isoformat()}-{self.ends.isoformat()} for {self.teacher.__repr__()}>'
 
 
 class SynergiaSchoolFreeDays(SynergiaGenericClass):
