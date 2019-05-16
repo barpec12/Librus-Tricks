@@ -195,7 +195,10 @@ def get_timetable(session, week_start=None):
 
         @property
         def classroom(self):
-            return session.csync(self.objects_ids.classroom, SynergiaClassroom)
+            if self.objects_ids.classroom is not None:
+                return session.csync(self.objects_ids.classroom, SynergiaClassroom)
+            else:
+                return None
 
         @property
         def lesson(self):
