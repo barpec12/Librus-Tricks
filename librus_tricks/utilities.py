@@ -121,7 +121,7 @@ def get_timetable(session, week_start=None):
     :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
     :param week_start: data poniedziałku dla wybranego tygodnia
     :return:
-    :rtype: dict
+    :rtype: dict[str, list of librus_tricks.utilities.get_timetable.TimetableFrame]
     """
 
     def _define_group_and_type(payload):

@@ -66,7 +66,7 @@ if __name__ == '__main__':
     for day in tt.keys():
         pt.add_column(
             datetime.strptime(day, '%Y-%m-%d').strftime(Fore.CYAN + '%A' + Fore.RESET),
-            [f'{tte.subject.name} {tte.classroom.symbol}' for tte in tt[day]]
+            [f'{tte.subject.name}' for tte in tt[day] if tte]
         )
 
     print(pt)

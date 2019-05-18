@@ -25,12 +25,16 @@ Wiki was written in polish, checkout it [here](https://github.com/Backdoorek/Lib
 # Windows
 # Latest stable
 pip install librus-tricks
+# Libs for exams
+pip install librus-tricks[examples]
 # Latest sources
 pip install git+https://github.com/Backdoorek/Librus-Tricks.git@prototype
 
 # Linux
 # Latest stable
 sudo -H pip3 install librus-tricks
+# Libs for exams
+sudo -H pip3 install librus-tricks[examples]
 # Latest sources
 sudo -H pip3 install git+https://github.com/Backdoorek/Librus-Tricks.git@prototype
 ```
@@ -46,11 +50,11 @@ from librus_tricks import SynergiaClient
 session = SynergiaClient(user)
 
 # Get selected grades
-session.get_grades(selected=('27208160', '24040273', '21172894'))
+session.get_grades(selected=(27208160, 24040273, 21172894))
 # (<SynergiaGrade 21172894>, <SynergiaGrade 24040273>, <SynergiaGrade 27208160>)
 
 # Get future exams
-session.get_future_exams()
+session.get_exams()
 # [<SynergiaExam 2019-03-27 00:00:00 for subject with id 37659>, <SynergiaExam 2019-03-28 00:00:00 for subject with id 37675>, <SynergiaExam 2019-03-26 00:00:00 for subject with id 37670>]
 
 # Get timetable
@@ -61,9 +65,10 @@ session.get_timetable()
 
 For more examples check the [examples](https://github.com/Backdoorek/Librus-Tricks/tree/prototype/examples) folder
 
-## Screenshots from debugger
-![Grade](https://github.com/Backdoorek/public-files/blob/master/pycharm64_2019-03-17_11-29-56.png?raw=true)
-> This photo might be little outdated
+## Gallery
+![](https://github.com/Backdoorek/public-files/blob/master/Z270-HD3P_2019-05-18_09'23'03.png?raw=true)
+![](https://github.com/Backdoorek/public-files/blob/master/Discord_2019.05.01_130054.png?raw=true)
+![](https://github.com/Backdoorek/public-files/blob/master/Discord_2019.05.01_133954.png?raw=true)
 
 > Written with ❤ from a scratch by Krystian _`Backdoorek`_ Postek
 >
