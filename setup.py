@@ -18,7 +18,7 @@ setuptools.setup(
         'requests'
     ],
     extras_require={
-        'examples': ['colorama', 'matplotlib']
+        'examples': ['colorama', 'matplotlib', 'PrettyTable']
     },
     classifiers=[
         "Programming Language :: Python :: 3.6",
