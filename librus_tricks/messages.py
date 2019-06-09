@@ -33,13 +33,14 @@ class Message:
 
 
 class MessageReader:
-    def __init__(self, username, password):
+    def __init__(self, username, password, cache_backend=SQLiteCache(':memory:')):
         self.web_session = requests.session()
         self.web_session.get('https://api.librus.pl/OAuth/Authorization?client_id=46&response_type=code&scope=mydata')
         login_response = self.web_session.post('https://api.librus.pl/OAuth/Authorization?client_id=46', data={
             'action': 'login', 'login': username, 'pass': password
         })
         self.web_session.get('https://api.librus.pl' + login_response.json()['goTo'])
+        self._cache = cache_backend
 
     def read_messages(self):
         response = self.web_session.get('https://synergia.librus.pl/wiadomosci')
@@ -55,11 +56,7 @@ class MessageReader:
                 header=cols[3].text.strip(),
                 author=cols[2].text.strip(),
                 parent_web_session=self.web_session,
-                message_date=datetime.strptime(cols[4].text, '%Y-%m-%d %H:%M:%S')
+                message_date=datetime.strptime(cols[4].text, '%Y-%m-%d %H:%M:%S'),
+                cache_backend=self._cache
             ))
         return messages
-
-if __name__ == '__main__':
-    s = MessageReader('kpostek', '$Un10ck_lib')
-    print([m.text for m in s.read_messages()])
-    print([m.text for m in s.read_messages()])
