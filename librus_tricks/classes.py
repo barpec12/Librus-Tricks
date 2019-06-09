@@ -366,6 +366,12 @@ class SynergiaAttendanceType(SynergiaGenericClass):
 
 class SynergiaAttendance(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
+        if isinstance(payload, dict):
+            if isinstance(payload['Id'], str):
+                if 't' in payload['Id']:
+                    payload['Id'] = int(payload['Id'][1:])
+                    oid = payload['Id']
+
         super().__init__(oid, session, ('Attendances',), 'Attendance', payload)
 
         class ObjectsIds:
