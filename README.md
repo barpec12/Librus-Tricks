@@ -18,8 +18,7 @@ Wiki was written in polish, checkout it [here](https://github.com/Backdoorek/Lib
  - Errors handlers
  - All-In-One login mechanism
  - Many built-in solutions (get future exams, get timetable etc.)
- - Optional message support (read-only, based on screen-scraping)
- - Docstrings (help for PyCharm, VS IDE, VS Code, IDLE etc.)
+ - Docstrings (help for PyCharm, VS Codem, IDLE etc.)
 
 ## Install
 ```text
