@@ -1,6 +1,9 @@
 import requests
+
+from librus_tricks import cache
 from librus_tricks import exceptions, utilities
 from librus_tricks.classes import *
+from librus_tricks.messages import MessageReader
 from librus_tricks import cache
 import logging
 
@@ -9,7 +12,7 @@ class SynergiaClient:
     """Sesja z API Synergii"""
 
     def __init__(self, user, api_url='https://api.librus.pl/2.0/', user_agent='LibrusMobileApp',
-                 cache_location='cache.sqlite', custom_cache_object=None):
+                 cache_location='cache.sqlite', custom_cache_object=None, synergia_user_passwd=None):
         """
         Tworzy obiekt sesji z API Synergii.
 
@@ -18,6 +21,9 @@ class SynergiaClient:
         :param str user_agent: określa jak ma się przedstawiać nasza sesja
         :param str cache_location: określa lokalizację bazy danych z cache, ustaw ``:memory:``
         aby utworzyć bazę danych w pamięci operacyjnej
+        :param object custom_cache_object: pozwala na wybranie własnego mechanizmu do cache'owania
+        :param str synergia_user_passwd: pozostawienie tego parametru pustego uniemożliwia używanie modułu związanego z
+        obsługą wiadomości
         """
         self.user = user
         self.session = requests.session()
@@ -25,6 +31,10 @@ class SynergiaClient:
             self.cache = custom_cache_object
         else:
             self.cache = cache.SQLiteCache(db_location=cache_location)
+        if synergia_user_passwd:
+            self.message_reader = MessageReader(self.user.login, synergia_user_passwd, cache_backend=self.cache)
+        else:
+            self.message_reader = None
         self.__auth_headers = {'Authorization': f'Bearer {user.token}', 'User-Agent': user_agent}
         self.__api_url = api_url
 
@@ -58,6 +68,8 @@ class SynergiaClient:
             raise exceptions.SynergiaNotFound(path_str)
         elif response.status_code == 403:
             raise exceptions.SynergiaAccessDenied(path_str)
+        elif response.status_code == 401:
+            raise exceptions.TokenExpired()
         elif response.status_code == 400:
             raise exceptions.SynergiaInvalidRequest(response.json()['Message'])
 
@@ -115,27 +127,21 @@ class SynergiaClient:
             ids_computed += f'{selected[-1]}'
             return utilities.get_objects(self, 'Grades', ids_computed, 'Grades', SynergiaGrade)
 
-    def get_exams(self, *calendars):
+    def get_exams(self, *calendars, only_future=True, now=datetime.now()):
         """
         Zwraca listę wszystkich egzaminów w obecnym miesiącu. Pozostawienie ``calendars`` pustym pobiera
         sprawdziany z wszystkich kalendarzy.
 
-        :param calendars:
-        :return:
+        :param str calendars: str zawierające id kalendarza
+        :param bool only_future: bool określający czy ma pobierać tylko przyszłe sprawdziany
+        :param datetime.datetime now: obiekt datetime, który określa od którego momentu ma pobierać przyszłe sprawdziany
+        :return: lista zawierająca sprawdziany
         :rtype: list of librus_tricks.classes.SynergiaExam
         """
-        return utilities.get_exams(self, *calendars)
-
-    def get_future_exams(self, *calendars, now=datetime.now()):
-        """
-        Zwraca listę wszystkich przyszłych (zapowiedzianych) egzaminów. Pozostawienie ``calendars`` pustym pobiera
-        sprawdziany z wszystkich kalendarzy.
-
-        :param calendars: id kalendarzy
-        :return:
-        :rtype: list of librus_tricks.classes.SynergiaExam
-        """
-        return [ex for ex in utilities.get_exams(self, *calendars) if ex.date > now]
+        if only_future:
+            return [ex for ex in utilities.get_exams(self, *calendars) if ex.date > now.date()]
+        else:
+            return utilities.get_exams(self, *calendars)
 
     def get_attendances(self, *att_ids):
         """
@@ -174,7 +180,7 @@ class SynergiaClient:
         :return: szczęśliwy numerek
         :rtype: int
         """
-        return self.get('LuckyNumbers')['LuckyNumber']['LuckyNumber']
+        return int(self.get('LuckyNumbers')['LuckyNumber']['LuckyNumber'])
 
     def get_teacher_free_days(self, only_future=True, now=datetime.now()):
         return utilities.get_teachers_free_days(self, only_future, now)
@@ -188,6 +194,24 @@ class SynergiaClient:
             computed_ids += atid + ','
         return utilities.get_objects(self, 'Users', computed_ids, 'Users', SynergiaTeacher)
 
+    def is_school_free_date(self, now=datetime.now()):
+        """
+        Zwraca czy dzisiejszy dzień jest dniem wolnym, jeśli jest zwracany jest obiekt dnia wolnego, jeśli jest to
+        normalny dzień, zwracany jest False.
+
+        :param datetime.datetime now: obiekt datetime, który określa od teraźniejszość
+        :rtype: librus_tricks.classes.SynergiaSchoolFreeDays
+        """
+        free_days = self.get_school_free_days(only_future=False)
+        for free_day in free_days:
+            if free_day.starts <= now.date() <= free_day.ends:
+                return free_day
+        return False
+
+    def get_school(self):
+        temporary_r = self.get('Schools')['School']
+        return SynergiaSchool(temporary_r['Id'], self, temporary_r)
+
     def csync(self, oid, cls):
         return self.cache.sync(oid, cls, self)
 
@@ -199,7 +223,6 @@ class SynergiaClient:
         )
         for at in objs:
             self.csync(at.oid, at.__class__)
-
 
     # TODO: Dodać pobranie wybranego przedmiotu `get_subject`
     # TODO: Dodać pobieranie wszystkich przedmiotów `get_subjects`

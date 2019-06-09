@@ -1,6 +1,9 @@
-from librus_tricks import aio, SynergiaSubject, SynergiaClient
 import getpass
+
 from colorama import Fore, init as colorama_init
+
+from librus_tricks import aio, SynergiaSubject, SynergiaClient
+
 
 def ask_for_credentials():
     login = input('E-mail: ')

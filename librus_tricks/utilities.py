@@ -1,7 +1,8 @@
+from datetime import datetime, timedelta
+
 from librus_tricks.classes import SynergiaAttendance, SynergiaAttendanceType, SynergiaGrade, SynergiaGlobalClass, \
     SynergiaVirtualClass, SynergiaLesson, SynergiaSubject, SynergiaTeacher, SynergiaExam, SynergiaClassroom, \
     SynergiaTeacherFreeDays, SynergiaSchoolFreeDays
-from datetime import datetime, timedelta
 
 
 def get_all_grades(session):
@@ -120,7 +121,7 @@ def get_timetable(session, week_start=None):
     :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
     :param week_start: data poniedziałku dla wybranego tygodnia
     :return:
-    :rtype: dict
+    :rtype: dict[str, list of librus_tricks.utilities.get_timetable.TimetableFrame]
     """
 
     def _define_group_and_type(payload):
@@ -194,7 +195,10 @@ def get_timetable(session, week_start=None):
 
         @property
         def classroom(self):
-            return session.csync(self.objects_ids.classroom, SynergiaClassroom)
+            if self.objects_ids.classroom is not None:
+                return session.csync(self.objects_ids.classroom, SynergiaClassroom)
+            else:
+                return None
 
         @property
         def lesson(self):
@@ -246,8 +250,8 @@ def get_exams(session, *selected_calendars):
         raw_exams = session.get('Calendars', cal)['Calendar']['HomeWorks']
         raw_exams_nx_month = session.get(
             'Calendars', cal,
-            request_params={'month': (datetime.now() + timedelta(365 / 12)).month,
-                            'year': (datetime.now() + timedelta(365 / 12)).year}
+            request_params={'month': (datetime.now() + timedelta(31)).month,
+                            'year': (datetime.now() + timedelta(31)).year}
         )['Calendar']['HomeWorks']
         cal_exams = [SynergiaExam(x['Id'], session) for x in raw_exams]
         cal_exams += [SynergiaExam(x['Id'], session) for x in raw_exams_nx_month]

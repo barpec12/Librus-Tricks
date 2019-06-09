@@ -13,7 +13,7 @@ class SynergiaGenericClass:
         """
 
         :param str oid: Id żądanego obiektu
-        :param session:
+        :param librus_tricks.core.SynergiaClient session:
         :param resource:
         :type resource: tuple of str
         :param str extraction_key:
@@ -25,7 +25,7 @@ class SynergiaGenericClass:
         if payload is None:
             self._json_payload = self._session.get(
                 *resource,
-                self.oid
+                str(self.oid)
             )[extraction_key]
         else:
             self._json_payload = payload
@@ -69,8 +69,8 @@ class SynergiaGlobalClass(SynergiaGenericClass):
                 self.tutor = id_tut
 
         self.alias = f'{self._json_payload["Number"]}{self._json_payload["Symbol"]}'
-        self.begin_date = datetime.strptime(self._json_payload['BeginSchoolYear'], '%Y-%m-%d')
-        self.end_date = datetime.strptime(self._json_payload['EndSchoolYear'], '%Y-%m-%d')
+        self.begin_date = datetime.strptime(self._json_payload['BeginSchoolYear'], '%Y-%m-%d').date()
+        self.end_date = datetime.strptime(self._json_payload['EndSchoolYear'], '%Y-%m-%d').date()
         self.objects_ids = ObjectsIds(
             self._json_payload['ClassTutor']['Id']
         )
@@ -137,6 +137,9 @@ class SynergiaSubject(SynergiaGenericClass):
     def __repr__(self):
         return f'<{self.__class__.__name__} {self.name}>'
 
+    def __str__(self):
+        return self.name
+
 
 class SynergiaLesson(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
@@ -173,7 +176,6 @@ class SynergiaLesson(SynergiaGenericClass):
 
     @property
     def group(self):
-
         if self.objects_ids.group is None:
             return None
         else:
@@ -181,7 +183,6 @@ class SynergiaLesson(SynergiaGenericClass):
 
     @property
     def subject(self):
-
         return self._session.csync(self.objects_ids.subject, SynergiaSubject)
 
 
@@ -266,7 +267,7 @@ class SynergiaGrade(SynergiaGenericClass):
                 self.category = id_cat
 
         self.add_date = datetime.strptime(self._json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')
-        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d')
+        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d').date()
         self.grade = self._json_payload['Grade']
         self.is_constituent = self._json_payload['IsConstituent']
         self.semester = self._json_payload['Semester']
@@ -331,19 +332,19 @@ class SynergiaGrade(SynergiaGenericClass):
         try:
             return {
                 '1': 1,
-                '1+': 1.5,
+                '1+': 1.25,
                 '2-': 1.75,
                 '2': 2,
-                '2+': 2.5,
+                '2+': 2.25,
                 '3-': 2.75,
                 '3': 3,
-                '3+': 3.5,
+                '3+': 3.25,
                 '4-': 4.75,
                 '4': 4,
-                '4+': 4.5,
+                '4+': 4.25,
                 '5-': 4.75,
                 '5': 5,
-                '5+': 5.5,
+                '5+': 5.25,
                 '6-': 5.75,
                 '6': 6
             }[self.grade]
@@ -374,7 +375,7 @@ class SynergiaAttendance(SynergiaGenericClass):
                 self.type = id_typ
 
         self.add_date = datetime.strptime(self._json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')
-        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d')
+        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d').date()
         self.lesson_no = self._json_payload['LessonNo']
         self.objects_ids = ObjectsIds(
             self._json_payload['AddedBy']['Id'],
@@ -426,7 +427,14 @@ class SynergiaExamCategory(SynergiaGenericClass):
 
     @property
     def color(self):
+        """
+
+        :rtype: SynergiaColor
+        """
         return self._session.csync(self.objects_ids.color, SynergiaColor)
+
+    def __str__(self):
+        return self.name
 
 
 class SynergiaExam(SynergiaGenericClass):
@@ -457,7 +465,7 @@ class SynergiaExam(SynergiaGenericClass):
 
         self.add_date = datetime.strptime(self._json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')
         self.content = self._json_payload['Content']
-        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d')
+        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d').date()
         self.lesson = self._json_payload['LessonNo']
         if self._json_payload['TimeFrom'] is None:
             self.time_start = None
@@ -506,7 +514,11 @@ class SynergiaExam(SynergiaGenericClass):
         :rtype: SynergiaSubject
         """
         if self.objects_ids.subject is None:
-            return None
+            class FakeSynergiaSubject:
+                def __init__(self):
+                    self.name = 'Przedmiot nie określony'
+                    self.short_name = None
+            return FakeSynergiaSubject()
         else:
             return self._session.csync(self.objects_ids.subject, SynergiaSubject)
 
@@ -538,6 +550,12 @@ class SynergiaClassroom(SynergiaGenericClass):
         self.name = self._json_payload['Name']
         self.symbol = self._json_payload['Symbol']
 
+    def __repr__(self):
+        return f'<SynergiaClassroom {self.symbol}>'
+
+    def __str__(self):
+        return self.name
+
 
 class SynergiaTeacherFreeDaysTypes(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
@@ -554,22 +572,31 @@ class SynergiaTeacherFreeDays(SynergiaGenericClass):
                 self.teacher = tea_id
                 self.type = type_id
 
-        self.starts = datetime.strptime(self._json_payload['DateFrom'], '%Y-%m-%d')
-        self.ends = datetime.strptime(self._json_payload['DateTo'], '%Y-%m-%d')
+        self.starts = datetime.strptime(self._json_payload['DateFrom'], '%Y-%m-%d').date()
+        self.ends = datetime.strptime(self._json_payload['DateTo'], '%Y-%m-%d').date()
         self.objects_ids = ObjectsIds(
             self._json_payload['Teacher']['Id'],
             self._json_payload['Type']['Id']
         )
 
-    # TODO: Dodać __repr__()
-
     @property
     def teacher(self):
+        """
+
+        :rtype: SynergiaTeacher
+        """
         return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
 
     @property
     def type(self):
+        """
+
+        :rtype: SynergiaTeacherFreeDaysTypes
+        """
         return self._session.csync(self.objects_ids.type, SynergiaTeacherFreeDaysTypes)
+
+    def __repr__(self):
+        return f'<SynergiaTeacherFreeDays {self.starts.isoformat()}-{self.ends.isoformat()} for {self.teacher.__repr__()}>'
 
 
 class SynergiaSchoolFreeDays(SynergiaGenericClass):
@@ -577,9 +604,27 @@ class SynergiaSchoolFreeDays(SynergiaGenericClass):
         super().__init__(oid, session, ('SchoolFreeDays',), 'SchoolFreeDays', payload)
         if from_origin:
             self._json_payload = self._json_payload[0]
-        self.starts = datetime.strptime(self._json_payload['DateFrom'], '%Y-%m-%d')
-        self.ends = datetime.strptime(self._json_payload['DateTo'], '%Y-%m-%d')
+        self.starts = datetime.strptime(self._json_payload['DateFrom'], '%Y-%m-%d').date()
+        self.ends = datetime.strptime(self._json_payload['DateTo'], '%Y-%m-%d').date()
         self.name = self._json_payload['Name']  # TODO: Dodać Units
     # TODO: Wymagany debug oraz test
 
     # TODO: Dodać __repr__()
+
+
+class SynergiaSchool(SynergiaGenericClass):
+    def __init__(self, oid, session, payload=None):
+        super().__init__(oid, session, ('School', ), 'School', payload)
+        self.name = self._json_payload['Name']
+        self.school_location = {
+            'street': self._json_payload['Street'],
+            'street_no': self._json_payload['BuildingNumber'],
+            'state': self._json_payload['State'],
+            'town': self._json_payload['Town']
+        }
+
+    def __repr__(self):
+        return f'<SynergiaSchool {self.name}>'
+
+    def __str__(self):
+        return self.name

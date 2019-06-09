@@ -1,7 +1,7 @@
 def filter_grades(grades, semesters=(1, 2), grade_type='partial'):
     """
 
-    :type grades: list of librus_tricks.classes.SynergiaGrade
+    :type grades: iterable of librus_tricks.classes.SynergiaGrade
     """
     grades = [g for g in grades if g.semester in semesters]
 
@@ -21,7 +21,7 @@ def filter_grades(grades, semesters=(1, 2), grade_type='partial'):
 def categorize_grades(grades):
     """
 
-    :type grades: list of librus_tricks.classes.SynergiaGrade
+    :type grades: iterable of librus_tricks.classes.SynergiaGrade
     """
     grades_dict = dict()
 
@@ -33,3 +33,21 @@ def categorize_grades(grades):
         )
 
     return grades_dict
+
+
+def categorize_attendance(attendances):
+    """
+
+    :type attendances: iterable of librus_tricks.classes.SynergiaAttendance
+    :rtype: dict[librus_tricks.classes.SynergiaAttendanceType.short_name, list of librus_tricks.classes.SynergiaAttendance]
+    """
+    attendance_dict = dict()
+
+    for att in attendances:
+        if att.type.name not in attendance_dict.keys():
+            attendance_dict[att.type.name] = []
+        attendance_dict[att.type.name].append(
+            att
+        )
+
+    return attendance_dict

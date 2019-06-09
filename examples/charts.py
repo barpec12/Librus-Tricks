@@ -1,8 +1,10 @@
 import matplotlib.pyplot as plt
-from librus_tricks import aio, SynergiaClient, filters
+
 from examples.hello_librus import ask_for_credentials
+from librus_tricks import aio, SynergiaClient, filters
 
 session = SynergiaClient(aio(**ask_for_credentials()), cache_location='../librus_tricks/cache.sqlite')
+
 
 def count_avg(*grades):
     """
@@ -21,10 +23,11 @@ def count_avg(*grades):
 
 if __name__ == '__main__':
     target_subject = 'Matematyka'
-    math_grades = [gr for gr in filters.filter_grades(session.get_grades()) if gr.subject.name == target_subject and gr.real_value is not None]
+    math_grades = [gr for gr in filters.filter_grades(session.get_grades()) if
+                   gr.subject.name == target_subject and gr.real_value is not None]
     arvgs = []
     for grade_index in range(math_grades.__len__()):
-        arvgs.append(count_avg(*math_grades[:grade_index+1]))
+        arvgs.append(count_avg(*math_grades[:grade_index + 1]))
 
     plt.plot(
         [grade.date for grade in math_grades],

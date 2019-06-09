@@ -1,6 +1,11 @@
-from librus_tricks import utilities, aio, SynergiaClient
 import getpass
+from datetime import datetime
+from types import SimpleNamespace as Namespace
+
 from colorama import init as colorama_init, Fore
+from prettytable import PrettyTable
+
+from librus_tricks import aio, SynergiaClient
 
 
 def ask_for_credentials():
@@ -9,21 +14,59 @@ def ask_for_credentials():
     return {'email': login, 'passwd': passwd}
 
 
+def max_lenght_of_ttc(dtc):
+    lens = []
+    for k in dtc.keys():
+        lens.append(
+            dtc[k].__len__()
+        )
+    return max(*lens)
+
+
+def get_longest_ttc_ranges(dtc):
+    max_len = 0
+    output = []
+    for k in dtc.keys():
+        if dtc[k].__len__() > max_len:
+            max_len = dtc[k].__len__()
+            output = [(tte.start, tte.end) for tte in dtc[k]]
+    return output
+
+
 if __name__ == '__main__':
     colorama_init(autoreset=True)
     print(Fore.BLUE + 'Logging in...')
     session = SynergiaClient(aio(**ask_for_credentials()))
-    tt = utilities.get_timetable(session)
+
+
+    class FakeTTE:
+        def __init__(self):
+            self.subject = Namespace()
+            self.subject.name = ''
+            self.subject.short_name = ''
+            self.classroom = Namespace()
+            self.classroom.symbol = ''
+
+
+    tt = session.get_timetable()
+    pt = PrettyTable()
+
+    mlv = max_lenght_of_ttc(tt)
+
+    for k in tt.keys():
+        if tt[k].__len__() < mlv:
+            for n in range(mlv - tt[k].__len__()):
+                tt[k].append(FakeTTE())
+
+    pt.add_column(
+        '',
+        [Fore.CYAN + f'{tter[0].strftime("%H:%M")} - {tter[1].strftime("%H:%M")}' + Fore.RESET for tter in
+         get_longest_ttc_ranges(tt)]
+    )
     for day in tt.keys():
-        print(Fore.MAGENTA + day)
-        for frame in tt[day]:
-            if frame.is_substitution:
-                print(
-                    Fore.BLUE + f'{frame.start.strftime("%H:%M")}->{frame.end.strftime("%H:%M")} '
-                    f'- {frame.preloaded_data.subject_name} '
-                    f'z {frame.preloaded_data.teacher_name} {frame.preloaded_data.teacher_lastname} (zastępstwo)')
-            else:
-                print(
-                    Fore.CYAN + f'{frame.start.strftime("%H:%M")}->{frame.end.strftime("%H:%M")} '
-                    f'- {frame.preloaded_data.subject_name} '
-                    f'z {frame.preloaded_data.teacher_name} {frame.preloaded_data.teacher_lastname}')
+        pt.add_column(
+            datetime.strptime(day, '%Y-%m-%d').strftime(Fore.CYAN + '%A' + Fore.RESET),
+            [f'{tte.subject.name}' for tte in tt[day] if tte]
+        )
+
+    print(pt)
