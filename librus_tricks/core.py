@@ -19,6 +19,9 @@ class SynergiaClient:
         :param str user_agent: określa jak ma się przedstawiać nasza sesja
         :param str cache_location: określa lokalizację bazy danych z cache, ustaw ``:memory:``
         aby utworzyć bazę danych w pamięci operacyjnej
+        :param object custom_cache_object: pozwala na wybranie własnego mechanizmu do cache'owania
+        :param str synergia_user_passwd: pozostawienie tego parametru pustego uniemożliwia używanie modułu związanego z
+        obsługą wiadomości
         """
         self.user = user
         self.session = requests.session()

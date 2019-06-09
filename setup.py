@@ -15,7 +15,7 @@ setuptools.setup(
     url="https://github.com/Backdoorek/LibrusTricks",
     packages=setuptools.find_packages(),
     install_requires=[
-        'requests'
+        'requests', 'beautifulsoup4'
     ],
     extras_require={
         'examples': ['colorama', 'matplotlib', 'PrettyTable']
