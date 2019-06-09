@@ -100,11 +100,15 @@ class SQLiteCache:
         :type message_obj: librus_tricks.messages.Message
         :type web_session: requests.sessions.Session
         """
+        logging.debug(f'Checking existence of message {message_obj.url}')
         cache_response = self.get_message(message_obj.url)
         if cache_response is None:
+            logging.debug('Message not found in cache DB, downloading one')
             message_text = message_obj.read_from_server()
             self.insert_message(message_obj.url, message_text, message_obj.author_alias,
                                 int(message_obj.msg_date.timestamp()), message_obj.header)
+            logging.debug('Message saved in cache DB')
             return message_text
         else:
+            logging.debug('Message found, using the old one')
             return cache_response[2]

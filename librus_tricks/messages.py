@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 from datetime import datetime
 from librus_tricks.cache import SQLiteCache
+import logging
 
 
 class Message:
@@ -34,12 +35,14 @@ class Message:
 
 class MessageReader:
     def __init__(self, username, password, cache_backend=SQLiteCache(':memory:')):
+        logging.debug('Creating session')
         self.web_session = requests.session()
         self.web_session.get('https://api.librus.pl/OAuth/Authorization?client_id=46&response_type=code&scope=mydata')
         login_response = self.web_session.post('https://api.librus.pl/OAuth/Authorization?client_id=46', data={
             'action': 'login', 'login': username, 'pass': password
         })
         self.web_session.get('https://api.librus.pl' + login_response.json()['goTo'])
+        logging.debug('Session created')
         self._cache = cache_backend
 
     def read_messages(self):
@@ -48,6 +51,7 @@ class MessageReader:
         table = soup.find('table', attrs={'class': 'decorated stretch'})
         tbody = table.find('tbody')
         rows = tbody.find_all('tr')
+        logging.debug(f'BS4 found {rows.__len__()} messages')
         messages = []
         for message in rows:
             cols = message.find_all('td')
