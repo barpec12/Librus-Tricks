@@ -17,7 +17,7 @@ Wiki was written in polish, checkout it [here](https://github.com/Backdoorek/Lib
  - Simplified objects
  - Errors handlers
  - All-In-One login mechanism
- - Many buitt-in solutions (get future exams, get timetable etc.)
+ - Many built-in solutions (get future exams, get timetable etc.)
  - Docstrings (help for PyCharm, VS Codem, IDLE etc.)
 
 ## Install
