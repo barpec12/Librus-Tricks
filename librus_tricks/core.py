@@ -3,13 +3,14 @@ import requests
 from librus_tricks import cache
 from librus_tricks import exceptions, utilities
 from librus_tricks.classes import *
+from librus_tricks.messages import MessageReader
 
 
 class SynergiaClient:
     """Sesja z API Synergii"""
 
     def __init__(self, user, api_url='https://api.librus.pl/2.0/', user_agent='LibrusMobileApp',
-                 cache_location='cache.sqlite', custom_cache_object=None):
+                 cache_location='cache.sqlite', custom_cache_object=None, synergia_user_passwd=None):
         """
         Tworzy obiekt sesji z API Synergii.
 
@@ -18,6 +19,9 @@ class SynergiaClient:
         :param str user_agent: określa jak ma się przedstawiać nasza sesja
         :param str cache_location: określa lokalizację bazy danych z cache, ustaw ``:memory:``
         aby utworzyć bazę danych w pamięci operacyjnej
+        :param object custom_cache_object: pozwala na wybranie własnego mechanizmu do cache'owania
+        :param str synergia_user_passwd: pozostawienie tego parametru pustego uniemożliwia używanie modułu związanego z
+        obsługą wiadomości
         """
         self.user = user
         self.session = requests.session()
@@ -25,6 +29,10 @@ class SynergiaClient:
             self.cache = custom_cache_object
         else:
             self.cache = cache.SQLiteCache(db_location=cache_location)
+        if synergia_user_passwd:
+            self.message_reader = MessageReader(self.user.login, synergia_user_passwd, cache_backend=self.cache)
+        else:
+            self.message_reader = None
         self.__auth_headers = {'Authorization': f'Bearer {user.token}', 'User-Agent': user_agent}
         self.__api_url = api_url
 
