@@ -11,11 +11,11 @@ from librus_tricks import aio, SynergiaClient, utilities
 
 # Trying to handle strange pytest errors/bugs
 try:
-    session = SynergiaClient(aio(email, password), cache_location=':memory:')
+    session = SynergiaClient(aio(email, password), cache_location=':memory:', synergia_user_passwd=password)
 except KeyError:
-    session = SynergiaClient(aio(email, password, force_revalidation_method=True), cache_location=':memory:')
+    session = SynergiaClient(aio(email, password, force_revalidation_method=True), cache_location=':memory:', synergia_user_passwd=password)
 except requests.exceptions.ConnectionError:
-    session = SynergiaClient(aio(email, password, force_revalidation_method=True), cache_location=':memory:')
+    session = SynergiaClient(aio(email, password, force_revalidation_method=True), cache_location=':memory:', synergia_user_passwd=password)
 
 
 def test_grades():

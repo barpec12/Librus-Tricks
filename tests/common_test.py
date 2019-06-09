@@ -11,11 +11,13 @@ import requests
 
 # Trying to handle strange pytest errors/bugs
 try:
-    session = SynergiaClient(aio(email, password), cache_location=':memory:')
+    session = SynergiaClient(aio(email, password), cache_location=':memory:', synergia_user_passwd=password)
 except KeyError:
-    session = SynergiaClient(aio(email, password, force_revalidation_method=True), cache_location=':memory:')
+    session = SynergiaClient(aio(email, password, force_revalidation_method=True), cache_location=':memory:',
+                             synergia_user_passwd=password)
 except requests.exceptions.ConnectionError:
-    session = SynergiaClient(aio(email, password, force_revalidation_method=True), cache_location=':memory:')
+    session = SynergiaClient(aio(email, password, force_revalidation_method=True), cache_location=':memory:',
+                             synergia_user_passwd=password)
 
 
 def test_auth():
@@ -40,3 +42,7 @@ def test_timetable():
 
 def test_newsfeed():
     return session.get_news()
+
+
+def test_messages():
+    return session.message_reader.read_messages()
