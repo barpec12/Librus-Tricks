@@ -154,6 +154,10 @@ class SynergiaClient:
         return utilities.get_objects(self, 'Attendances', computed_ids, 'Attendances', SynergiaAttendance)
 
     def get_absences(self):
+        """
+        Zwraca listę nieobecności ucznia
+        :rtype: list of SynergiaAttendance
+        """
         return utilities.get_filtered_attendance(self, *utilities.get_all_absence_types(self))
 
     def get_timetable(self, week_start=None):
@@ -185,6 +189,13 @@ class SynergiaClient:
         return utilities.get_free_days(self, only_future, now)
 
     def get_all_teachers(self, *teachers_ids):
+        """
+        Zwraca listę zawierającą wszystkich nauczycieli
+
+        :param teachers_ids: IDki nauczycieli, pozostawienie tego parametru pustego, spowoduje pobranie
+        wszystkich nauczycieli
+        :rtype: list of SynergiaTeacher
+        """
         computed_ids = ''
         for atid in teachers_ids:
             computed_ids += atid + ','

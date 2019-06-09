@@ -98,7 +98,6 @@ class SQLiteCache:
         """
 
         :type message_obj: librus_tricks.messages.Message
-        :type web_session: requests.sessions.Session
         """
         cache_response = self.get_message(message_obj.url)
         if cache_response is None:
