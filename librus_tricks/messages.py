@@ -1,23 +1,32 @@
 from bs4 import BeautifulSoup
 import requests
+from datetime import datetime
+from librus_tricks.cache import SQLiteCache
 
 
 class Message:
-    def __init__(self, url, parent_web_session, header=None, author=None):
+    def __init__(self, url, parent_web_session, header, author, message_date, cache_backend=SQLiteCache(':memory:')):
         """
 
         :type url: str
         :type parent_web_session: requests.sessions.Session
+        :type message_date: datetime
         """
         self.web_session = parent_web_session
         self.url = url
         self.header = header
         self.author_alias = author
+        self.msg_date = message_date
+        self._cache = cache_backend
 
-    def read(self):
+    def read_from_server(self):
         response = self.web_session.get('https://synergia.librus.pl' + self.url)
         soup = BeautifulSoup(response.text, 'html.parser')
         return soup.find('div', attrs={'class': 'container-message-content'}).text
+
+    @property
+    def text(self):
+        return self._cache.sync_message(self)
 
     def __repr__(self):
         return f'<Message from {self.author_alias} into {self.url}>'
@@ -45,6 +54,12 @@ class MessageReader:
                 url=cols[3].a['href'],
                 header=cols[3].text.strip(),
                 author=cols[2].text.strip(),
-                parent_web_session=self.web_session
+                parent_web_session=self.web_session,
+                message_date=datetime.strptime(cols[4].text, '%Y-%m-%d %H:%M:%S')
             ))
         return messages
+
+if __name__ == '__main__':
+    s = MessageReader('kpostek', '$Un10ck_lib')
+    print([m.text for m in s.read_messages()])
+    print([m.text for m in s.read_messages()])
