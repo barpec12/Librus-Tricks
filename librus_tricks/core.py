@@ -185,6 +185,12 @@ class SynergiaClient:
         return utilities.get_free_days(self, only_future, now)
 
     def get_all_teachers(self, *teachers_ids):
+        """
+
+        :param teachers_ids:
+        :return:
+        :rtype: list of librus_tricks.classes.SynergiaTeacher
+        """
         computed_ids = ''
         for atid in teachers_ids:
             computed_ids += atid + ','
