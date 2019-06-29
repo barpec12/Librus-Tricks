@@ -126,6 +126,15 @@ class SynergiaClient:
             ids_computed += f'{selected[-1]}'
             return utilities.get_objects(self, 'Grades', ids_computed, 'Grades', SynergiaGrade)
 
+    def get_basetextgrades(self):
+        """
+        Zwraca krotkę ocen opisowych (chyba to tak się nazywa)
+
+        :return:
+        :rtype: tuple of SynergiaBaseTextGrade
+        """
+        return utilities.get_objects(self, 'BaseTextGrades', '', 'Grades', SynergiaBaseTextGrade)
+
     def get_exams(self, *calendars, only_future=True, now=datetime.now()):
         """
         Zwraca listę wszystkich egzaminów w obecnym miesiącu. Pozostawienie ``calendars`` pustym pobiera
