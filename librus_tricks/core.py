@@ -61,13 +61,16 @@ class SynergiaClient:
         )
 
         if response.status_code == 404:
-            raise exceptions.SynergiaNotFound(path_str)
+            raise exceptions.SynergiaNotFound(path_str + ' ' + response.json())
         elif response.status_code == 403:
-            raise exceptions.SynergiaAccessDenied(path_str)
+            raise exceptions.SynergiaAccessDenied(path_str + ' ' + response.json())
         elif response.status_code == 401:
-            raise exceptions.TokenExpired()
+            if response.text == '{"Status":"Error","Message":"Request is denied"}':
+                raise exceptions.SynergiaAccessDenied(path_str + ' ' + response.json())
+            else:
+                raise exceptions.TokenExpired(response.json())
         elif response.status_code == 400:
-            raise exceptions.SynergiaInvalidRequest(response.json()['Message'])
+            raise exceptions.SynergiaInvalidRequest(response.json())
 
         return response.json()
 
@@ -231,5 +234,11 @@ class SynergiaClient:
         for at in objs:
             self.csync(at.oid, at.__class__)
 
-    # TODO: Dodać pobranie wybranego przedmiotu `get_subject`
-    # TODO: Dodać pobieranie wszystkich przedmiotów `get_subjects`
+    def get_subjects(self, *subjects_ids):
+        computed_ids = ''
+        for atid in subjects_ids:
+            computed_ids += atid + ','
+        return utilities.get_objects(self, 'Subjects', computed_ids, 'Subjects', SynergiaSubject)
+
+    def get_ad(self):
+        return self.get('BannerAds')['BannerAds']

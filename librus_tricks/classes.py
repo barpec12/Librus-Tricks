@@ -13,11 +13,11 @@ class SynergiaGenericClass:
         """
 
         :param str oid: Id żądanego obiektu
-        :param librus_tricks.core.SynergiaClient session:
-        :param resource:
-        :type resource: tuple of str
-        :param str extraction_key:
-        :param dict payload:
+        :param librus_tricks.core.SynergiaClient session: Obiekt sesji
+        :param resource: ścieżka do źródła danych
+        :type resource: iterable of str
+        :param str extraction_key: str zawierający klucz do wyjęcia danych
+        :param dict payload: dict zawierający gotowe dane (np. załadowane z cache)
         """
         self._session = session
         self.oid = int(oid)
@@ -245,6 +245,58 @@ class SynergiaGradeComment(SynergiaGenericClass):
     def grade_bind(self):
         return SynergiaGrade(self.objects_ids, self._session)
 
+
+class SynergiaBaseTextGrade(SynergiaGenericClass):
+    def __init__(self, oid, session, payload=None):
+        super().__init__(oid, session, ('BaseTextGrades',), 'Grade', payload)
+
+        class ObjectsIds:
+            def __init__(self, id_tea, id_cat, id_les, id_stud, id_sub):
+                self.teacher = id_tea
+                self.category = id_cat
+                self.lesson = id_les
+                self.student = id_stud
+                self.subject = id_sub
+
+        self.add_date = datetime.strptime(self._json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')
+        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d').date()
+        self.grade = self._json_payload['Grade']
+        self.semester = self._json_payload['Semester']
+        self.visible = self._json_payload['ShowInGradesView']
+        self.objects_ids = ObjectsIds(
+            self._json_payload['AddedBy']['Id'],
+            self._json_payload['Category']['Id'],
+            self._json_payload['Lesson']['Id'],
+            self._json_payload['Student']['Id'],
+            self._json_payload['Subject']['Id']
+        )
+
+    @property
+    def teacher(self):
+        """
+
+        :rtype: SynergiaTeacher
+        """
+        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
+
+    # TODO: add category prop
+    # TODO: add lesson prop
+
+    @property
+    def subject(self):
+        """
+
+        :rtype: SynergiaSubject
+        """
+        return self._session.csync(self.objects_ids.subject, SynergiaSubject)
+
+    @property
+    def student(self):
+        """
+
+        :rtype: SynergiaStudent
+        """
+        return self._session.csync(self.objects_ids.student, SynergiaStudent)
 
 class SynergiaGrade(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
