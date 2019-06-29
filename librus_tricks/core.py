@@ -232,3 +232,5 @@ class SynergiaClient:
             computed_ids += atid + ','
         return utilities.get_objects(self, 'Subjects', computed_ids, 'Subjects', SynergiaSubject)
 
+    def get_ad(self):
+        return self.get('BannerAds')['BannerAds']
