@@ -226,5 +226,9 @@ class SynergiaClient:
         for at in objs:
             self.csync(at.oid, at.__class__)
 
-    # TODO: Dodać pobranie wybranego przedmiotu `get_subject`
-    # TODO: Dodać pobieranie wszystkich przedmiotów `get_subjects`
+    def get_subjects(self, *subjects_ids):
+        computed_ids = ''
+        for atid in subjects_ids:
+            computed_ids += atid + ','
+        return utilities.get_objects(self, 'Subjects', computed_ids, 'Subjects', SynergiaSubject)
+
