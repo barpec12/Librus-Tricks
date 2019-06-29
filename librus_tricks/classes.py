@@ -13,11 +13,11 @@ class SynergiaGenericClass:
         """
 
         :param str oid: Id żądanego obiektu
-        :param librus_tricks.core.SynergiaClient session:
-        :param resource:
-        :type resource: tuple of str
-        :param str extraction_key:
-        :param dict payload:
+        :param librus_tricks.core.SynergiaClient session: Obiekt sesji
+        :param resource: ścieżka do źródła danych
+        :type resource: iterable of str
+        :param str extraction_key: str zawierający klucz do wyjęcia danych
+        :param dict payload: dict zawierający gotowe dane (np. załadowane z cache)
         """
         self._session = session
         self.oid = int(oid)
