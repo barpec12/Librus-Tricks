@@ -152,3 +152,17 @@ def test_freedays():
     print(*teacherss)
     print(*for_all)
     return teacherss, for_all
+
+def test_basetextgrades():
+    teachers = []
+    subjects = []
+    for n in session.get_basetextgrades():
+        teachers.append(
+            n.teacher
+        )
+        subjects.append(
+            n.subject
+        )
+    print(*teachers)
+    print(*subjects)
+    return teachers, subjects

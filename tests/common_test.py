@@ -46,3 +46,7 @@ def test_newsfeed():
 
 def test_messages():
     return session.message_reader.read_messages()
+
+
+def test_basetextgrades():
+    return session.get_basetextgrades()
