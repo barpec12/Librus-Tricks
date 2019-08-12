@@ -47,6 +47,10 @@ class MessageReader:
         soup = BeautifulSoup(response.text, 'html.parser')
         table = soup.find('table', attrs={'class': 'decorated stretch'})
         tbody = table.find('tbody')
+
+        if 'Brak wiadomości' in tbody.text:
+            return None
+
         rows = tbody.find_all('tr')
         messages = []
         for message in rows:
