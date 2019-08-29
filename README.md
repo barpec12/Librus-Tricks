@@ -30,8 +30,6 @@ pip install librus-tricks
 pip install librus-tricks[examples]
 # Latest sources
 pip install git+https://github.com/Backdoorek/Librus-Tricks.git@prototype
-# Latest message support
-pip install git+https://github.com/Backdoorek/Librus-Tricks.git@web-messages
 
 # Linux
 # Latest stable
@@ -40,9 +38,6 @@ sudo -H pip3 install librus-tricks
 sudo -H pip3 install librus-tricks[examples]
 # Latest sources
 sudo -H pip3 install git+https://github.com/Backdoorek/Librus-Tricks.git@prototype
-# Latest message support
-sudo -H pip3 install git+https://github.com/Backdoorek/Librus-Tricks.git@web-messages
-
 ```
 
 ## Examples
