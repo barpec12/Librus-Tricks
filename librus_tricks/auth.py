@@ -14,9 +14,6 @@ FRESHURL = 'https://portal.librus.pl/api/SynergiaAccounts/fresh/{login}'
 CLIENTID = 'wmSyUMo8llDAs4y9tJVYY92oyZ6h4lAt7KCuy0Gv'
 LIBRUSLOGINURL = f'https://portal.librus.pl/oauth2/authorize?client_id={CLIENTID}&redirect_uri={REDIRURI}&response_type=code'
 
-# Creating session
-auth_session = requests.session()
-
 
 # Defining auth classes
 
@@ -43,7 +40,16 @@ class SynergiaAuthUser:
 
     def __repr__(self):
         return f'<SynergiaAuthSession for {self.name} {self.surname} based on ' \
-            f'token {self.token[:6] + "..." + self.token[-6:]}>'
+               f'token {self.token[:6] + "..." + self.token[-6:]}>'
+
+
+def prepare_env():
+    """
+    Wykorzystywane do przygotowania tworzenia kolejnej sesji
+
+    """
+    global auth_session
+    auth_session = requests.session()
 
 
 def oauth_librus_code(email, passwd, revalidation=False):
@@ -57,6 +63,7 @@ def oauth_librus_code(email, passwd, revalidation=False):
     :rtype: str
     :raises librus_tricks.exceptions.LibrusLoginError: zły login lub hasło lub inny błąd związany z autoryzacją
     """
+    prepare_env()
     if revalidation:
         mini_session = auth_session.get(LIBRUSLOGINURL, allow_redirects=False)
         access_code = mini_session.headers['location'][26:]
@@ -162,8 +169,9 @@ def get_new_token(login, email, passwd):
     return get_synergia_token(oauth_librus_code(email, passwd, revalidation=True))
 
 
-def aio(email, passwd, fetch_index=0, force_revalidation_method=False):
+def aio_legacy(email, passwd, fetch_index=0, force_revalidation_method=False):
     """
+    NIE UŻYWAJ
     aio (All-In-One) ułatwia otrzymanie danych do logowania i utworzenia sesji.
 
     :param str email: email do aplikacji Librusa
@@ -181,3 +189,36 @@ def aio(email, passwd, fetch_index=0, force_revalidation_method=False):
         api_users = get_avaiable_users(synergia_token)
         u = api_users[fetch_index]
     return u
+
+
+def aio(email, passwd, fetch_first=True):
+    """
+    aio (All-In-One) ułatwia otrzymanie danych do logowania i utworzenia sesji.
+
+    :param str email: email do aplikacji Librusa
+    :param str passwd: hasło do aplikacji Librusa
+    :param fetch_first: ustala czy ma zwracać pierwszego użytkownika.
+     True -> zwraca użytkownika z indexem 0, `False` -> zwraca listę userów,
+     dowolny int -> zwraca usera o indexie int'a
+    :return: użytkownik Synergii
+    :rtype: list of librus_tricks.auth.SynergiaAuthUser
+    """
+    try:
+        oauth_code = oauth_librus_code(email, passwd, revalidation=False)
+    except requests.exceptions.ConnectionError:
+        oauth_code = oauth_librus_code(email, passwd, revalidation=True)
+    synergia_token = get_synergia_token(oauth_code)
+    api_users = get_avaiable_users(synergia_token)
+    for user in api_users:
+        if not user.is_authenticated:
+            synergia_token = get_new_token(user.login, email, passwd)
+            api_users = get_avaiable_users(synergia_token)
+            break
+
+    # Return user(s)
+    if fetch_first is True:
+        return api_users[0]
+    elif fetch_first is False:
+        return api_users
+    else:
+        return api_users[fetch_first]

@@ -47,16 +47,13 @@ sudo -H pip3 install git+https://github.com/Backdoorek/Librus-Tricks.git@web-mes
 
 ## Examples
 ```python
-# Authentication
-from librus_tricks import auth
-user = auth.aio('my.mail@mydoamin.com', 'uniqepass')
+# Create session (with support for messages, require the same password for Portal Librus and Synergia)
+from librus_tricks import create_session
+session = create_session('my@email.com', 'admin1')
 
-# Create session
-from librus_tricks import SynergiaClient
-session = SynergiaClient(user)
-
-# Create session with special support for messages
-session_with_message_support = SynergiaClient(user, synergia_user_passwd='otheruniqepass')
+# If passwords are different
+from librus_tricks import SynergiaClient, aio
+session = SynergiaClient(aio('my@email.com', 'admin1'), synergia_user_passwd='admin2')
 
 # Get selected grades
 session.get_grades(selected=(27208160, 24040273, 21172894))

@@ -6,18 +6,9 @@ sys.path.extend(['./'])
 email = os.environ['librus_email']
 password = os.environ['librus_password']
 
-from librus_tricks import aio, SynergiaClient
-import requests
+from librus_tricks import exceptions, create_session
 
-# Trying to handle strange pytest errors/bugs
-try:
-    session = SynergiaClient(aio(email, password), cache_location=':memory:', synergia_user_passwd=password)
-except KeyError:
-    session = SynergiaClient(aio(email, password, force_revalidation_method=True), cache_location=':memory:',
-                             synergia_user_passwd=password)
-except requests.exceptions.ConnectionError:
-    session = SynergiaClient(aio(email, password, force_revalidation_method=True), cache_location=':memory:',
-                             synergia_user_passwd=password)
+session = create_session(email, password, cache_location=':memory:')
 
 
 def test_auth():
@@ -37,7 +28,10 @@ def test_grades():
 
 
 def test_timetable():
-    return session.get_timetable()
+    try:
+        return session.get_timetable()
+    except exceptions.SynergiaAccessDenied as err:
+        return str(err)
 
 
 def test_newsfeed():
