@@ -18,7 +18,7 @@ class SynergiaClient:
         :param str api_url: url do API, NIE ZMIENIAJ GO JEŚLI NIE WIESZ DO CZEGO SŁUŻY
         :param str user_agent: określa jak ma się przedstawiać nasza sesja
         :param str cache_location: określa lokalizację bazy danych z cache, ustaw ``:memory:``
-        aby utworzyć bazę danych w pamięci operacyjnej
+         aby utworzyć bazę danych w pamięci operacyjnej
         :param object custom_cache_object: pozwala na wybranie własnego mechanizmu do cache'owania
         :param str synergia_user_passwd: pozostawienie tego parametru pustego uniemożliwia używanie modułu związanego z
         obsługą wiadomości
@@ -61,12 +61,12 @@ class SynergiaClient:
         )
 
         if response.status_code == 404:
-            raise exceptions.SynergiaNotFound(path_str + ' ' + response.json())
+            raise exceptions.SynergiaNotFound(path_str + ' ' + response.json().__str__())
         elif response.status_code == 403:
-            raise exceptions.SynergiaAccessDenied(path_str + ' ' + response.json())
+            raise exceptions.SynergiaAccessDenied(path_str + ' ' + response.json().__str__())
         elif response.status_code == 401:
             if response.text == '{"Status":"Error","Message":"Request is denied"}':
-                raise exceptions.SynergiaAccessDenied(path_str + ' ' + response.json())
+                raise exceptions.SynergiaAccessDenied(path_str + ' ' + response.json().__str__())
             else:
                 raise exceptions.TokenExpired(response.json())
         elif response.status_code == 400:
@@ -90,7 +90,7 @@ class SynergiaClient:
         if response.status_code == 404:
             raise exceptions.SynergiaNotFound(path_str)
         elif response.status_code == 403:
-            raise exceptions.SynergiaAccessDenied(path_str)
+            raise exceptions.SynergiaAccessDenied(path_str + ' ' + response.json().__str__())
 
         return response.json()
 
