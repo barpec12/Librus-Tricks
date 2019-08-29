@@ -5,7 +5,7 @@ from types import SimpleNamespace as Namespace
 from colorama import init as colorama_init, Fore
 from prettytable import PrettyTable
 
-from librus_tricks import aio, SynergiaClient
+from librus_tricks import create_session
 
 
 def ask_for_credentials():
@@ -36,7 +36,7 @@ def get_longest_ttc_ranges(dtc):
 if __name__ == '__main__':
     colorama_init(autoreset=True)
     print(Fore.BLUE + 'Logging in...')
-    session = SynergiaClient(aio(**ask_for_credentials()))
+    session = create_session(**ask_for_credentials())
 
 
     class FakeTTE:

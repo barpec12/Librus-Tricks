@@ -2,7 +2,7 @@ import getpass
 
 from colorama import init as colorama_init, Fore
 
-from librus_tricks import utilities, aio, SynergiaClient, SynergiaAttendanceType
+from librus_tricks import utilities, create_session, SynergiaAttendanceType
 
 
 def ask_for_credentials():
@@ -21,7 +21,7 @@ def create_name_dict(*a_types):
 if __name__ == '__main__':
     colorama_init(autoreset=True)
     print(Fore.BLUE + 'Logging in...')
-    session = SynergiaClient(aio(**ask_for_credentials()))
+    session = create_session(**ask_for_credentials())
     attd_types = utilities.get_all_attendance_types(session)
     print(Fore.CYAN + 'Wybierz rodzaje obecności, które Cię interesują')
     for at in attd_types:

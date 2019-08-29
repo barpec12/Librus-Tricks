@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 
 from examples.hello_librus import ask_for_credentials
-from librus_tricks import aio, SynergiaClient, filters
+from librus_tricks import filters, create_session
 
-session = SynergiaClient(aio(**ask_for_credentials()), cache_location='../librus_tricks/cache.sqlite')
+session = create_session(**ask_for_credentials(), cache_location='../librus_tricks/cache.sqlite')
 
 
 def count_avg(*grades):

@@ -2,7 +2,7 @@ import getpass
 
 from colorama import Fore, init as colorama_init
 
-from librus_tricks import aio, SynergiaSubject, SynergiaClient
+from librus_tricks import create_session, SynergiaSubject
 
 
 def ask_for_credentials():
@@ -37,7 +37,7 @@ def sort_grades(session):
 if __name__ == '__main__':
     colorama_init(autoreset=True)
     print(Fore.CYAN + 'Logging in...')
-    session = SynergiaClient(aio(**ask_for_credentials()))
+    session = create_session(**ask_for_credentials())
     print(Fore.CYAN + 'Printing user\'s grades')
     gs = sort_grades(session)
     for subject in gs.keys():
