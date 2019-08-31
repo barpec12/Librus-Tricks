@@ -201,7 +201,7 @@ def aio(email, passwd, fetch_first=True):
      True -> zwraca użytkownika z indexem 0, `False` -> zwraca listę userów,
      dowolny int -> zwraca usera o indexie int'a
     :return: użytkownik Synergii
-    :rtype: list of librus_tricks.auth.SynergiaAuthUser
+    :rtype: librus_tricks.auth.SynergiaAuthUser
     """
     try:
         oauth_code = oauth_librus_code(email, passwd, revalidation=False)
