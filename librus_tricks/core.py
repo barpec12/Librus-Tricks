@@ -126,6 +126,16 @@ class SynergiaClient:
             ids_computed += f'{selected[-1]}'
             return utilities.get_objects(self, 'Grades', ids_computed, 'Grades', SynergiaGrade)
 
+    def get_subject_grades(self, subject):
+        """
+
+        :param SynergiaSubject subject: przedmiot z, którego będą pobierane oceny
+        :return:
+        :rtype: tuple of librus_tricks.classes.SynergiaGrade
+        """
+        grades = self.get_grades()
+        return tuple([grade for grade in grades if grade.subject == subject])
+
     def get_basetextgrades(self):
         """
         Zwraca krotkę ocen opisowych (chyba to tak się nazywa)
