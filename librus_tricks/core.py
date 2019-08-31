@@ -61,12 +61,12 @@ class SynergiaClient:
         )
 
         if response.status_code == 404:
-            raise exceptions.SynergiaNotFound(path_str + ' ' + response.json().__str__())
+            raise exceptions.SynergiaNotFound(response.status_code + ' ' + response.json().__str__())
         elif response.status_code == 403:
-            raise exceptions.SynergiaAccessDenied(path_str + ' ' + response.json().__str__())
+            raise exceptions.SynergiaAccessDenied(response.status_code + ' ' + response.json().__str__())
         elif response.status_code == 401:
             if response.text == '{"Status":"Error","Message":"Request is denied"}':
-                raise exceptions.SynergiaAccessDenied(path_str + ' ' + response.json().__str__())
+                raise exceptions.SynergiaAccessDenied(response.status_code + ' ' + response.json().__str__())
             else:
                 raise exceptions.TokenExpired(response.json())
         elif response.status_code == 400:
