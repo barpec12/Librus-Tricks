@@ -28,3 +28,7 @@ class SynergiaInvalidRequest(Exception):
 
 class TokenExpired(Exception):
     pass
+
+
+class SynergiaForbidden(Exception):
+    pass
