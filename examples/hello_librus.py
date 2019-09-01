@@ -8,7 +8,7 @@ from librus_tricks.auth import aio, exceptions
 def ask_for_credentials():
     login = input('E-mail: ')
     passwd = getpass.getpass('Passwd: ')
-    return {'email': login, 'passwd': passwd}
+    return {'email': login, 'password': passwd, 'passwd': passwd}
 
 
 if __name__ == '__main__':

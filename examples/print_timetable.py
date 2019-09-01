@@ -11,7 +11,7 @@ from librus_tricks import create_session
 def ask_for_credentials():
     login = input('E-mail: ')
     passwd = getpass.getpass('Passwd: ')
-    return {'email': login, 'passwd': passwd}
+    return {'email': login, 'password': passwd}
 
 
 def max_lenght_of_ttc(dtc):

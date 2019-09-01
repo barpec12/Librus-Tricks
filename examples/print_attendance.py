@@ -8,7 +8,7 @@ from librus_tricks import utilities, create_session, SynergiaAttendanceType
 def ask_for_credentials():
     login = input('E-mail: ')
     passwd = getpass.getpass('Passwd: ')
-    return {'email': login, 'passwd': passwd}
+    return {'email': login, 'password': passwd}
 
 
 def create_name_dict(*a_types):

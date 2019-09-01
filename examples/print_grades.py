@@ -8,7 +8,7 @@ from librus_tricks import create_session, SynergiaSubject
 def ask_for_credentials():
     login = input('E-mail: ')
     passwd = getpass.getpass('Passwd: ')
-    return {'email': login, 'passwd': passwd}
+    return {'email': login, 'password': passwd}
 
 
 def sort_grades(session):
