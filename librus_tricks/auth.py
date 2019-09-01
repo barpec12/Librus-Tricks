@@ -10,7 +10,7 @@ REDIRURI = 'http://localhost/bar'
 LOGINURL = 'https://portal.librus.pl/rodzina/login/action'
 OAUTHURL = 'https://portal.librus.pl/oauth2/access_token'
 SYNERGIAAUTHURL = 'https://portal.librus.pl/api/v2/SynergiaAccounts'
-FRESHURL = 'https://portal.librus.pl/api/SynergiaAccounts/fresh/{login}'
+FRESHURL = 'https://portal.librus.pl/api/v2/SynergiaAccounts/fresh/{login}'
 CLIENTID = 'wmSyUMo8llDAs4y9tJVYY92oyZ6h4lAt7KCuy0Gv'
 LIBRUSLOGINURL = f'https://portal.librus.pl/oauth2/authorize?client_id={CLIENTID}&redirect_uri={REDIRURI}&response_type=code'
 
@@ -41,6 +41,9 @@ class SynergiaAuthUser:
     def __repr__(self):
         return f'<SynergiaAuthSession for {self.name} {self.surname} based on ' \
                f'token {self.token[:6] + "..." + self.token[-6:]}>'
+
+    def __str__(self):
+        return f'{self.name} {self.surname}'
 
 
 def prepare_env():
@@ -97,7 +100,7 @@ def get_synergia_token(auth_code):
     :return: Kod ogólny do API Synergii
     :rtype: str
     """
-    return auth_session.post(
+    response = auth_session.post(
         OAUTHURL,
         data={
             'grant_type': 'authorization_code',
@@ -105,7 +108,9 @@ def get_synergia_token(auth_code):
             'client_id': CLIENTID,
             'redirect_uri': REDIRURI
         }
-    ).json()['access_token']
+    )
+    aaa = response.json()['access_token'] # Temporary
+    return aaa
 
 
 def try_to_fetch_logins(access_token, print_requests=False, connecting_tries=4):
