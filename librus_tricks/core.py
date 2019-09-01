@@ -60,17 +60,14 @@ class SynergiaClient:
             path_str, headers=self.__auth_headers, params=request_params
         )
 
-        if response.status_code == 404:
-            raise exceptions.SynergiaNotFound(response.status_code + ' ' + response.json().__str__())
-        elif response.status_code == 403:
-            raise exceptions.SynergiaAccessDenied(response.status_code + ' ' + response.json().__str__())
-        elif response.status_code == 401:
-            if response.text == '{"Status":"Error","Message":"Request is denied"}':
-                raise exceptions.SynergiaAccessDenied(response.status_code + ' ' + response.json().__str__())
-            else:
-                raise exceptions.TokenExpired(response.json())
-        elif response.status_code == 400:
-            raise exceptions.SynergiaInvalidRequest(response.json())
+        if response.status_code >= 400:
+            raise {
+                500: Exception('Server error'),
+                404: exceptions.SynergiaNotFound(response.json()),
+                403: exceptions.SynergiaForbidden(response.json()),
+                401: exceptions.SynergiaAccessDenied(response.json()),
+                400: exceptions.SynergiaInvalidRequest(response.json()),
+            }[response.status_code]
 
         return response.json()
 
@@ -87,10 +84,14 @@ class SynergiaClient:
         else:
             raise exceptions.WrongHTTPMethod('Nie obsługiwane zapytanie HTTP')
 
-        if response.status_code == 404:
-            raise exceptions.SynergiaNotFound(path_str)
-        elif response.status_code == 403:
-            raise exceptions.SynergiaAccessDenied(path_str + ' ' + response.json().__str__())
+        if response.status_code >= 400:
+            raise {
+                500: Exception('Server error'),
+                404: exceptions.SynergiaNotFound(response.json()),
+                403: exceptions.SynergiaForbidden(response.json()),
+                401: exceptions.SynergiaAccessDenied(response.json()),
+                400: exceptions.SynergiaInvalidRequest(response.json()),
+            }[response.status_code]
 
         return response.json()
 
