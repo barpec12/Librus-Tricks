@@ -9,7 +9,7 @@ from . import exceptions
 REDIRURI = 'http://localhost/bar'
 LOGINURL = 'https://portal.librus.pl/rodzina/login/action'
 OAUTHURL = 'https://portal.librus.pl/oauth2/access_token'
-SYNERGIAAUTHURL = 'https://portal.librus.pl/api/SynergiaAccounts'
+SYNERGIAAUTHURL = 'https://portal.librus.pl/api/v2/SynergiaAccounts'
 FRESHURL = 'https://portal.librus.pl/api/SynergiaAccounts/fresh/{login}'
 CLIENTID = 'wmSyUMo8llDAs4y9tJVYY92oyZ6h4lAt7KCuy0Gv'
 LIBRUSLOGINURL = f'https://portal.librus.pl/oauth2/authorize?client_id={CLIENTID}&redirect_uri={REDIRURI}&response_type=code'
@@ -108,7 +108,7 @@ def get_synergia_token(auth_code):
     ).json()['access_token']
 
 
-def try_to_fetch_logins(access_token, print_requests=False, connecting_tries=10):
+def try_to_fetch_logins(access_token, print_requests=False, connecting_tries=4):
     """
 
     :param str access_token: token ogólny do API Synergii
