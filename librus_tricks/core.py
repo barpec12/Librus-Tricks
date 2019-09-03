@@ -1,4 +1,4 @@
-import requests
+import httpx
 
 from librus_tricks import cache
 from librus_tricks import exceptions, utilities
@@ -24,7 +24,7 @@ class SynergiaClient:
         obsługą wiadomości
         """
         self.user = user
-        self.session = requests.session()
+        self.session = httpx.AsyncClient()
         if custom_cache_object is not None:
             self.cache = custom_cache_object
         else:
@@ -39,7 +39,7 @@ class SynergiaClient:
     def __repr__(self):
         return f'<Synergia session for {self.user}>'
 
-    def get(self, *path, request_params=None):
+    async def get(self, *path, request_params=None):
         """
         Zwraca json'a przekonwertowany na dict'a po podaniu prawidłowego węzła
 
@@ -56,7 +56,7 @@ class SynergiaClient:
         path_str = f'{self.__api_url}'
         for p in path:
             path_str += f'{p}/'
-        response = self.session.get(
+        response = await self.session.get(
             path_str, headers=self.__auth_headers, params=request_params
         )
 
@@ -71,14 +71,14 @@ class SynergiaClient:
 
         return response.json()
 
-    def do_request(self, *path, method='POST', request_params=None):
+    async def do_request(self, *path, method='POST', request_params=None):
         if request_params is None:
             request_params = dict()
         path_str = f'{self.__api_url}'
         for p in path:
             path_str += f'{p}/'
         if method == 'POST':
-            response = self.session.post(
+            response = await self.session.post(
                 path_str, headers=self.__auth_headers, params=request_params
             )
         else:

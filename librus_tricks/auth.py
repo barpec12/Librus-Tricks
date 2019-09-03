@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-import requests
+import httpx
 from bs4 import BeautifulSoup
 
 from .exceptions import *
@@ -32,9 +32,9 @@ class SynergiaUser:
     def __str__(self):
         return f'{self.name} {self.last_name}'
 
-    def revalidate_root(self):
-        auth_session = requests.session()
-        new_tokens = auth_session.post(
+    async def revalidate_root(self):
+        auth_session = httpx.AsyncClient()
+        new_tokens = await auth_session.post(
             OAUTHURL,
             data={
                 'grant_type': 'refresh_token',
@@ -45,15 +45,15 @@ class SynergiaUser:
         self.root_token = new_tokens.json()['access_token']
         self.refresh_token = new_tokens.json()['refresh_token']
 
-    def revalidate_user(self):
-        auth_session = requests.session()
-        new_token = auth_session.get(
+    async def revalidate_user(self):
+        auth_session = httpx.AsyncClient()
+        new_token = await auth_session.get(
             FRESHURL.format(login=self.login),
             headers={'Authorization': f'Bearer {self.root_token}'}
         )
         self.token = new_token.json()['accessToken']
 
-    def is_revalidation_required(self, use_clock=True, use_query=False):
+    async def is_revalidation_required(self, use_clock=True, use_query=False):
         clock_resp = None
         query_resp = None
 
