@@ -12,7 +12,7 @@ session = create_session(email, password, cache_location=':memory:')
 
 
 def test_auth():
-    return session.user.is_authenticated
+    return session.user.is_revalidation_required(use_query=True)
 
 
 def test_attendance():

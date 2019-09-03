@@ -14,7 +14,7 @@ class SynergiaClient:
         """
         Tworzy obiekt sesji z API Synergii.
 
-        :param librus_tricks.auth.SynergiaAuthUser user: użytkownik Synergii
+        :param librus_tricks.auth.SynergiaUser user: użytkownik Synergii
         :param str api_url: url do API, NIE ZMIENIAJ GO JEŚLI NIE WIESZ DO CZEGO SŁUŻY
         :param str user_agent: określa jak ma się przedstawiać nasza sesja
         :param str cache_location: określa lokalizację bazy danych z cache, ustaw ``:memory:``
