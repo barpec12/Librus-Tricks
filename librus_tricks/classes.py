@@ -9,7 +9,17 @@ def _try_to_extract(payload, extraction_key, false_return=None):
 
 
 class SynergiaGenericClass:
-    def __init__(self, oid, session, resource, extraction_key, payload=None):
+    @classmethod
+    async def load(cls, oid, session, resource, extraction_key):
+        self = SynergiaGenericClass('0', session, {'no': 'payload'})
+        self._json_payload = await self._session.get(
+            *resource,
+            str(oid)
+        )[extraction_key]
+        self.oid = int(oid)
+        return self
+
+    def __init__(self, oid, session, payload):
         """
 
         :param str oid: Id żądanego obiektu
@@ -22,21 +32,20 @@ class SynergiaGenericClass:
         self._session = session
         self.oid = int(oid)
         self.objects_ids = None
-        if payload is None:
-            self._json_payload = self._session.get(
-                *resource,
-                str(self.oid)
-            )[extraction_key]
-        else:
-            self._json_payload = payload
+        self._json_payload = payload
 
     def __repr__(self):
         return f'<{self.__class__.__name__} {self.oid} at {hex(id(self))}>'
 
 
 class SynergiaTeacher(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None):
-        super().__init__(oid, session, ('Users',), 'User', payload)
+    async def load(cls, oid, session, resource, extraction_key):
+        self = await cls.load(oid, session, resource, extraction_key)
+        self.name = self._json_payload['FirstName']
+        self.last_name = self._json_payload['LastName']
+
+    def __init__(self, oid, session, payload):
+        super().__init__(oid, session, payload)
         self.name = self._json_payload['FirstName']
         self.last_name = self._json_payload['LastName']
 
@@ -298,6 +307,7 @@ class SynergiaBaseTextGrade(SynergiaGenericClass):
         """
         return self._session.csync(self.objects_ids.student, SynergiaStudent)
 
+
 class SynergiaGrade(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
 
@@ -339,7 +349,7 @@ class SynergiaGrade(SynergiaGenericClass):
 
     def __repr__(self):
         return f'<{self.__class__.__name__} {self.grade} from SynergiaSubject with id {self.objects_ids.subject} ' \
-            f'added {self.add_date.strftime("%Y-%m-%d %H:%M:%S")}>'
+               f'added {self.add_date.strftime("%Y-%m-%d %H:%M:%S")}>'
 
     def __str__(self):
         return self.grade
@@ -543,7 +553,7 @@ class SynergiaExam(SynergiaGenericClass):
 
     def __repr__(self):
         return f'<{self.__class__.__name__} ' \
-            f'{self.date.strftime("%Y-%m-%d")} for subject with id {self.objects_ids.subject}>'
+               f'{self.date.strftime("%Y-%m-%d")} for subject with id {self.objects_ids.subject}>'
 
     @property
     def teacher(self):
@@ -576,6 +586,7 @@ class SynergiaExam(SynergiaGenericClass):
                 def __init__(self):
                     self.name = 'Przedmiot nie określony'
                     self.short_name = None
+
             return FakeSynergiaSubject()
         else:
             return self._session.csync(self.objects_ids.subject, SynergiaSubject)
@@ -672,7 +683,7 @@ class SynergiaSchoolFreeDays(SynergiaGenericClass):
 
 class SynergiaSchool(SynergiaGenericClass):
     def __init__(self, oid, session, payload=None):
-        super().__init__(oid, session, ('School', ), 'School', payload)
+        super().__init__(oid, session, ('School',), 'School', payload)
         self.name = self._json_payload['Name']
         self.school_location = {
             'street': self._json_payload['Street'],
