@@ -1,5 +1,5 @@
 from librus_tricks import exceptions, utilities
-from librus_tricks.auth import aio_legacy, aio
+from librus_tricks.auth import authorizer
 from librus_tricks.classes import *
 from librus_tricks.core import SynergiaClient
 
@@ -18,14 +18,14 @@ def create_session(email, password, fetch_first=True, **kwargs):
     :return:
     """
     if fetch_first is True:
-        user = aio(email, password, fetch_first=True)
+        user = authorizer(email, password)[0]
         session = SynergiaClient(user, synergia_user_passwd=password, **kwargs)
         return session
     elif fetch_first is False:
-        users = aio(email, password, fetch_first=False)
+        users = authorizer(email, password)
         sessions = [SynergiaClient(user, synergia_user_passwd=password, **kwargs) for user in users]
         return sessions
     else:
-        user = aio(email, password, fetch_first=fetch_first)
+        user = authorizer(email, password)[fetch_first]
         session = SynergiaClient(user, synergia_user_passwd=password, **kwargs)
         return session

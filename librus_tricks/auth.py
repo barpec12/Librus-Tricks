@@ -1,230 +1,122 @@
-import json
-from time import sleep
+from datetime import datetime, timedelta
 
 import requests
+from bs4 import BeautifulSoup
 
-from . import exceptions
+from .exceptions import *
 
 # Some globals
-REDIRURI = 'http://localhost/bar'
+REDIRURL = 'http://localhost/bar'
 LOGINURL = 'https://portal.librus.pl/rodzina/login/action'
 OAUTHURL = 'https://portal.librus.pl/oauth2/access_token'
 SYNERGIAAUTHURL = 'https://portal.librus.pl/api/v2/SynergiaAccounts'
 FRESHURL = 'https://portal.librus.pl/api/v2/SynergiaAccounts/fresh/{login}'
 CLIENTID = 'wmSyUMo8llDAs4y9tJVYY92oyZ6h4lAt7KCuy0Gv'
-LIBRUSLOGINURL = f'https://portal.librus.pl/oauth2/authorize?client_id={CLIENTID}&redirect_uri={REDIRURI}&response_type=code'
+LIBRUSLOGINURL = f'https://portal.librus.pl/oauth2/authorize?client_id={CLIENTID}&redirect_uri={REDIRURL}&response_type=code'
 
 
-# Defining auth classes
-
-class SynergiaAuthUser:
-    def __init__(self, data_dict):
-        """
-        Tworzy obiekt użytkownika Synergii zawierający dane do uwierzytelniania.
-
-        :param dict data_dict: dict zawierający podstawowe dane do logowania
-        """
-        self.uid = data_dict['id']
-        self.login = data_dict['login']
-        self.token = data_dict['accessToken']
-        self.name, self.surname = data_dict['studentName'].split(' ')
-
-    @property
-    def is_authenticated(self):
-        """Sprawdza czy dany użytkownik zawiera nieprzeterminowane tokeny"""
-        test = requests.get('https://api.librus.pl/2.0/Me', headers={'Authorization': f'Bearer {self.token}'})
-        if test.status_code == 401:
-            return False
-        else:
-            return True
+class SynergiaUser:
+    def __init__(self, user_dict, root_token, revalidation_token, exp_in):
+        self.token = user_dict['accessToken']
+        self.refresh_token = revalidation_token
+        self.root_token = root_token
+        self.name, self.last_name = user_dict['studentName'].split(' ')
+        self.login = user_dict['login']
+        self.uid = user_dict['id']
+        self.expires_in = datetime.now() + timedelta(seconds=exp_in)
 
     def __repr__(self):
-        return f'<SynergiaAuthSession for {self.name} {self.surname} based on ' \
+        return f'<SynergiaUser for {self.name} {self.last_name} based on ' \
                f'token {self.token[:6] + "..." + self.token[-6:]}>'
 
     def __str__(self):
-        return f'{self.name} {self.surname}'
+        return f'{self.name} {self.last_name}'
+
+    def revalidate_root(self):
+        auth_session = requests.session()
+        new_tokens = auth_session.post(
+            OAUTHURL,
+            data={
+                'grant_type': 'refresh_token',
+                'refresh_token': self.refresh_token,
+                'client_id': CLIENTID
+            }
+        )
+        self.root_token = new_tokens.json()['access_token']
+        self.refresh_token = new_tokens.json()['refresh_token']
+
+    def revalidate_user(self):
+        auth_session = requests.session()
+        new_token = auth_session.get(
+            FRESHURL.format(login=self.login),
+            headers={'Authorization': f'Bearer {self.root_token}'}
+        )
+        self.token = new_token.json()['accessToken']
+
+    def is_revalidation_required(self, use_clock=True, use_query=False):
+        clock_resp = None
+        query_resp = None
+
+        if use_clock:
+            if datetime.now() > self.expires_in:
+                clock_resp = False
+            else:
+                clock_resp = True
+        if use_query:
+            test = requests.get('https://api.librus.pl/2.0/Me', headers={'Authorization': f'Bearer {self.token}'})
+            if test.status_code == 401:
+                query_resp = False
+            else:
+                query_resp = True
+
+        return clock_resp, query_resp
 
 
-def prepare_env():
+def authorizer(email, password):
     """
-    Wykorzystywane do przygotowania tworzenia kolejnej sesji
+    Zwraca listę użytkowników dostępnych dla danego konta Librus Portal
 
+    :param str email:
+    :param str password:
+    :return:
+    :rtype: list of SynergiaUser
     """
-    global auth_session
     auth_session = requests.session()
-
-
-def oauth_librus_code(email, passwd, revalidation=False):
-    """
-    Wrapper podszywa się pod aplikację i próbuje otrzymać kod OAuth
-
-    :param str email: email do aplikacji Librusa
-    :param str passwd: hasło do aplikacji Librusa
-    :param bool revalidation: zmienna odpowiadająca za
-    :return: kod OAUTH
-    :rtype: str
-    :raises librus_tricks.exceptions.LibrusLoginError: zły login lub hasło lub inny błąd związany z autoryzacją
-    """
-    prepare_env()
-    if revalidation:
-        mini_session = auth_session.get(LIBRUSLOGINURL, allow_redirects=False)
-        access_code = mini_session.headers['location'][26:]
-        return access_code
     site = auth_session.get(LIBRUSLOGINURL)
-    csrf_token = site.text[
-                 site.text.find('name="csrf-token" content="') + 27:site.text.find('name="csrf-token" content="') + 67
-                 ]
-    login_response_redir = auth_session.post(
-        LOGINURL,
-        data=json.dumps({'email': email, 'password': passwd}),
-        headers={'X-CSRF-TOKEN': csrf_token, 'Content-Type': 'application/json'}
+    soup = BeautifulSoup(site.text, 'html.parser')
+    csrf = soup.find('meta', attrs={'name': 'csrf-token'})['content']
+    login_response_redirection = auth_session.post(
+        LOGINURL, json={'email': email, 'password': password},
+        headers={'X-CSRF-TOKEN': csrf, 'Content-Type': 'application/json'}
     )
 
-    if login_response_redir.status_code == 401:
-        raise exceptions.LibrusLoginError(
-            f'Zły login lub hasło lub inny błąd związany z autoryzacją ({login_response_redir.json()})')
-    elif login_response_redir.status_code == 403:
-        raise exceptions.LibrusInvalidPasswordError(
-            f'403 - złe hasło lub email ({login_response_redir.json()["errors"]})')
+    if login_response_redirection.status_code != 200:
+        if login_response_redirection.status_code == 403:
+            raise LibrusInvalidPasswordError(login_response_redirection.text)
+        else:
+            raise LibrusLoginError(login_response_redirection.text)
 
-    redir_addr = login_response_redir.json()['redirect']
-    access_code = auth_session.get(redir_addr, allow_redirects=False).headers['location'][26:]
-    return access_code
+    redirection_addr = login_response_redirection.json()['redirect']
+    redirection_response = auth_session.get(redirection_addr, allow_redirects=False)
+    oauth_code = redirection_response.headers['location'].replace('http://localhost/bar?code=', '')
 
-
-def get_synergia_token(auth_code):
-    """
-
-    :param str auth_code: kod OAUTH z aplikacji Librusa
-    :return: Kod ogólny do API Synergii
-    :rtype: str
-    """
-    response = auth_session.post(
+    synergia_root_response = auth_session.post(
         OAUTHURL,
         data={
             'grant_type': 'authorization_code',
-            'code': auth_code,
+            'code': oauth_code,
             'client_id': CLIENTID,
-            'redirect_uri': REDIRURI
+            'redirect_uri': REDIRURL
         }
     )
-    aaa = response.json()['access_token'] # TODO: Require to pass more tokens
-    return aaa
+    synergia_root_login_token = synergia_root_response.json()['access_token']
+    synergia_root_revalidation_token = synergia_root_response.json()['refresh_token']
+    synergia_root_expiration = synergia_root_response.json()['expires_in']
 
-
-def try_to_fetch_logins(access_token, print_requests=False, connecting_tries=4):
-    """
-
-    :param str access_token: token ogólny do API Synergii
-    :param bool print_requests: zmienna warunkująca wyświetlanie kolejnych zapytań
-    :param int connecting_tries: zmienna określająca ilość ewentualnych powtórzeń
-    :return: dict zawierający konta
-    :rtype: dict
-    """
-    try:
-        for connection_try in range(0, connecting_tries):
-            try:
-                response = auth_session.get(
-                    SYNERGIAAUTHURL,
-                    headers={'Authorization': f'Bearer {access_token}'}
-                ).json()
-                if print_requests:
-                    print(response)
-                accounts = response['accounts']
-                return accounts
-            except:
-                if print_requests:
-                    print(f'Próba uwierzytelnienia numer {connection_try}')
-            sleep(1.5)
-    except:
-        raise exceptions.LibrusNotHandlerableError('Serwer librusa ma problem z prostymi zapytaniami...')
-
-
-def get_avaiable_users(access_token, print_credentials=False):
-    """
-    Tworzy listę dostępnych użytkowników.
-
-    :param str access_token: token ogólny do API Synergii
-    :param bool print_credentials: wyświetlaj kolejne dostępne tożsamości
-    :return: lista dostępnych użytkowników
-    :rtype: list of librus_tricks.auth.SynergiaAuthUser
-    """
-    accounts = try_to_fetch_logins(access_token)
-    users = []
-    for d in accounts:
-        if print_credentials:
-            print(json.dumps(d))
-        users.append(SynergiaAuthUser(d))
-    return users
-
-
-def get_new_token(login, email, passwd): # TODO: require repair
-    """
-    Wymusza utworzenie nowego tokenu ogólnego do API Synergii.
-
-    :param str login: login do Synergii
-    :param str email: email do aplikacji Librusa
-    :param str passwd: hasło do aplikacji Librusa
-    :return: nowy token ogólny do API Synergii
-    """
-    prepare_env()
-    auth_session.get(
-        FRESHURL.format(login=login)
-    )
-    return get_synergia_token(oauth_librus_code(email, passwd, revalidation=True))
-
-
-def aio_legacy(email, passwd, fetch_index=0, force_revalidation_method=False):
-    """
-    NIE UŻYWAJ
-    aio (All-In-One) ułatwia otrzymanie danych do logowania i utworzenia sesji.
-
-    :param str email: email do aplikacji Librusa
-    :param str passwd: hasło do aplikacji Librusa
-    :param int fetch_index: wybór konta do Synergii
-    :return: użytkownik Synergii
-    :rtype: librus_tricks.auth.SynergiaAuthUser
-    """
-    oauth_code = oauth_librus_code(email, passwd, revalidation=force_revalidation_method)
-    synergia_token = get_synergia_token(oauth_code)
-    api_users = get_avaiable_users(synergia_token)
-    u = api_users[fetch_index]
-    if not u.is_authenticated:
-        synergia_token = get_new_token(u.login, email, passwd)
-        api_users = get_avaiable_users(synergia_token)
-        u = api_users[fetch_index]
-    return u
-
-
-def aio(email, passwd, fetch_first=True):
-    """
-    aio (All-In-One) ułatwia otrzymanie danych do logowania i utworzenia sesji.
-
-    :param str email: email do aplikacji Librusa
-    :param str passwd: hasło do aplikacji Librusa
-    :param fetch_first: ustala czy ma zwracać pierwszego użytkownika.
-     True -> zwraca użytkownika z indexem 0, `False` -> zwraca listę userów,
-     dowolny int -> zwraca usera o indexie int'a
-    :return: użytkownik Synergii
-    :rtype: librus_tricks.auth.SynergiaAuthUser
-    """
-    try:
-        oauth_code = oauth_librus_code(email, passwd, revalidation=False)
-    except requests.exceptions.ConnectionError:
-        oauth_code = oauth_librus_code(email, passwd, revalidation=True)
-    synergia_token = get_synergia_token(oauth_code)
-    api_users = get_avaiable_users(synergia_token)
-    for user in api_users:
-        if not user.is_authenticated:
-            synergia_token = get_new_token(user.login, email, passwd)
-            api_users = get_avaiable_users(synergia_token)
-            break
-
-    # Return user(s)
-    if fetch_first is True:
-        return api_users[0]
-    elif fetch_first is False:
-        return api_users
-    else:
-        return api_users[fetch_first]
+    synergia_users_response = auth_session.get(SYNERGIAAUTHURL,
+                                               headers={'Authorization': f'Bearer {synergia_root_login_token}'})
+    synergia_users_raw = synergia_users_response.json()['accounts']
+    synergia_users = [
+        SynergiaUser(user_data, synergia_root_login_token, synergia_root_revalidation_token, synergia_root_expiration)
+        for user_data in synergia_users_raw]
+    return synergia_users
