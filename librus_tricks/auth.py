@@ -79,7 +79,7 @@ def authorizer(email, password):
     :param str email:
     :param str password:
     :return:
-    :rtype: list of SynergiaUser
+    :rtype: list of librus_tricks.auth.SynergiaUser
     """
     auth_session = requests.session()
     site = auth_session.get(LIBRUSLOGINURL)
