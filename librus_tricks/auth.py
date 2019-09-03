@@ -109,7 +109,7 @@ def get_synergia_token(auth_code):
             'redirect_uri': REDIRURI
         }
     )
-    aaa = response.json()['access_token'] # Temporary
+    aaa = response.json()['access_token'] # TODO: Require to pass more tokens
     return aaa
 
 
@@ -159,7 +159,7 @@ def get_avaiable_users(access_token, print_credentials=False):
     return users
 
 
-def get_new_token(login, email, passwd):
+def get_new_token(login, email, passwd): # TODO: require repair
     """
     Wymusza utworzenie nowego tokenu ogólnego do API Synergii.
 
@@ -168,6 +168,7 @@ def get_new_token(login, email, passwd):
     :param str passwd: hasło do aplikacji Librusa
     :return: nowy token ogólny do API Synergii
     """
+    prepare_env()
     auth_session.get(
         FRESHURL.format(login=login)
     )
