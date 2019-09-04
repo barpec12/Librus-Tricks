@@ -22,3 +22,4 @@ librus_tricks/deprecated/
 
 librus_tricks/cache\.sqlite
 /examples/cache.sqlite
+/cache.sqlite
