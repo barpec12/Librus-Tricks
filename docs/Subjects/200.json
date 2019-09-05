@@ -1,0 +1,122 @@
+{
+  "Subjects": [
+    {
+      "Id": 37660,
+      "Name": "Fizyka",
+      "No": 3,
+      "Short": "fiz",
+      "IsExtracurricular": false,
+      "IsBlockLesson": false
+    },
+    {
+      "Id": 37661,
+      "Name": "Geografia",
+      "No": 4,
+      "Short": "geo",
+      "IsExtracurricular": false,
+      "IsBlockLesson": false
+    },
+    {
+      "Id": 37662,
+      "Name": "Godzina wychowawcza",
+      "No": 5,
+      "Short": "gw",
+      "IsExtracurricular": false,
+      "IsBlockLesson": false
+    },
+    {
+      "Id": 37663,
+      "Name": "Historia",
+      "No": 6,
+      "Short": "his",
+      "IsExtracurricular": false,
+      "IsBlockLesson": false
+    },
+    {
+      "Id": 37664,
+      "Name": "Informatyka",
+      "No": 7,
+      "Short": "inf",
+      "IsExtracurricular": false,
+      "IsBlockLesson": false
+    },
+    {
+      "Id": 37665,
+      "Name": "Język angielski",
+      "No": 8,
+      "Short": "jang",
+      "IsExtracurricular": false,
+      "IsBlockLesson": false
+    },
+    {
+      "Id": 37667,
+      "Name": "Język niemiecki",
+      "No": 10,
+      "Short": "niem",
+      "IsExtracurricular": false,
+      "IsBlockLesson": false
+    },
+    {
+      "Id": 37668,
+      "Name": "Język polski",
+      "No": 11,
+      "Short": "pol",
+      "IsExtracurricular": false,
+      "IsBlockLesson": false
+    },
+    {
+      "Id": 37670,
+      "Name": "Matematyka",
+      "No": 13,
+      "Short": "mat",
+      "IsExtracurricular": false,
+      "IsBlockLesson": false
+    },
+    {
+      "Id": 37673,
+      "Name": "Religia",
+      "No": 16,
+      "Short": "rel",
+      "IsExtracurricular": false,
+      "IsBlockLesson": false
+    },
+    {
+      "Id": 37678,
+      "Name": "Wychowanie fizyczne",
+      "No": 21,
+      "Short": "wf",
+      "IsExtracurricular": false,
+      "IsBlockLesson": false
+    },
+    {
+      "Id": 58324,
+      "Name": "Etyka",
+      "No": 25,
+      "Short": "ety",
+      "IsExtracurricular": false,
+      "IsBlockLesson": false
+    },
+    {
+      "Id": 65044,
+      "Name": "Przyroda",
+      "No": 29,
+      "Short": "przy",
+      "IsExtracurricular": false,
+      "IsBlockLesson": false
+    },
+    {
+      "Id": 65052,
+      "Name": "Historia i społeczeństwo",
+      "No": 30,
+      "Short": "hist",
+      "IsExtracurricular": false,
+      "IsBlockLesson": false
+    }
+  ],
+  "Resources": {
+    "..": {
+      "Url": "https://api.librus.pl/2.0/Root"
+    }
+  },
+  "Url": "https://api.librus.pl/2.0/Subjects"
+}

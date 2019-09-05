@@ -1,0 +1,188 @@
+{
+  "Resources": {
+    "Classes": {
+      "Url": "https://api.librus.pl/2.0/Classes"
+    },
+    "TextGrades": {
+      "Url": "https://api.librus.pl/2.0/TextGrades"
+    },
+    "SilentNight": {
+      "Url": "https://api.librus.pl/2.0/SilentNight"
+    },
+    "ClientVersion": {
+      "Url": "https://api.librus.pl/2.0/ClientVersion"
+    },
+    "Calendars": {
+      "Url": "https://api.librus.pl/2.0/Calendars"
+    },
+    "LuckyNumbers": {
+      "Url": "https://api.librus.pl/2.0/LuckyNumbers"
+    },
+    "AutoLoginToken": {
+      "Url": "https://api.librus.pl/2.0/AutoLoginToken"
+    },
+    "WhatsNew": {
+      "Url": "https://api.librus.pl/2.0/WhatsNew"
+    },
+    "DescriptiveTextGrades": {
+      "Url": "https://api.librus.pl/2.0/DescriptiveTextGrades"
+    },
+    "SchoolFreeDays": {
+      "Url": "https://api.librus.pl/2.0/SchoolFreeDays"
+    },
+    "Units": {
+      "Url": "https://api.librus.pl/2.0/Units"
+    },
+    "BaseTextGrades": {
+      "Url": "https://api.librus.pl/2.0/BaseTextGrades"
+    },
+    "Notes": {
+      "Url": "https://api.librus.pl/2.0/Notes"
+    },
+    "PremiumAccountInfo": {
+      "Url": "https://api.librus.pl/2.0/PremiumAccountInfo"
+    },
+    "SchoolNotices": {
+      "Url": "https://api.librus.pl/2.0/SchoolNotices"
+    },
+    "Duties": {
+      "Url": "https://api.librus.pl/2.0/Duties"
+    },
+    "IdwUser": {
+      "Url": "https://api.librus.pl/2.0/IdwUser"
+    },
+    "Educators": {
+      "Url": "https://api.librus.pl/2.0/Educators"
+    },
+    "VirtualClasses": {
+      "Url": "https://api.librus.pl/2.0/VirtualClasses"
+    },
+    "UserProfile": {
+      "Url": "https://api.librus.pl/2.0/UserProfile"
+    },
+    "HomeWorkAssignments": {
+      "Url": "https://api.librus.pl/2.0/HomeWorkAssignments"
+    },
+    "PurchasePayments": {
+      "Url": "https://api.librus.pl/2.0/PurchasePayments"
+    },
+    "BehaviourGrades": {
+      "Url": "https://api.librus.pl/2.0/BehaviourGrades"
+    },
+    "Users": {
+      "Url": "https://api.librus.pl/2.0/Users"
+    },
+    "BehaviourGrade": {
+      "Url": "https://api.librus.pl/2.0/BehaviourGrade"
+    },
+    "Messages": {
+      "Url": "https://api.librus.pl/2.0/Messages"
+    },
+    "Lessons": {
+      "Url": "https://api.librus.pl/2.0/Lessons"
+    },
+    "BannerAds": {
+      "Url": "https://api.librus.pl/2.0/BannerAds"
+    },
+    "ClassFreeDays": {
+      "Url": "https://api.librus.pl/2.0/ClassFreeDays"
+    },
+    "NotificationCenter": {
+      "Url": "https://api.librus.pl/2.0/NotificationCenter"
+    },
+    "SchoolInfo": {
+      "Url": "https://api.librus.pl/2.0/SchoolInfo"
+    },
+    "PremiumAccount": {
+      "Url": "https://api.librus.pl/2.0/PremiumAccount"
+    },
+    "Grades": {
+      "Url": "https://api.librus.pl/2.0/Grades"
+    },
+    "Colors": {
+      "Url": "https://api.librus.pl/2.0/Colors"
+    },
+    "PushConfigurations": {
+      "Url": "https://api.librus.pl/2.0/PushConfigurations"
+    },
+    "Subjects": {
+      "Url": "https://api.librus.pl/2.0/Subjects"
+    },
+    "PremiumAccountDemoExpire": {
+      "Url": "https://api.librus.pl/2.0/PremiumAccountDemoExpire"
+    },
+    "PointGrades": {
+      "Url": "https://api.librus.pl/2.0/PointGrades"
+    },
+    "TimetableEntries": {
+      "Url": "https://api.librus.pl/2.0/TimetableEntries"
+    },
+    "Substitutions": {
+      "Url": "https://api.librus.pl/2.0/Substitutions"
+    },
+    "Schools": {
+      "Url": "https://api.librus.pl/2.0/Schools"
+    },
+    "TeacherFreeDays": {
+      "Url": "https://api.librus.pl/2.0/TeacherFreeDays"
+    },
+    "UserAppActivity": {
+      "Url": "https://api.librus.pl/2.0/UserAppActivity"
+    },
+    "Classrooms": {
+      "Url": "https://api.librus.pl/2.0/Classrooms"
+    },
+    "DescriptiveGrades": {
+      "Url": "https://api.librus.pl/2.0/DescriptiveGrades"
+    },
+    "Realizations": {
+      "Url": "https://api.librus.pl/2.0/Realizations"
+    },
+    "ParentTeacherConferences": {
+      "Url": "https://api.librus.pl/2.0/ParentTeacherConferences"
+    },
+    "Attendances": {
+      "Url": "https://api.librus.pl/2.0/Attendances"
+    },
+    "Auth": {
+      "Url": "https://api.librus.pl/2.0/Auth"
+    },
+    "SchoolReceiveMessage": {
+      "Url": "https://api.librus.pl/2.0/SchoolReceiveMessage"
+    },
+    "SystemData": {
+      "Url": "https://api.librus.pl/2.0/SystemData"
+    },
+    "Me": {
+      "Url": "https://api.librus.pl/2.0/Me"
+    },
+    "SchoolAgreement": {
+      "Url": "https://api.librus.pl/2.0/SchoolAgreement"
+    },
+    "HomeWorks": {
+      "Url": "https://api.librus.pl/2.0/HomeWorks"
+    },
+    "Help": {
+      "Url": "https://api.librus.pl/2.0/Help"
+    },
+    "ChangeRegister": {
+      "Url": "https://api.librus.pl/2.0/ChangeRegister"
+    },
+    "Log": {
+      "Url": "https://api.librus.pl/2.0/Log"
+    },
+    "PushChanges": {
+      "Url": "https://api.librus.pl/2.0/PushChanges"
+    },
+    "PushDevices": {
+      "Url": "https://api.librus.pl/2.0/PushDevices"
+    },
+    "Timetables": {
+      "Url": "https://api.librus.pl/2.0/Timetables"
+    },
+    "PremiumAccountDemo": {
+      "Url": "https://api.librus.pl/2.0/PremiumAccountDemo"
+    }
+  },
+  "Url": "https://api.librus.pl/2.0/Root"
+}

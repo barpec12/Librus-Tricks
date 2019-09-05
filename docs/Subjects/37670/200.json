@@ -1,0 +1,16 @@
+{
+  "Subject": {
+    "Id": 37670,
+    "Name": "Matematyka",
+    "No": 13,
+    "Short": "mat",
+    "IsExtracurricular": false,
+    "IsBlockLesson": false
+  },
+  "Resources": {
+    "..": {
+      "Url": "https://api.librus.pl/2.0/Root"
+    }
+  },
+  "Url": "https://api.librus.pl/2.0/Subjects/37670"
+}

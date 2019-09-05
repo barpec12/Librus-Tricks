@@ -1,0 +1,1040 @@
+{
+  "Timetable": {
+    "2019-09-02": [
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      []
+    ],
+    "2019-09-03": [
+      [],
+      [],
+      [
+        {
+          "Lesson": {
+            "Id": "1502518",
+            "Url": "https://api.librus.pl/2.0/Lessons/1502518"
+          },
+          "Classroom": {
+            "Id": "4549",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4549"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "2",
+          "TimetableEntry": {
+            "Id": "291342",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/291342"
+          },
+          "DayNo": "2",
+          "Subject": {
+            "Id": "37678",
+            "Name": "Wychowanie fizyczne",
+            "Short": "wf",
+            "Url": "https://api.librus.pl/2.0/Subjects/37678"
+          },
+          "Teacher": {
+            "Id": "875583",
+            "FirstName": "Arkadiusz",
+            "LastName": "Ku\u017aba",
+            "Url": "https://api.librus.pl/2.0/Users/875583"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "08:55",
+          "HourTo": "09:40",
+          "VirtualClass": {
+            "Id": 754808,
+            "Url": "https://api.librus.pl/2.0/VirtualClasses/754808"
+          },
+          "VirtualClassName": "2C gr2"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "2007806",
+            "Url": "https://api.librus.pl/2.0/Lessons/2007806"
+          },
+          "Classroom": {
+            "Id": "4546",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4546"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "3",
+          "TimetableEntry": {
+            "Id": "291176",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/291176"
+          },
+          "DayNo": "2",
+          "Subject": {
+            "Id": "37660",
+            "Name": "Fizyka",
+            "Short": "fiz",
+            "Url": "https://api.librus.pl/2.0/Subjects/37660"
+          },
+          "Teacher": {
+            "Id": "1579719",
+            "FirstName": "Zbigniew",
+            "LastName": "Or\u0142owski",
+            "Url": "https://api.librus.pl/2.0/Users/1579719"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "09:50",
+          "HourTo": "10:35",
+          "VirtualClass": {
+            "Id": 754758,
+            "Url": "https://api.librus.pl/2.0/VirtualClasses/754758"
+          },
+          "VirtualClassName": "2A, 2C fiz"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "2007806",
+            "Url": "https://api.librus.pl/2.0/Lessons/2007806"
+          },
+          "Classroom": {
+            "Id": "4546",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4546"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "4",
+          "TimetableEntry": {
+            "Id": "291175",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/291175"
+          },
+          "DayNo": "2",
+          "Subject": {
+            "Id": "37660",
+            "Name": "Fizyka",
+            "Short": "fiz",
+            "Url": "https://api.librus.pl/2.0/Subjects/37660"
+          },
+          "Teacher": {
+            "Id": "1579719",
+            "FirstName": "Zbigniew",
+            "LastName": "Or\u0142owski",
+            "Url": "https://api.librus.pl/2.0/Users/1579719"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "10:50",
+          "HourTo": "11:35",
+          "VirtualClass": {
+            "Id": 754758,
+            "Url": "https://api.librus.pl/2.0/VirtualClasses/754758"
+          },
+          "VirtualClassName": "2A, 2C fiz"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "2008060",
+            "Url": "https://api.librus.pl/2.0/Lessons/2008060"
+          },
+          "Classroom": {
+            "Id": "4526",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4526"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "5",
+          "TimetableEntry": {
+            "Id": "291720",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/291720"
+          },
+          "DayNo": "2",
+          "Subject": {
+            "Id": "37668",
+            "Name": "J\u0119zyk polski",
+            "Short": "pol",
+            "Url": "https://api.librus.pl/2.0/Subjects/37668"
+          },
+          "Teacher": {
+            "Id": "875536",
+            "FirstName": "Aleksandra",
+            "LastName": "Niewiadomska",
+            "Url": "https://api.librus.pl/2.0/Users/875536"
+          },
+          "Class": {
+            "Id": 34454,
+            "Url": "https://api.librus.pl/2.0/Classes/34454"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "11:45",
+          "HourTo": "12:30"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "1502533",
+            "Url": "https://api.librus.pl/2.0/Lessons/1502533"
+          },
+          "Classroom": {
+            "Id": "4531",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4531"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "6",
+          "TimetableEntry": {
+            "Id": "291000",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/291000"
+          },
+          "DayNo": "2",
+          "Subject": {
+            "Id": "37673",
+            "Name": "Religia",
+            "Short": "rel",
+            "Url": "https://api.librus.pl/2.0/Subjects/37673"
+          },
+          "Teacher": {
+            "Id": "1232042",
+            "FirstName": "Magdalena",
+            "LastName": "Ot\u0142owska",
+            "Url": "https://api.librus.pl/2.0/Users/1232042"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "12:50",
+          "HourTo": "13:35",
+          "VirtualClass": {
+            "Id": 754701,
+            "Url": "https://api.librus.pl/2.0/VirtualClasses/754701"
+          },
+          "VirtualClassName": "2C rel"
+        }
+      ],
+      [],
+      [],
+      [],
+      []
+    ],
+    "2019-09-04": [
+      [],
+      [
+        {
+          "Lesson": {
+            "Id": "2007771",
+            "Url": "https://api.librus.pl/2.0/Lessons/2007771"
+          },
+          "Classroom": {
+            "Id": "4530",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4530"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "1",
+          "TimetableEntry": {
+            "Id": "290864",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/290864"
+          },
+          "DayNo": "3",
+          "Subject": {
+            "Id": "37670",
+            "Name": "Matematyka",
+            "Short": "mat",
+            "Url": "https://api.librus.pl/2.0/Subjects/37670"
+          },
+          "Teacher": {
+            "Id": "1318944",
+            "FirstName": "Joanna",
+            "LastName": "Bujak",
+            "Url": "https://api.librus.pl/2.0/Users/1318944"
+          },
+          "Class": {
+            "Id": 34454,
+            "Url": "https://api.librus.pl/2.0/Classes/34454"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "08:00",
+          "HourTo": "08:45"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "2007771",
+            "Url": "https://api.librus.pl/2.0/Lessons/2007771"
+          },
+          "Classroom": {
+            "Id": "4530",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4530"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "2",
+          "TimetableEntry": {
+            "Id": "290865",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/290865"
+          },
+          "DayNo": "3",
+          "Subject": {
+            "Id": "37670",
+            "Name": "Matematyka",
+            "Short": "mat",
+            "Url": "https://api.librus.pl/2.0/Subjects/37670"
+          },
+          "Teacher": {
+            "Id": "1318944",
+            "FirstName": "Joanna",
+            "LastName": "Bujak",
+            "Url": "https://api.librus.pl/2.0/Users/1318944"
+          },
+          "Class": {
+            "Id": 34454,
+            "Url": "https://api.librus.pl/2.0/Classes/34454"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "08:55",
+          "HourTo": "09:40"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "1502524",
+            "Url": "https://api.librus.pl/2.0/Lessons/1502524"
+          },
+          "Classroom": {
+            "Id": "1512",
+            "Url": "https://api.librus.pl/2.0/Classrooms/1512"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "3",
+          "TimetableEntry": {
+            "Id": "291401",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/291401"
+          },
+          "DayNo": "3",
+          "Subject": {
+            "Id": "37664",
+            "Name": "Informatyka",
+            "Short": "inf",
+            "Url": "https://api.librus.pl/2.0/Subjects/37664"
+          },
+          "Teacher": {
+            "Id": "1241643",
+            "FirstName": "Iwona",
+            "LastName": "Arcimowicz",
+            "Url": "https://api.librus.pl/2.0/Users/1241643"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "09:50",
+          "HourTo": "10:35",
+          "VirtualClass": {
+            "Id": 754828,
+            "Url": "https://api.librus.pl/2.0/VirtualClasses/754828"
+          },
+          "VirtualClassName": "2C gr2"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "1502524",
+            "Url": "https://api.librus.pl/2.0/Lessons/1502524"
+          },
+          "Classroom": {
+            "Id": "1512",
+            "Url": "https://api.librus.pl/2.0/Classrooms/1512"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "4",
+          "TimetableEntry": {
+            "Id": "291402",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/291402"
+          },
+          "DayNo": "3",
+          "Subject": {
+            "Id": "37664",
+            "Name": "Informatyka",
+            "Short": "inf",
+            "Url": "https://api.librus.pl/2.0/Subjects/37664"
+          },
+          "Teacher": {
+            "Id": "1241643",
+            "FirstName": "Iwona",
+            "LastName": "Arcimowicz",
+            "Url": "https://api.librus.pl/2.0/Users/1241643"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "10:50",
+          "HourTo": "11:35",
+          "VirtualClass": {
+            "Id": 754828,
+            "Url": "https://api.librus.pl/2.0/VirtualClasses/754828"
+          },
+          "VirtualClassName": "2C gr2"
+        }
+      ],
+      [],
+      [],
+      [],
+      [
+        {
+          "Lesson": {
+            "Id": "1502530",
+            "Url": "https://api.librus.pl/2.0/Lessons/1502530"
+          },
+          "Classroom": {
+            "Id": "4540",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4540"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "8",
+          "TimetableEntry": {
+            "Id": "291180",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/291180"
+          },
+          "DayNo": "3",
+          "Subject": {
+            "Id": "37667",
+            "Name": "J\u0119zyk niemiecki",
+            "Short": "niem",
+            "Url": "https://api.librus.pl/2.0/Subjects/37667"
+          },
+          "Teacher": {
+            "Id": "875549",
+            "FirstName": "El\u017cbieta",
+            "LastName": "Kowalczyk",
+            "Url": "https://api.librus.pl/2.0/Users/875549"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "14:40",
+          "HourTo": "15:25",
+          "VirtualClass": {
+            "Id": 754760,
+            "Url": "https://api.librus.pl/2.0/VirtualClasses/754760"
+          },
+          "VirtualClassName": "2C gr2"
+        }
+      ],
+      [],
+      []
+    ],
+    "2019-09-05": [
+      [],
+      [
+        {
+          "Lesson": {
+            "Id": "2007771",
+            "Url": "https://api.librus.pl/2.0/Lessons/2007771"
+          },
+          "Classroom": {
+            "Id": "4530",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4530"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "1",
+          "TimetableEntry": {
+            "Id": "290868",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/290868"
+          },
+          "DayNo": "4",
+          "Subject": {
+            "Id": "37670",
+            "Name": "Matematyka",
+            "Short": "mat",
+            "Url": "https://api.librus.pl/2.0/Subjects/37670"
+          },
+          "Teacher": {
+            "Id": "1318944",
+            "FirstName": "Joanna",
+            "LastName": "Bujak",
+            "Url": "https://api.librus.pl/2.0/Users/1318944"
+          },
+          "Class": {
+            "Id": 34454,
+            "Url": "https://api.librus.pl/2.0/Classes/34454"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "08:00",
+          "HourTo": "08:45"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "2007771",
+            "Url": "https://api.librus.pl/2.0/Lessons/2007771"
+          },
+          "Classroom": {
+            "Id": "4530",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4530"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "2",
+          "TimetableEntry": {
+            "Id": "290866",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/290866"
+          },
+          "DayNo": "4",
+          "Subject": {
+            "Id": "37670",
+            "Name": "Matematyka",
+            "Short": "mat",
+            "Url": "https://api.librus.pl/2.0/Subjects/37670"
+          },
+          "Teacher": {
+            "Id": "1318944",
+            "FirstName": "Joanna",
+            "LastName": "Bujak",
+            "Url": "https://api.librus.pl/2.0/Users/1318944"
+          },
+          "Class": {
+            "Id": 34454,
+            "Url": "https://api.librus.pl/2.0/Classes/34454"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "08:55",
+          "HourTo": "09:40"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "2007806",
+            "Url": "https://api.librus.pl/2.0/Lessons/2007806"
+          },
+          "Classroom": {
+            "Id": "4546",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4546"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "3",
+          "TimetableEntry": {
+            "Id": "291173",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/291173"
+          },
+          "DayNo": "4",
+          "Subject": {
+            "Id": "37660",
+            "Name": "Fizyka",
+            "Short": "fiz",
+            "Url": "https://api.librus.pl/2.0/Subjects/37660"
+          },
+          "Teacher": {
+            "Id": "1579719",
+            "FirstName": "Zbigniew",
+            "LastName": "Or\u0142owski",
+            "Url": "https://api.librus.pl/2.0/Users/1579719"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "09:50",
+          "HourTo": "10:35",
+          "VirtualClass": {
+            "Id": 754758,
+            "Url": "https://api.librus.pl/2.0/VirtualClasses/754758"
+          },
+          "VirtualClassName": "2A, 2C fiz"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "2007806",
+            "Url": "https://api.librus.pl/2.0/Lessons/2007806"
+          },
+          "Classroom": {
+            "Id": "4546",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4546"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "4",
+          "TimetableEntry": {
+            "Id": "291174",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/291174"
+          },
+          "DayNo": "4",
+          "Subject": {
+            "Id": "37660",
+            "Name": "Fizyka",
+            "Short": "fiz",
+            "Url": "https://api.librus.pl/2.0/Subjects/37660"
+          },
+          "Teacher": {
+            "Id": "1579719",
+            "FirstName": "Zbigniew",
+            "LastName": "Or\u0142owski",
+            "Url": "https://api.librus.pl/2.0/Users/1579719"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "10:50",
+          "HourTo": "11:35",
+          "VirtualClass": {
+            "Id": 754758,
+            "Url": "https://api.librus.pl/2.0/VirtualClasses/754758"
+          },
+          "VirtualClassName": "2A, 2C fiz"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "1502524",
+            "Url": "https://api.librus.pl/2.0/Lessons/1502524"
+          },
+          "Classroom": {
+            "Id": "1512",
+            "Url": "https://api.librus.pl/2.0/Classrooms/1512"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "5",
+          "TimetableEntry": {
+            "Id": "291399",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/291399"
+          },
+          "DayNo": "4",
+          "Subject": {
+            "Id": "37664",
+            "Name": "Informatyka",
+            "Short": "inf",
+            "Url": "https://api.librus.pl/2.0/Subjects/37664"
+          },
+          "Teacher": {
+            "Id": "1241643",
+            "FirstName": "Iwona",
+            "LastName": "Arcimowicz",
+            "Url": "https://api.librus.pl/2.0/Users/1241643"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "11:45",
+          "HourTo": "12:30",
+          "VirtualClass": {
+            "Id": 754828,
+            "Url": "https://api.librus.pl/2.0/VirtualClasses/754828"
+          },
+          "VirtualClassName": "2C gr2"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "1502524",
+            "Url": "https://api.librus.pl/2.0/Lessons/1502524"
+          },
+          "Classroom": {
+            "Id": "1512",
+            "Url": "https://api.librus.pl/2.0/Classrooms/1512"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "6",
+          "TimetableEntry": {
+            "Id": "291400",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/291400"
+          },
+          "DayNo": "4",
+          "Subject": {
+            "Id": "37664",
+            "Name": "Informatyka",
+            "Short": "inf",
+            "Url": "https://api.librus.pl/2.0/Subjects/37664"
+          },
+          "Teacher": {
+            "Id": "1241643",
+            "FirstName": "Iwona",
+            "LastName": "Arcimowicz",
+            "Url": "https://api.librus.pl/2.0/Users/1241643"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "12:50",
+          "HourTo": "13:35",
+          "VirtualClass": {
+            "Id": 754828,
+            "Url": "https://api.librus.pl/2.0/VirtualClasses/754828"
+          },
+          "VirtualClassName": "2C gr2"
+        }
+      ],
+      [],
+      [],
+      [],
+      []
+    ],
+    "2019-09-06": [
+      [],
+      [
+        {
+          "Lesson": {
+            "Id": "2007894",
+            "Url": "https://api.librus.pl/2.0/Lessons/2007894"
+          },
+          "Classroom": {
+            "Id": "4548",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4548"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "1",
+          "TimetableEntry": {
+            "Id": "291422",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/291422"
+          },
+          "DayNo": "5",
+          "Subject": {
+            "Id": "37665",
+            "Name": "J\u0119zyk angielski",
+            "Short": "jang",
+            "Url": "https://api.librus.pl/2.0/Subjects/37665"
+          },
+          "Teacher": {
+            "Id": "1579720",
+            "FirstName": "Tomasz",
+            "LastName": "Paluch",
+            "Url": "https://api.librus.pl/2.0/Users/1579720"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "08:00",
+          "HourTo": "08:45",
+          "VirtualClass": {
+            "Id": 754834,
+            "Url": "https://api.librus.pl/2.0/VirtualClasses/754834"
+          },
+          "VirtualClassName": "2C gr2"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "1502518",
+            "Url": "https://api.librus.pl/2.0/Lessons/1502518"
+          },
+          "Classroom": {
+            "Id": "4551",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4551"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "2",
+          "TimetableEntry": {
+            "Id": "291521",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/291521"
+          },
+          "DayNo": "5",
+          "Subject": {
+            "Id": "37678",
+            "Name": "Wychowanie fizyczne",
+            "Short": "wf",
+            "Url": "https://api.librus.pl/2.0/Subjects/37678"
+          },
+          "Teacher": {
+            "Id": "875583",
+            "FirstName": "Arkadiusz",
+            "LastName": "Ku\u017aba",
+            "Url": "https://api.librus.pl/2.0/Users/875583"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "08:55",
+          "HourTo": "09:40",
+          "VirtualClass": {
+            "Id": 754808,
+            "Url": "https://api.librus.pl/2.0/VirtualClasses/754808"
+          },
+          "VirtualClassName": "2C gr2"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "1502518",
+            "Url": "https://api.librus.pl/2.0/Lessons/1502518"
+          },
+          "Classroom": {
+            "Id": "4551",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4551"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "3",
+          "TimetableEntry": {
+            "Id": "291522",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/291522"
+          },
+          "DayNo": "5",
+          "Subject": {
+            "Id": "37678",
+            "Name": "Wychowanie fizyczne",
+            "Short": "wf",
+            "Url": "https://api.librus.pl/2.0/Subjects/37678"
+          },
+          "Teacher": {
+            "Id": "875583",
+            "FirstName": "Arkadiusz",
+            "LastName": "Ku\u017aba",
+            "Url": "https://api.librus.pl/2.0/Users/875583"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "09:50",
+          "HourTo": "10:35",
+          "VirtualClass": {
+            "Id": 754808,
+            "Url": "https://api.librus.pl/2.0/VirtualClasses/754808"
+          },
+          "VirtualClassName": "2C gr2"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "2008060",
+            "Url": "https://api.librus.pl/2.0/Lessons/2008060"
+          },
+          "Classroom": {
+            "Id": "4525",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4525"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "4",
+          "TimetableEntry": {
+            "Id": "291717",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/291717"
+          },
+          "DayNo": "5",
+          "Subject": {
+            "Id": "37668",
+            "Name": "J\u0119zyk polski",
+            "Short": "pol",
+            "Url": "https://api.librus.pl/2.0/Subjects/37668"
+          },
+          "Teacher": {
+            "Id": "875536",
+            "FirstName": "Aleksandra",
+            "LastName": "Niewiadomska",
+            "Url": "https://api.librus.pl/2.0/Users/875536"
+          },
+          "Class": {
+            "Id": 34454,
+            "Url": "https://api.librus.pl/2.0/Classes/34454"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "10:50",
+          "HourTo": "11:35"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "2007771",
+            "Url": "https://api.librus.pl/2.0/Lessons/2007771"
+          },
+          "Classroom": {
+            "Id": "4530",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4530"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "5",
+          "TimetableEntry": {
+            "Id": "290867",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/290867"
+          },
+          "DayNo": "5",
+          "Subject": {
+            "Id": "37670",
+            "Name": "Matematyka",
+            "Short": "mat",
+            "Url": "https://api.librus.pl/2.0/Subjects/37670"
+          },
+          "Teacher": {
+            "Id": "1318944",
+            "FirstName": "Joanna",
+            "LastName": "Bujak",
+            "Url": "https://api.librus.pl/2.0/Users/1318944"
+          },
+          "Class": {
+            "Id": 34454,
+            "Url": "https://api.librus.pl/2.0/Classes/34454"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "11:45",
+          "HourTo": "12:30"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "2007771",
+            "Url": "https://api.librus.pl/2.0/Lessons/2007771"
+          },
+          "Classroom": {
+            "Id": "4530",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4530"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "6",
+          "TimetableEntry": {
+            "Id": "290862",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/290862"
+          },
+          "DayNo": "5",
+          "Subject": {
+            "Id": "37670",
+            "Name": "Matematyka",
+            "Short": "mat",
+            "Url": "https://api.librus.pl/2.0/Subjects/37670"
+          },
+          "Teacher": {
+            "Id": "1318944",
+            "FirstName": "Joanna",
+            "LastName": "Bujak",
+            "Url": "https://api.librus.pl/2.0/Users/1318944"
+          },
+          "Class": {
+            "Id": 34454,
+            "Url": "https://api.librus.pl/2.0/Classes/34454"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "12:50",
+          "HourTo": "13:35"
+        }
+      ],
+      [
+        {
+          "Lesson": {
+            "Id": "1502533",
+            "Url": "https://api.librus.pl/2.0/Lessons/1502533"
+          },
+          "Classroom": {
+            "Id": "4524",
+            "Url": "https://api.librus.pl/2.0/Classrooms/4524"
+          },
+          "DateFrom": "2019-09-03",
+          "DateTo": "2020-06-26",
+          "LessonNo": "7",
+          "TimetableEntry": {
+            "Id": "291001",
+            "Url": "https://api.librus.pl/2.0/TimetableEntries/291001"
+          },
+          "DayNo": "5",
+          "Subject": {
+            "Id": "37673",
+            "Name": "Religia",
+            "Short": "rel",
+            "Url": "https://api.librus.pl/2.0/Subjects/37673"
+          },
+          "Teacher": {
+            "Id": "1232042",
+            "FirstName": "Magdalena",
+            "LastName": "Ot\u0142owska",
+            "Url": "https://api.librus.pl/2.0/Users/1232042"
+          },
+          "IsSubstitutionClass": false,
+          "IsCanceled": false,
+          "SubstitutionNote": null,
+          "HourFrom": "13:50",
+          "HourTo": "14:35",
+          "VirtualClass": {
+            "Id": 754701,
+            "Url": "https://api.librus.pl/2.0/VirtualClasses/754701"
+          },
+          "VirtualClassName": "2C rel"
+        }
+      ],
+      [],
+      [],
+      []
+    ],
+    "2019-09-07": [
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      []
+    ],
+    "2019-09-08": [
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      []
+    ]
+  },
+  "Pages": {
+    "Next": "https://api.librus.pl/2.0/Timetables?weekStart=2019-09-09",
+    "Prev": "https://api.librus.pl/2.0/Timetables?weekStart=2019-08-26"
+  },
+  "Resources": {
+    "..": {
+      "Url": "https://api.librus.pl/2.0/Root"
+    }
+  },
+  "Url": "https://api.librus.pl/2.0/Timetables"
+}

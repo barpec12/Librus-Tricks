@@ -1,0 +1,392 @@
+{
+  "Users": [
+    {
+      "Id": 866976,
+      "AccountId": "LID-AUTH-USER-2741-J6YC3WUYLPJYMMJWTX4V",
+      "FirstName": null,
+      "LastName": "administrator",
+      "IsSchoolAdministrator": true
+    },
+    {
+      "Id": 874658,
+      "AccountId": "LID-AUTH-USER-2741-EY5QGDWXNTTAD4XTGAHV",
+      "FirstName": "Marzenna",
+      "LastName": "Zaworska"
+    },
+    {
+      "Id": 874661,
+      "AccountId": "LID-AUTH-USER-2741-5XTULI33LPQBAPPOSM4U",
+      "FirstName": "Agnieszka",
+      "LastName": "Chechli\u0144ska-Tuzinek"
+    },
+    {
+      "Id": 874662,
+      "AccountId": "LID-AUTH-USER-2741-6JLIPT7PWWBOQRIIRSHT",
+      "FirstName": "Ma\u0142gorzata",
+      "LastName": "Telakowska"
+    },
+    {
+      "Id": 875536,
+      "AccountId": "LID-AUTH-USER-2741-CU4UVFIL76Z3QJETOZAR",
+      "FirstName": "Aleksandra",
+      "LastName": "Niewiadomska"
+    },
+    {
+      "Id": 875538,
+      "AccountId": "LID-AUTH-USER-2741-BC84GDDL33CNF8758LWZ",
+      "FirstName": "Maria",
+      "LastName": "Andrzejewska"
+    },
+    {
+      "Id": 875539,
+      "AccountId": "LID-AUTH-USER-2741-CWARSFQU8DUL7GERIR8K",
+      "FirstName": "Izabella",
+      "LastName": "Bni\u0144ska"
+    },
+    {
+      "Id": 875541,
+      "AccountId": "LID-AUTH-USER-2741-LSB3NJEBB6DQJTXNPSYD",
+      "FirstName": "Krystyna",
+      "LastName": "Dybowska-G\u0142\u0105b"
+    },
+    {
+      "Id": 875542,
+      "AccountId": "LID-AUTH-USER-2741-VFCYLJ8848QY56GHINL6",
+      "FirstName": "Maria",
+      "LastName": "Hinc"
+    },
+    {
+      "Id": 875543,
+      "AccountId": "LID-AUTH-USER-2741-3EO7FIQL7CSJMWVTERQG",
+      "FirstName": "Renata",
+      "LastName": "Majcher"
+    },
+    {
+      "Id": 875544,
+      "AccountId": "LID-AUTH-USER-2741-MABVJPOXJMBSPFRO7JZZ",
+      "FirstName": "Agnieszka",
+      "LastName": "Marczuk"
+    },
+    {
+      "Id": 875545,
+      "AccountId": "LID-AUTH-USER-2741-OEFC8QGICY6NKCAVKH5Q",
+      "FirstName": "Ma\u0142gorzata",
+      "LastName": "Orzechowska"
+    },
+    {
+      "Id": 875548,
+      "AccountId": "LID-AUTH-USER-2741-UWZSZKRIFQ4AL48DEKUT",
+      "FirstName": "Micha\u0142",
+      "LastName": "Jamio\u0142kowski"
+    },
+    {
+      "Id": 875549,
+      "AccountId": "LID-AUTH-USER-2741-PVFWCZVQLTRFYKVUZIDR",
+      "FirstName": "El\u017cbieta",
+      "LastName": "Kowalczyk"
+    },
+    {
+      "Id": 875550,
+      "AccountId": "LID-AUTH-USER-2741-D3JLPGJQDUNQGBMVJCRF",
+      "FirstName": "Anita",
+      "LastName": "Walczak-Wi\u015bniewska"
+    },
+    {
+      "Id": 875552,
+      "AccountId": "LID-AUTH-USER-2741-FWPQU88VH6HRCWPSQDG5",
+      "FirstName": "Jolanta",
+      "LastName": "Wieczorek-Szyma\u0144ska"
+    },
+    {
+      "Id": 875554,
+      "AccountId": "LID-AUTH-USER-2741-WG8I6DBBEP5JIVOG67TW",
+      "FirstName": "Katarzyna",
+      "LastName": "Rupala"
+    },
+    {
+      "Id": 875556,
+      "AccountId": "LID-AUTH-USER-2741-KWWMFL3EJIBTPL5MJKTX",
+      "FirstName": "Marta",
+      "LastName": "Gordon"
+    },
+    {
+      "Id": 875557,
+      "AccountId": "LID-AUTH-USER-2741-DU6YQQ8XJKE4ZRFZDFHP",
+      "FirstName": "Tadeusz",
+      "LastName": "B\u0105k"
+    },
+    {
+      "Id": 875558,
+      "AccountId": "LID-AUTH-USER-2741-AILKBIMK4ZRC7SMHT4AI",
+      "FirstName": "Krzysztof",
+      "LastName": "Kotwicki"
+    },
+    {
+      "Id": 875559,
+      "AccountId": "LID-AUTH-USER-2741-CVIGOKUVYVXSRAEPWYNP",
+      "FirstName": "Kamila",
+      "LastName": "Za\u0142uska"
+    },
+    {
+      "Id": 875563,
+      "AccountId": "LID-AUTH-USER-2741-E74JWLFXOO7EIBTPQR8C",
+      "FirstName": "El\u017cbieta",
+      "LastName": "Hardej"
+    },
+    {
+      "Id": 875564,
+      "AccountId": "LID-AUTH-USER-2741-KT4NI7YFNPNGEXHLBFLY",
+      "FirstName": "Zbigniew",
+      "LastName": "Jagli\u0144ski"
+    },
+    {
+      "Id": 875566,
+      "AccountId": "LID-AUTH-USER-2741-5IUAEEWAZKOUVBZNX3VH",
+      "FirstName": "Edyta",
+      "LastName": "Radwa\u0144ska"
+    },
+    {
+      "Id": 875568,
+      "AccountId": "LID-AUTH-USER-2741-XBBENKFIDE5RQH5VYG8M",
+      "FirstName": "Hieronim",
+      "LastName": "Traczewski"
+    },
+    {
+      "Id": 875571,
+      "AccountId": "LID-AUTH-USER-2741-SO73MPBFL3VA3FBK85A7",
+      "FirstName": "Mariola",
+      "LastName": "P\u00f3\u0142grabia"
+    },
+    {
+      "Id": 875574,
+      "AccountId": "LID-AUTH-USER-2741-X7VOQJ4CLBNIPYYSFXZ3",
+      "FirstName": "Agnieszka",
+      "LastName": "Zalewska"
+    },
+    {
+      "Id": 875576,
+      "AccountId": "LID-AUTH-USER-2741-55UZZTWGSCP8WK8HMWAE",
+      "FirstName": "El\u017cbieta",
+      "LastName": "Kozdrowicz"
+    },
+    {
+      "Id": 875578,
+      "AccountId": "LID-AUTH-USER-2741-EWV6KMRDCAXKW4HC5LUE",
+      "FirstName": "Maria",
+      "LastName": "Domosud"
+    },
+    {
+      "Id": 875580,
+      "AccountId": "LID-AUTH-USER-2741-GT588TJBAWL5V3VF3N4X",
+      "FirstName": "Izabela",
+      "LastName": "Bieli\u0144ska"
+    },
+    {
+      "Id": 875581,
+      "AccountId": "LID-AUTH-USER-2741-4SPYQYWZMSEXDTRBPHF6",
+      "FirstName": "Pawe\u0142",
+      "LastName": "Marciniak"
+    },
+    {
+      "Id": 875582,
+      "AccountId": "LID-AUTH-USER-2741-RFUQVWLILOAMLSTV3NUR",
+      "FirstName": "Artur",
+      "LastName": "Rosik"
+    },
+    {
+      "Id": 875583,
+      "AccountId": "LID-AUTH-USER-2741-Y7UWT8UOUHXECN5CBB5J",
+      "FirstName": "Arkadiusz",
+      "LastName": "Ku\u017aba"
+    },
+    {
+      "Id": 876752,
+      "AccountId": "LID-AUTH-USER-2741-WJUREWDVETG5VO4YMMUM",
+      "FirstName": "Hanna",
+      "LastName": "Trzaskowska",
+      "IsPedagogue": true
+    },
+    {
+      "Id": 1086415,
+      "AccountId": "LID-AUTH-USER-2741-5GPWM3DYNF85BPL5SYJX",
+      "FirstName": "Hanna",
+      "LastName": "Trzaskowska"
+    },
+    {
+      "Id": 1086417,
+      "AccountId": "LID-AUTH-USER-2741-O6ERSTBNAZ4MY7YYWAH4",
+      "FirstName": "Maria",
+      "LastName": "\u0141uczy\u0144ska"
+    },
+    {
+      "Id": 1106306,
+      "AccountId": "LID-AUTH-USER-2741-56ARPVY4NDAPDPAV7JP4",
+      "FirstName": "Hanna",
+      "LastName": "Pacek"
+    },
+    {
+      "Id": 1151454,
+      "AccountId": "LID-AUTH-USER-2741-GCJQXEBQSK4MZGUQULCE",
+      "FirstName": "Agnieszka",
+      "LastName": "Gruchelska"
+    },
+    {
+      "Id": 1152140,
+      "AccountId": "LID-AUTH-USER-2741-K6GHQYNOW6FJI5BHA6VP",
+      "FirstName": "Marek",
+      "LastName": "Baranowski"
+    },
+    {
+      "Id": 1186289,
+      "AccountId": "LID-AUTH-USER-2741-XADZWN6FNM7HYMUOXD3L",
+      "FirstName": "Marta",
+      "LastName": "Plichta",
+      "IsPedagogue": true
+    },
+    {
+      "Id": 1186290,
+      "AccountId": "LID-AUTH-USER-2741-MDMRC38BZ4CDCTHTESKV",
+      "FirstName": "Marta",
+      "LastName": "Plichta"
+    },
+    {
+      "Id": 1232042,
+      "AccountId": "LID-AUTH-USER-2741-HMTJOIR6KOCLZD87YP83",
+      "FirstName": "Magdalena",
+      "LastName": "Ot\u0142owska"
+    },
+    {
+      "Id": 1232043,
+      "AccountId": "LID-AUTH-USER-2741-WKV6Y4A4BARTSGLW7GFW",
+      "FirstName": "Katarzyna",
+      "LastName": "Zjawi\u0144ska"
+    },
+    {
+      "Id": 1232690,
+      "AccountId": "LID-AUTH-USER-2741-DUIWZJZQ4AONOISGSVAN",
+      "FirstName": "Ma\u0142gorzata",
+      "LastName": "Bielecka"
+    },
+    {
+      "Id": 1232691,
+      "AccountId": "LID-AUTH-USER-2741-Z3RWHFFRXFOD673CNW5J",
+      "FirstName": "Matylda",
+      "LastName": "Or\u0142owska"
+    },
+    {
+      "Id": 1241643,
+      "AccountId": "LID-AUTH-USER-2741-FMQOZSVRBXJBQ3YJLHAB",
+      "FirstName": "Iwona",
+      "LastName": "Arcimowicz"
+    },
+    {
+      "Id": 1262143,
+      "AccountId": "LID-AUTH-USER-2741-RVRWLQLEUQD3PCUFNT3B",
+      "FirstName": "Iwona",
+      "LastName": "Arcimowicz",
+      "IsSchoolAdministrator": true
+    },
+    {
+      "Id": 1264085,
+      "AccountId": "LID-AUTH-USER-2741-L8PXONNO36WPVSLJGL6W",
+      "FirstName": "P",
+      "LastName": "Praktykant"
+    },
+    {
+      "Id": 1318944,
+      "AccountId": "LID-AUTH-USER-2741-TVBP78SKSUCXYL8WLU7I",
+      "FirstName": "Joanna",
+      "LastName": "Bujak"
+    },
+    {
+      "Id": 1405433,
+      "AccountId": "LID-AUTH-USER-2741-JMXBCGZYYMS6DS6H6AKH",
+      "FirstName": "Katarzyna",
+      "LastName": "W\u0142odarska"
+    },
+    {
+      "Id": 1406658,
+      "AccountId": "LID-AUTH-USER-2741-BB7WH7AQCY88X5VGE6GA",
+      "FirstName": "Agnieszka",
+      "LastName": "Ciepielewska-Andrejczuk"
+    },
+    {
+      "Id": 1409149,
+      "AccountId": "LID-AUTH-USER-2741-OXTRFWJJQK3EQUO8ITYC",
+      "FirstName": "Krzysztof",
+      "LastName": "Maksymow"
+    },
+    {
+      "Id": 1449232,
+      "AccountId": "LID-AUTH-USER-2741-EKNV36P836ZI47AA4QKB",
+      "FirstName": "Dariusz",
+      "LastName": "ks. Ros\u0142on"
+    },
+    {
+      "Id": 1477599,
+      "AccountId": "LID-AUTH-USER-2741-UKJCOVJPTRVALVLO3OYA",
+      "FirstName": "Rados\u0142aw",
+      "LastName": "Rek"
+    },
+    {
+      "Id": 1479344,
+      "AccountId": "LID-AUTH-USER-2741-WZFR3ZTLA6GWEE8K5RZE",
+      "FirstName": "Sylwia",
+      "LastName": "Kantorska"
+    },
+    {
+      "Id": 1523560,
+      "AccountId": "LID-AUTH-USER-2741-VZHEYE35FL8KOLI4RC6E",
+      "FirstName": "Ma\u0142gorzata",
+      "LastName": "Gawron"
+    },
+    {
+      "Id": 1579716,
+      "AccountId": "LID-AUTH-USER-2741-53QKIHYRX3TGOQEFHFA6",
+      "FirstName": "Agnieszka",
+      "LastName": "Anisimowicz"
+    },
+    {
+      "Id": 1579717,
+      "AccountId": "LID-AUTH-USER-2741-F4RHHWTGPCJ8U64C4VFM",
+      "FirstName": "Ma\u0142gorzata",
+      "LastName": "Karpezo"
+    },
+    {
+      "Id": 1579718,
+      "AccountId": "LID-AUTH-USER-2741-T8NVVQ534NM86PRUNJOI",
+      "FirstName": "Justyna",
+      "LastName": "Kowalczyk"
+    },
+    {
+      "Id": 1579719,
+      "AccountId": "LID-AUTH-USER-2741-M3IX5ONWITHCYDGYKLVS",
+      "FirstName": "Zbigniew",
+      "LastName": "Or\u0142owski"
+    },
+    {
+      "Id": 1579720,
+      "AccountId": "LID-AUTH-USER-2741-PVE4AOK3448DXISJQVFE",
+      "FirstName": "Tomasz",
+      "LastName": "Paluch"
+    },
+    {
+      "Id": 1579721,
+      "AccountId": "LID-AUTH-USER-2741-Y8HK3UXPS38UBSNDXF5M",
+      "FirstName": "Ma\u0142gorzata",
+      "LastName": "Zaj\u0105czkowska"
+    }
+  ],
+  "Resources": {
+    "Users\\IndividualEducationPeriods": {
+      "Url": "https://api.librus.pl/2.0/Users/IndividualEducationPeriods"
+    },
+    "Users\\CrossedOutStudents": {
+      "Url": "https://api.librus.pl/2.0/Users/CrossedOutStudents"
+    },
+    "..": {
+      "Url": "https://api.librus.pl/2.0/Root"
+    }
+  },
+  "Url": "https://api.librus.pl/2.0/Users"
+}

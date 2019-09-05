@@ -1,0 +1,66 @@
+{
+  "Grades": [
+    {
+      "Id": 6602,
+      "Lesson": {
+        "Id": 2007771,
+        "Url": "https://api.librus.pl/2.0/Lessons/2007771"
+      },
+      "Subject": {
+        "Id": 37670,
+        "Url": "https://api.librus.pl/2.0/Subjects/37670"
+      },
+      "Student": {
+        "Id": 1512841,
+        "Url": "https://api.librus.pl/2.0/Users/1512841"
+      },
+      "Category": {
+        "Id": 128977,
+        "Url": "https://api.librus.pl/2.0/Grades/Categories/128977"
+      },
+      "AddedBy": {
+        "Id": 1318944,
+        "Url": "https://api.librus.pl/2.0/Users/1318944"
+      },
+      "Grade": "+",
+      "Date": "2019-09-04",
+      "AddDate": "2019-09-04 08:47:47",
+      "Semester": 1,
+      "IsConstituent": true,
+      "IsSemester": false,
+      "IsSemesterProposition": false,
+      "IsFinal": false,
+      "IsFinalProposition": false
+    }
+  ],
+  "Resources": {
+    "Grades\\Averages": {
+      "Url": "https://api.librus.pl/2.0/Grades/Averages"
+    },
+    "Grades\\StudentsAverages": {
+      "Url": "https://api.librus.pl/2.0/Grades/StudentsAverages"
+    },
+    "Grades\\CategoriesAverages": {
+      "Url": "https://api.librus.pl/2.0/Grades/CategoriesAverages"
+    },
+    "Grades\\Categories": {
+      "Url": "https://api.librus.pl/2.0/Grades/Categories"
+    },
+    "Grades\\Comments": {
+      "Url": "https://api.librus.pl/2.0/Grades/Comments"
+    },
+    "Grades\\Scales": {
+      "Url": "https://api.librus.pl/2.0/Grades/Scales"
+    },
+    "Grades\\Types": {
+      "Url": "https://api.librus.pl/2.0/Grades/Types"
+    },
+    "Grades\\UnpreparednessPerSemesterAndSubject": {
+      "Url": "https://api.librus.pl/2.0/Grades/UnpreparednessPerSemesterAndSubject"
+    },
+    "..": {
+      "Url": "https://api.librus.pl/2.0/Root"
+    }
+  },
+  "Url": "https://api.librus.pl/2.0/Grades"
+}
