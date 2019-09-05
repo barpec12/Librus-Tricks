@@ -1,7 +1,7 @@
 import httpx
 from datetime import timedelta, datetime
 from .cache import cache_manager as cm, SkeletonCache
-from .classes import SynergiaTeacher
+from .classes import *
 
 
 class SynergiaClient:
@@ -16,9 +16,9 @@ class SynergiaClient:
         self.__api_url = api_url
 
     @staticmethod
-    def assembly_path(*elements, prefix='', suffix=''):
+    def assembly_path(*elements, prefix='', suffix='', sep='/'):
         for el in elements:
-            prefix += el
+            prefix += sep + str(el)
         return prefix + suffix
 
     async def get(self, *path, http_params=None):
@@ -60,10 +60,19 @@ class SynergiaClient:
 
         return response.json()
 
-    async def return_teachers(self):
-        tea_raw = (await self.get_cached('Users', max_lifetime=timedelta(days=31)))['Users']
-        tea_list = []
-        for teacher in tea_raw:
-            tea_list.append(SynergiaTeacher.assembly(teacher))
+    async def return_objects(self, *path, cls, extraction_key, lifetime=timedelta(hours=3)):
+        raw = (await self.get_cached(*path, max_lifetime=lifetime))[extraction_key]
+        output = []
+        for obj in raw:
+            output.append(cls.assembly(obj, self))
 
-        return tea_list
+        return output
+
+    async def return_subjects(self):
+        return await self.return_objects('Subjects', cls=SynergiaSubject, extraction_key='Subjects')
+
+    async def return_teachers(self):
+        return await self.return_objects('Users', cls=SynergiaTeacher, extraction_key='Users')
+
+    async def return_grades(self):
+        return await self.return_objects('Grades', cls=SynergiaGrade, extraction_key='Grades')
