@@ -87,4 +87,3 @@ class SynergiaGrade(SynergiaBaseClass):
                 session=session
             )
         )
-        asyncio.
