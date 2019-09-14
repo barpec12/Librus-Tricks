@@ -3,6 +3,11 @@ import logging
 import sqlite3
 
 
+class DumbCache:
+    def sync(self, oid, cls, session):
+        return cls(oid, session)
+
+
 class SQLiteCache:
     def __init__(self, db_location='cache.sqlite'):
         # TODO: Dodać możliwość wyłączenia cache'ownia (każda rzecz jest pobierana z serwera)
