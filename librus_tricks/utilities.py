@@ -264,6 +264,7 @@ def get_school_feed(session):
     """
 
     :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
+    :rtype list of SynergiaNews
     """
 
     class SynergiaNews:

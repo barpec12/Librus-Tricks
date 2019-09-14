@@ -191,6 +191,7 @@ class SynergiaClient:
 
     def get_news(self, unseen_only=False):
         ns = utilities.get_school_feed(self)
+        ns = sorted(ns, key=lambda x: x.created)
         if unseen_only:
             return [x for x in ns if not x.was_read]
         else:
