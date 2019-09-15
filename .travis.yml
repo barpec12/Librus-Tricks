@@ -18,3 +18,5 @@ after_failure:
   - ./send.sh failure $WEBHOOK_URL
 os:
   - linux
+  - windows
+  - osx

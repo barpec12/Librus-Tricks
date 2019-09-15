@@ -6,9 +6,9 @@ sys.path.extend(['./'])
 email = os.environ['librus_email']
 password = os.environ['librus_password']
 
-from librus_tricks import exceptions, create_session
+from librus_tricks import exceptions, create_session, cache
 
-session = create_session(email, password, cache_location=':memory:')
+session = create_session(email, password, cache=cache.AlchemyCache(engine_uri='sqlite:///:memory:'))
 
 
 def test_auth():
@@ -16,22 +16,21 @@ def test_auth():
 
 
 def test_attendance():
-    return session.get_attendances()
+    return session.attendances()
 
 
 def test_exams():
-    return session.get_exams()
+    return session.exams()
 
 
 def test_grades():
-    return session.get_grades()
+    return session.grades()
 
 
 def test_timetable():
-    try:
-        return session.get_timetable()
-    except exceptions.SynergiaAccessDenied as err:
-        return str(err)
+    session.timetable()
+    k = session.today_timetable
+    return session.tomorrow_timetable
 
 
 def test_newsfeed():
@@ -44,3 +43,7 @@ def test_messages():
 
 def test_basetextgrades():
     return session.get_basetextgrades()
+
+
+def test_colors():
+    return session.colors()

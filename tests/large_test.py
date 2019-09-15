@@ -6,13 +6,13 @@ sys.path.extend(['./'])
 email = os.environ['librus_email']
 password = os.environ['librus_password']
 
-from librus_tricks import utilities, create_session
+from librus_tricks import utilities, create_session, cache
 
-session = create_session(email, password, cache_location=':memory:')
+session = create_session(email, password, cache=cache.AlchemyCache(engine_uri='sqlite:///:memory:'))
 
 
 def test_grades():
-    grade = session.get_grades()
+    grade = session.grades()
     teachers = []
     subjects = []
     comments = []
@@ -40,7 +40,7 @@ def test_grades():
 
 
 def test_attendances():
-    atts = session.get_attendances()
+    atts = session.attendances()
     teachers = []
     types = []
     for a in atts:
@@ -57,7 +57,7 @@ def test_attendances():
 
 
 def test_exams():
-    exams = session.get_exams()
+    exams = session.exams()
     teachers = []
     subjects = []
     groups = []
