@@ -32,3 +32,7 @@ class TokenExpired(Exception):
 
 class SynergiaForbidden(Exception):
     pass
+
+
+class InvalidCacheManager(Exception):
+    pass
