@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date, time
 
 
 def _try_to_extract(payload, extraction_key, false_return=None):
@@ -8,37 +8,97 @@ def _try_to_extract(payload, extraction_key, false_return=None):
         return false_return
 
 
-class SynergiaGenericClass:
-    def __init__(self, oid, session, resource, extraction_key, payload=None):
+class _RemoteObjectsUIDManager:
+    def __init__(self, session, parent):
         """
 
-        :param str oid: Id żądanego obiektu
+        :param librus_tricks.core.SynergiaClient session:
+        """
+        self.__storage = dict()
+        self._session = session
+        self.__parent = parent
+
+    def set_object(self, attr, uid, cls):
+        self.__storage[attr] = uid, cls
+        # self.__parent.__setattr__(attr, cls.create(uid=uid, session=self.__session))
+        return self
+
+    def assembly(self, attr):
+        uid, cls = self.__storage[attr]
+        return cls.create(uid=uid, session=self._session)
+
+    def return_id(self, attr):
+        return self.__storage[attr][0]
+
+
+class SynergiaGenericClass:
+    def __init__(self, uid, resource, session):
+        """
+
+        :param str uid: Id żądanego obiektu
         :param librus_tricks.core.SynergiaClient session: Obiekt sesji
         :param resource: ścieżka do źródła danych
         :type resource: iterable of str
         :param str extraction_key: str zawierający klucz do wyjęcia danych
-        :param dict payload: dict zawierający gotowe dane (np. załadowane z cache)
+        :param dict resource: dict zawierający gotowe dane (np. załadowane z cache)
         """
+
         self._session = session
-        self.oid = int(oid)
-        self.objects_ids = None
-        if payload is None:
-            self._json_payload = self._session.get(
-                *resource,
-                str(self.oid)
-            )[extraction_key]
-        else:
-            self._json_payload = payload
+        self.uid = int(uid)
+        self.objects = _RemoteObjectsUIDManager(self._session, self)
+        self._json_resource = resource
+
+    # Of course i can comment it out, but for code completion props will be better
+    # def __getattr__(self, name):
+    #     return self.objects_ids.assembly(name)
+
+    @classmethod
+    def assembly(cls, resource, session):
+        self = cls(resource['Id'], resource, session)
+        return self
+
+    @classmethod
+    def create(cls, uid=None, path=('',), session=None, extraction_key=None):
+        """
+
+        :param uid:
+        :param path:
+        :param librus_tricks.core.SynergiaClient session:
+        :param extraction_key:
+        :return:
+        """
+        if uid is None or session is None:
+            raise Exception()  # TODO: specify exception
+
+        response = session.get_cached_response(*path, uid)
+
+        if extraction_key is None:
+            extraction_key = SynergiaGenericClass.auto_extract(response)
+
+        resource = response[extraction_key]
+        self = cls(resource['Id'], resource, session)
+        return self
+
+    @staticmethod
+    def auto_extract(payload):
+        for key in payload.keys():
+            if key not in ('Resources', 'Url'):
+                return key
 
     def __repr__(self):
-        return f'<{self.__class__.__name__} {self.oid} at {hex(id(self))}>'
+        return f'<{self.__class__.__name__} {self.uid} at {hex(id(self))}>'
 
 
 class SynergiaTeacher(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None):
-        super().__init__(oid, session, ('Users',), 'User', payload)
-        self.name = self._json_payload['FirstName']
-        self.last_name = self._json_payload['LastName']
+    def __init__(self, uid, resource, session):
+        super().__init__(uid, resource, session)
+        self.name = self._json_resource['FirstName']
+        self.last_name = self._json_resource['LastName']
+
+    @classmethod
+    def create(cls, uid=None, path=('Users',), session=None, extraction_key='User'):
+        self = super().create(uid, path, session, extraction_key)
+        return self
 
     def __repr__(self):
         return f'<{self.__class__.__name__} {self.name} {self.last_name}>'
@@ -54,85 +114,73 @@ class SynergiaStudent(SynergiaTeacher):
 class SynergiaGlobalClass(SynergiaGenericClass):
     """Klasa reprezentująca klasę (np. 1C)"""
 
-    def __init__(self, oid, session, payload=None):
+    def __init__(self, uid, resource, session):
         """
         Tworzy obiekt reprezentujący klasę (jako zbiór uczniów)
 
-        :param str oid: id klasy
+        :param str uid: id klasy
         :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
-        :param dict payload: dane z json'a
+        :param dict resource: dane z json'a
         """
-        super().__init__(oid, session, ('Classes',), 'Class', payload)
+        super().__init__(uid, resource, session)
 
-        class ObjectsIds:
-            def __init__(self, id_tut):
-                self.tutor = id_tut
-
-        self.alias = f'{self._json_payload["Number"]}{self._json_payload["Symbol"]}'
-        self.begin_date = datetime.strptime(self._json_payload['BeginSchoolYear'], '%Y-%m-%d').date()
-        self.end_date = datetime.strptime(self._json_payload['EndSchoolYear'], '%Y-%m-%d').date()
-        self.objects_ids = ObjectsIds(
-            self._json_payload['ClassTutor']['Id']
+        self.alias = f'{self._json_resource["Number"]}{self._json_resource["Symbol"]}'
+        self.begin_date = datetime.strptime(self._json_resource['BeginSchoolYear'], '%Y-%m-%d').date()
+        self.end_date = datetime.strptime(self._json_resource['EndSchoolYear'], '%Y-%m-%d').date()
+        self.objects.set_object(
+            'tutor', self._json_resource['ClassTutor']['Id'], SynergiaTeacher
         )
+
+    @property
+    def tutor(self) -> SynergiaTeacher:
+        return self.objects.assembly('tutor')
 
     def __repr__(self):
         return f'<{self.__class__.__name__} {self.alias}>'
 
-    @property
-    def tutor(self):
-        return SynergiaTeacher(self.objects_ids.tutor, self._session)
-
 
 class SynergiaVirtualClass(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None):
+    def __init__(self, uid, resource, session):
         """
         Tworzy obiekt reprezentujący grupę uczniów
 
-        :param str oid: id klasy
+        :param str uid: id klasy
         :param librus_tricks.core.SynergiaClient session: obiekt sesji z API Synergii
-        :param dict payload: dane z json'a
+        :param dict resource: dane z json'a
         """
-        super().__init__(oid, session, ('VirtualClasses',), 'VirtualClass', payload)
+        super().__init__(uid, resource, session)
 
-        class ObjectsIds:
-            def __init__(self, id_sub, id_tea):
-                self.subject = id_sub
-                self.teacher = id_tea
-
-        self.name = self._json_payload['Name']
-        self.number = self._json_payload['Number']
-        self.symbol = self._json_payload['Symbol']
-        self.objects_ids = ObjectsIds(
-            self._json_payload['Subject']['Id'],
-            self._json_payload['Teacher']['Id']
+        self.name = self._json_resource['Name']
+        self.number = self._json_resource['Number']
+        self.symbol = self._json_resource['Symbol']
+        self.objects.set_object(
+            'teacher', self._json_resource['Teacher']['Id'], SynergiaTeacher
+        ).set_object(
+            'subject', self._json_resource['Subject']['Id'], SynergiaSubject
         )
 
     def __repr__(self):
         return f'<{self.__class__.__name__} {self.name}>'
 
     @property
-    def teacher(self):
-        """
-
-        :rtype: SynergiaTeacher
-        """
-        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
+    def teacher(self) -> SynergiaTeacher:
+        return self.objects.assembly('teacher')
 
     @property
     def subject(self):
-        """
-
-        :rtype: SynergiaSubject
-        """
-        return self._session.csync(self.objects_ids.subject, SynergiaSubject)
+        return self.objects.assembly('subject')
 
 
 class SynergiaSubject(SynergiaGenericClass):
+    def __init__(self, uid, resource, session):
+        super().__init__(uid, resource, session)
+        self.name = self._json_resource['Name']
+        self.short_name = self._json_resource['Short']
 
-    def __init__(self, oid, session, payload=None):
-        super().__init__(oid, session, ('Subjects',), 'Subject', payload)
-        self.name = self._json_payload['Name']
-        self.short_name = self._json_payload['Short']
+    @classmethod
+    def create(cls, uid=None, path=('Subjects',), session=None, extraction_key='Subject'):
+        self = super().create(uid, path, session, extraction_key)
+        return self
 
     def __repr__(self):
         return f'<{self.__class__.__name__} {self.name}>'
@@ -142,166 +190,123 @@ class SynergiaSubject(SynergiaGenericClass):
 
 
 class SynergiaLesson(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None):
+    def __init__(self, uid, resource, session):
         """
         Klasa reprezentująca jednostkową lekcję
 
         :type session: librus_tricks.core.SynergiaClient
         """
-        super().__init__(oid, session, ('Lessons',), 'Lesson', payload)
+        super().__init__(uid, resource, session)
 
-        class ObjectsIds:
-            def __init__(self, id_tea, id_grp, id_sub):
-                self.teacher = id_tea
-                self.group = id_grp
-                self.subject = id_sub
+        if 'Class' in self._json_resource.keys():
+            self.objects.set_object('group', self._json_resource['Class']['Id'], SynergiaGlobalClass)
 
-        if 'Class' not in self._json_payload.keys():
-            self._json_payload['Class'] = {}
-            self._json_payload['Class']['Id'] = None
-
-        self.objects_ids = ObjectsIds(
-            self._json_payload['Teacher']['Id'],
-            self._json_payload['Class']['Id'],
-            self._json_payload['Subject']['Id'],
+        self.objects.set_object(
+            'teacher', self._json_resource['Teacher']['Id'], SynergiaTeacher
+        ).set_object(
+            'subject', self._json_resource['Subject']['Id'], SynergiaSubject
         )
 
-    @property
-    def teacher(self):
-        """
-
-        :rtype: SynergiaTeacher
-        """
-        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
+    @classmethod
+    def create(cls, uid=None, path=('Lessons',), session=None, extraction_key='Lesson'):
+        self = super().create(uid, path, session, extraction_key)
+        return self
 
     @property
-    def group(self):
-        if self.objects_ids.group is None:
-            return None
-        else:
-            return SynergiaGlobalClass(self.objects_ids.group, self._session)
+    def teacher(self) -> SynergiaTeacher:
+        return self.objects.assembly('teacher')
 
     @property
-    def subject(self):
-        return self._session.csync(self.objects_ids.subject, SynergiaSubject)
+    def subject(self) -> SynergiaSubject:
+        return self.objects.assembly('subject')
 
 
 class SynergiaGradeCategory(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None):
-        super().__init__(oid, session, ('Grades', 'Categories',), 'Category', payload)
+    def __init__(self, uid, resource, session):
+        super().__init__(uid, resource, session)
+        self.count_to_the_average = self._json_resource['CountToTheAverage']
+        self.name = self._json_resource['Name']
+        self.obligation_to_perform = self._json_resource['ObligationToPerform']
+        self.standard = self._json_resource['Standard']
+        self.weight = _try_to_extract(self._json_resource, 'Weight', false_return=0)
 
-        class ObjectsIds:
-            def __init__(self, id_tea):
-                self.teacher = id_tea
+        if 'Teacher' in self._json_resource.keys():
+            self.objects.set_object(
+                'teacher', self._json_resource['Id'], SynergiaTeacher
+            )
 
-        self.count_to_the_average = self._json_payload['CountToTheAverage']
-        self.name = self._json_payload['Name']
-        self.obligation_to_perform = self._json_payload['ObligationToPerform']
-        self.standard = self._json_payload['Standard']
-        self.weight = _try_to_extract(self._json_payload, 'Weight', false_return=0)
-        self.objects_ids = ObjectsIds(
-            _try_to_extract(self._json_payload, 'Teacher', {'Id': None})['Id']
-        )
+    @classmethod
+    def create(cls, uid=None, path=('Grades', 'Categories'), session=None, extraction_key='Category'):
+        self = super().create(uid, path, session, extraction_key)
+        return self
+
+    @property
+    def teacher(self) -> SynergiaTeacher:
+        return self.objects.assembly('teacher')
 
     def __repr__(self):
         return f'<{self.__class__.__name__} {self.name}>'
 
-    @property
-    def teacher(self):
-        """
-
-        :rtype: SynergiaTeacher
-        """
-        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
-
 
 class SynergiaGradeComment(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None):
-        super().__init__(oid, session, ('Grades', 'Comments',), 'Comment', payload)
+    def __init__(self, uid, resource, session):
+        super().__init__(uid, resource, session)
 
-        class ObjectsIds:
-            def __init__(self, id_tea, id_grb):
-                self.teacher = id_tea
-                self.grade_bind = id_grb
-
-        self.text = self._json_payload['Text']
-        self.objects_ids = ObjectsIds(
-            self._json_payload['AddedBy']['Id'],
-            self._json_payload['Grade']['Id']
+        self.text = self._json_resource['Text']
+        self.objects.set_object(
+            'teacher', self._json_resource['AddedBy']['Id'], SynergiaTeacher
+        ).set_object(
+            'bind', self._json_resource['Grade']['Id'], SynergiaGrade
         )
 
     def __str__(self):
         return self.text
 
     @property
-    def teacher(self):
-        """
-
-        :rtype: SynergiaTeacher
-        """
-        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
+    def teacher(self) -> SynergiaTeacher:
+        return self.objects.assembly('teacher')
 
     @property
     def grade_bind(self):
-        return SynergiaGrade(self.objects_ids, self._session)
+        return self.objects.assembly('bind')
 
 
 class SynergiaBaseTextGrade(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None):
-        super().__init__(oid, session, ('BaseTextGrades',), 'Grade', payload)
+    def __init__(self, uid, resource, session):
+        super().__init__(uid, resource, session)
 
-        class ObjectsIds:
-            def __init__(self, id_tea, id_cat, id_les, id_stud, id_sub):
-                self.teacher = id_tea
-                self.category = id_cat
-                self.lesson = id_les
-                self.student = id_stud
-                self.subject = id_sub
-
-        self.add_date = datetime.strptime(self._json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')
-        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d').date()
-        self.grade = self._json_payload['Grade']
-        self.semester = self._json_payload['Semester']
-        self.visible = self._json_payload['ShowInGradesView']
-        self.objects_ids = ObjectsIds(
-            self._json_payload['AddedBy']['Id'],
-            self._json_payload['Category']['Id'],
-            self._json_payload['Lesson']['Id'],
-            self._json_payload['Student']['Id'],
-            self._json_payload['Subject']['Id']
+        self.add_date = datetime.strptime(self._json_resource['AddDate'], '%Y-%m-%d %H:%M:%S')
+        self.date = datetime.strptime(self._json_resource['Date'], '%Y-%m-%d').date()
+        self.grade = self._json_resource['Grade']
+        self.semester = self._json_resource['Semester']
+        self.visible = self._json_resource['ShowInGradesView']
+        self.objects.set_object(
+            'teacher', self._json_resource['AddedBy']['Id'], SynergiaTeacher
+        ).set_object(
+            'subject', self._json_resource['Subject']['Id'], SynergiaSubject
+        ).set_object(
+            'student', self._json_resource['Student']['Id'], SynergiaStudent
         )
 
     @property
-    def teacher(self):
-        """
-
-        :rtype: SynergiaTeacher
-        """
-        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
+    def teacher(self) -> SynergiaTeacher:
+        return self.objects.assembly('teacher')
 
     # TODO: add category prop
     # TODO: add lesson prop
 
     @property
-    def subject(self):
-        """
-
-        :rtype: SynergiaSubject
-        """
-        return self._session.csync(self.objects_ids.subject, SynergiaSubject)
+    def subject(self) -> SynergiaSubject:
+        return self.objects.assembly('subject')
 
     @property
     def student(self):
-        """
+        return self.objects.assembly('student')
 
-        :rtype: SynergiaStudent
-        """
-        return self._session.csync(self.objects_ids.student, SynergiaStudent)
 
 class SynergiaGrade(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None):
-
-        super().__init__(oid, session, ('Grades',), 'Grade', payload)
+    def __init__(self, uid, resource, session):
+        super().__init__(uid, resource, session)
 
         class GradeMetadata:
             def __init__(self, is_c, is_s, is_sp, is_f, is_fp):
@@ -311,54 +316,45 @@ class SynergiaGrade(SynergiaGenericClass):
                 self.is_final_grade = is_f
                 self.is_final_grade_proposition = is_fp
 
-        class ObjectsIds:
-            def __init__(self, id_tea, id_sub, ids_com, id_cat):
-                self.teacher = id_tea
-                self.subject = id_sub
-                self.comments = ids_com
-                self.category = id_cat
-
-        self.add_date = datetime.strptime(self._json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')
-        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d').date()
-        self.grade = self._json_payload['Grade']
-        self.is_constituent = self._json_payload['IsConstituent']
-        self.semester = self._json_payload['Semester']
+        self.add_date = datetime.strptime(self._json_resource['AddDate'], '%Y-%m-%d %H:%M:%S')
+        self.date = datetime.strptime(self._json_resource['Date'], '%Y-%m-%d').date()
+        self.grade = self._json_resource['Grade']
+        self.is_constituent = self._json_resource['IsConstituent']
+        self.semester = self._json_resource['Semester']
         self.metadata = GradeMetadata(
-            self._json_payload['IsConstituent'],
-            self._json_payload['IsSemester'],
-            self._json_payload['IsSemesterProposition'],
-            self._json_payload['IsFinal'],
-            self._json_payload['IsFinalProposition']
+            self._json_resource['IsConstituent'],
+            self._json_resource['IsSemester'],
+            self._json_resource['IsSemesterProposition'],
+            self._json_resource['IsFinal'],
+            self._json_resource['IsFinalProposition']
         )
-        self.objects_ids = ObjectsIds(
-            self._json_payload['AddedBy']['Id'],
-            self._json_payload['Subject']['Id'],
-            [x['Id'] for x in _try_to_extract(self._json_payload, 'Comments', false_return=[])],
-            self._json_payload['Category']['Id']
+
+        self.objects.set_object(
+            'teacher', self._json_resource['AddedBy']['Id'], SynergiaTeacher
+        ).set_object(
+            'subject', self._json_resource['Subject']['Id'], SynergiaSubject
+        ).set_object(
+            'category', self._json_resource['Category']['Id'], SynergiaGradeCategory
         )
 
     def __repr__(self):
-        return f'<{self.__class__.__name__} {self.grade} from SynergiaSubject with id {self.objects_ids.subject} ' \
-            f'added {self.add_date.strftime("%Y-%m-%d %H:%M:%S")}>'
+        return f'<{self.__class__.__name__} {self.grade} from SynergiaSubject with id {self.objects.return_id("subject")} ' \
+               f'added {self.add_date.strftime("%Y-%m-%d %H:%M:%S")}>'
 
     def __str__(self):
         return self.grade
 
     @property
-    def teacher(self):
-        """
-
-        :rtype: SynergiaTeacher
-        """
-        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
+    def teacher(self) -> SynergiaTeacher:
+        return self.objects.assembly('teacher')
 
     @property
-    def subject(self):
-        """
+    def subject(self) -> SynergiaSubject:
+        return self.objects.assembly('subject')
 
-        :rtype: SynergiaSubject
-        """
-        return self._session.csync(self.objects_ids.subject, SynergiaSubject)
+    @property
+    def category(self):
+        return self.objects.assembly('category')
 
     @property
     def comments(self):
@@ -366,18 +362,11 @@ class SynergiaGrade(SynergiaGenericClass):
 
         :rtype: list of SynergiaGradeComment
         """
-        if 'Comments' in self._json_payload.keys():
-            return [self._session.csync(i, SynergiaGradeComment) for i in self.objects_ids.comments]
+        if 'Comments' in self._json_resource.keys():
+            return [SynergiaGradeComment.create(i["Id"], self._session) for i in
+                    _try_to_extract(self._json_resource, 'Comments', false_return=[])]
         else:
             return []
-
-    @property
-    def category(self):
-        """
-
-        :rtype: SynergiaGradeCategory
-        """
-        return self._session.csync(self.objects_ids.category, SynergiaGradeCategory)
 
     @property
     def real_value(self):
@@ -405,83 +394,78 @@ class SynergiaGrade(SynergiaGenericClass):
 
 
 class SynergiaAttendanceType(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None):
-        super().__init__(oid, session, ('Attendances', 'Types',), 'Type', payload)
-        self.color = self._json_payload['ColorRGB']
-        self.is_presence_kind = self._json_payload['IsPresenceKind']
-        self.name = self._json_payload['Name']
-        self.short_name = self._json_payload['Short']
+    def __init__(self, uid, resource, session):
+        super().__init__(uid, resource, session)
+        self.color = self._json_resource['ColorRGB']
+        self.is_presence_kind = self._json_resource['IsPresenceKind']
+        self.name = self._json_resource['Name']
+        self.short_name = self._json_resource['Short']
+
+    @classmethod
+    def create(cls, uid=None, path=('Attendances', 'Types'), session=None, extraction_key='Type'):
+        self = super().create(uid, path, session, extraction_key)
+        return self
 
     def __repr__(self):
         return f'<{self.__class__.__name__} {self.short_name}>'
 
 
 class SynergiaAttendance(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None):
-        if isinstance(payload, dict):
-            if isinstance(payload['Id'], str):
-                if 't' in payload['Id']:
-                    payload['Id'] = int(payload['Id'][1:])
-                    oid = payload['Id']
+    def __init__(self, uid, resource, session):
+        if isinstance(resource, dict):
+            if isinstance(resource['Id'], str):
+                if 't' in resource['Id']:
+                    resource['Id'] = int(resource['Id'][1:])
+                    uid = resource['Id']
 
-        super().__init__(oid, session, ('Attendances',), 'Attendance', payload)
+        super().__init__(uid, resource, session)
 
-        class ObjectsIds:
-            def __init__(self, id_tea, id_stu, id_typ):
-                self.teacher = id_tea
-                self.student = id_stu
-                self.type = id_typ
-
-        self.add_date = datetime.strptime(self._json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')
-        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d').date()
-        self.lesson_no = self._json_payload['LessonNo']
-        self.objects_ids = ObjectsIds(
-            self._json_payload['AddedBy']['Id'],
-            self._json_payload['Student']['Id'],
-            self._json_payload['Type']['Id']
+        self.add_date = datetime.strptime(self._json_resource['AddDate'], '%Y-%m-%d %H:%M:%S')
+        self.date = datetime.strptime(self._json_resource['Date'], '%Y-%m-%d').date()
+        self.lesson_no = self._json_resource['LessonNo']
+        self.objects.set_object(
+            'teacher', self._json_resource['AddedBy']['Id'], SynergiaTeacher
+        ).set_object(
+            'student', self._json_resource['Student']['Id'], SynergiaStudent
+        ).set_object(
+            'type', self._json_resource['Type']['Id'], SynergiaAttendanceType
         )
 
-    @property
-    def teacher(self):
-        """
+    @classmethod
+    def create(cls, uid=None, path=('Attendances',), session=None, extraction_key='Attendance'):
+        self = super().create(uid, path, session, extraction_key)
+        return self
 
-        :rtype: SynergiaTeacher
-        """
-        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
+    @property
+    def teacher(self) -> SynergiaTeacher:
+        return self.objects.assembly('teacher')
 
     @property
     def student(self):
-        """
-
-        :rtype: SynergiaStudent
-        """
-        return self._session.csync(self.objects_ids.student, SynergiaStudent)
+        return self.objects.assembly('student')
 
     @property
     def type(self):
-        """
-
-        :rtype: SynergiaAttendanceType
-        """
-        return self._session.csync(self.objects_ids.type, SynergiaAttendanceType)
+        return self.objects.assembly('type')
 
     def __repr__(self):
-        return f'<SynergiaAttendance at {self.add_date.strftime("%Y-%m-%d %H:%M:%S")} ({self.oid})>'
+        return f'<SynergiaAttendance at {self.add_date.strftime("%Y-%m-%d %H:%M:%S")} ({self.uid})>'
 
     def __str__(self):
         return self.type
 
 
 class SynergiaExamCategory(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None):
-        super().__init__(oid, session, ('HomeWorks', 'Categories'), 'Category', payload)
+    def __init__(self, uid, resource, session):
+        super().__init__(uid, resource, session)
 
-        class ObjectsIds:
-            def __init__(self, id_col):
-                self.color = id_col
+        self.name = self._json_resource['Name']
+        self.objects.set_object('color', self._json_resource['Color']['Id'], SynergiaColor)
 
-        self.name = self._json_payload['Name']
-        self.objects_ids = ObjectsIds(self._json_payload['Color']['Id'])
+    @classmethod
+    def create(cls, uid=None, path=('HomeWorks', 'Categories'), session=None, extraction_key='Category'):
+        self = super().create(uid, path, session, extraction_key)
+        return self
 
     @property
     def color(self):
@@ -489,16 +473,16 @@ class SynergiaExamCategory(SynergiaGenericClass):
 
         :rtype: SynergiaColor
         """
-        return self._session.csync(self.objects_ids.color, SynergiaColor)
+        return self.objects.assembly('color')
 
     def __str__(self):
         return self.name
 
 
 class SynergiaExam(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None):
+    def __init__(self, uid, resource, session):
 
-        super().__init__(oid, session, ('HomeWorks',), 'HomeWork', payload)
+        super().__init__(uid, resource, session)
 
         def _define_group_and_type(exam_payload):
             """
@@ -513,87 +497,77 @@ class SynergiaExam(SynergiaGenericClass):
             else:
                 raise AttributeError('Wrong object type')
 
-        class ObjectsIds:
-            def __init__(self, id_tea, group_id, group_type, id_cat, id_sub):
-                self.teacher = id_tea
-                self.group = group_id
-                self.group_type = group_type
-                self.category = id_cat
-                self.subject = id_sub
-
-        self.add_date = datetime.strptime(self._json_payload['AddDate'], '%Y-%m-%d %H:%M:%S')
-        self.content = self._json_payload['Content']
-        self.date = datetime.strptime(self._json_payload['Date'], '%Y-%m-%d').date()
-        self.lesson = self._json_payload['LessonNo']
-        if self._json_payload['TimeFrom'] is None:
+        self.add_date = datetime.strptime(self._json_resource['AddDate'], '%Y-%m-%d %H:%M:%S')
+        self.content = self._json_resource['Content']
+        self.date = datetime.strptime(self._json_resource['Date'], '%Y-%m-%d').date()
+        self.lesson = self._json_resource['LessonNo']
+        if self._json_resource['TimeFrom'] is None:
             self.time_start = None
         else:
-            self.time_start = datetime.strptime(self._json_payload['TimeFrom'], '%H:%M:%S').time()
-        if self._json_payload['TimeTo'] is None:
+            self.time_start = datetime.strptime(self._json_resource['TimeFrom'], '%H:%M:%S').time()
+        if self._json_resource['TimeTo'] is None:
             self.time_end = None
         else:
-            self.time_end = datetime.strptime(self._json_payload['TimeTo'], '%H:%M:%S').time()
-        self.objects_ids = ObjectsIds(
-            self._json_payload['CreatedBy']['Id'],
-            _define_group_and_type(self._json_payload)['Id'],
-            _define_group_and_type(self._json_payload)['type'],
-            self._json_payload['Category']['Id'],
-            _try_to_extract(self._json_payload, 'Subject', {'Id': None})['Id']
+            self.time_end = datetime.strptime(self._json_resource['TimeTo'], '%H:%M:%S').time()
+
+        self.objects.set_object(
+            'teacher', self._json_resource['CreatedBy']['Id'], SynergiaTeacher
+        ).set_object(
+            'category', self._json_resource['Category']['Id'], SynergiaExamCategory
         )
+        if 'Subject' in self._json_resource:
+            self.objects.set_object('subject', self._json_resource['Subject']['Id'], SynergiaSubject)
+            self.__subject_present = True
+        else:
+            self.__subject_present = False
+
+    @classmethod
+    def create(cls, uid=None, path=('HomeWorks',), session=None, extraction_key='HomeWork'):
+        self = super().create(uid, path, session, extraction_key)
+        return self
 
     def __repr__(self):
         return f'<{self.__class__.__name__} ' \
-            f'{self.date.strftime("%Y-%m-%d")} for subject with id {self.objects_ids.subject}>'
+               f'{self.date.strftime("%Y-%m-%d")} for subject {self.subject}>'
 
     @property
-    def teacher(self):
-        """
+    def teacher(self) -> SynergiaTeacher:
+        return self.objects.assembly('teacher')
 
-        :rtype: SynergiaTeacher
-        """
-        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
+    # @property
+    # def group(self):
+    #    """
+    #
+    #    :rtype: SynergiaGlobalClass
+    #    :rtype: SynergiaVirtualClass
+    #    """
+    #    if self.objects_ids.group_type is SynergiaGlobalClass:
+    #        return SynergiaGlobalClass(self.objects_ids.group, self._session)
+    #    else:
+    #        return SynergiaVirtualClass(self.objects_ids.group, self._session)
 
     @property
-    def group(self):
-        """
-
-        :rtype: SynergiaGlobalClass
-        :rtype: SynergiaVirtualClass
-        """
-        if self.objects_ids.group_type is SynergiaGlobalClass:
-            return SynergiaGlobalClass(self.objects_ids.group, self._session)
+    def subject(self) -> SynergiaSubject:
+        if self.__subject_present:
+            return self.objects.assembly('subject')
         else:
-            return SynergiaVirtualClass(self.objects_ids.group, self._session)
-
-    @property
-    def subject(self):
-        """
-
-        :rtype: SynergiaSubject
-        """
-        if self.objects_ids.subject is None:
-            class FakeSynergiaSubject:
-                def __init__(self):
-                    self.name = 'Przedmiot nie określony'
-                    self.short_name = None
-            return FakeSynergiaSubject()
-        else:
-            return self._session.csync(self.objects_ids.subject, SynergiaSubject)
+            return None
 
     @property
     def category(self):
-        """
-
-        :rtype: SynergiaExamCategory
-        """
-        return self._session.csync(self.objects_ids.category, SynergiaExamCategory)
+        return self.objects.assembly('category')
 
 
 class SynergiaColor(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None):
-        super().__init__(oid, session, ('Colors',), 'Color', payload)
-        self.name = self._json_payload['Name']
-        self.hex_rgb = self._json_payload['RGB']
+    def __init__(self, uid, resource, session):
+        super().__init__(uid, resource, session)
+        self.name = self._json_resource['Name']
+        self.hex_rgb = self._json_resource['RGB']
+
+    @classmethod
+    def create(cls, uid=None, path=('Colors',), session=None, extraction_key='Color'):
+        self = super().create(uid, path, session, extraction_key)
+        return self
 
     def __repr__(self):
         return f'<{self.__class__.__name__} {self.hex_rgb}>'
@@ -603,10 +577,10 @@ class SynergiaColor(SynergiaGenericClass):
 
 
 class SynergiaClassroom(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None):
-        super().__init__(oid, session, ('Classrooms',), 'Classroom', payload)
-        self.name = self._json_payload['Name']
-        self.symbol = self._json_payload['Symbol']
+    def __init__(self, uid, resource, session):
+        super().__init__(uid, resource, session)
+        self.name = self._json_resource['Name']
+        self.symbol = self._json_resource['Symbol']
 
     def __repr__(self):
         return f'<SynergiaClassroom {self.symbol}>'
@@ -616,34 +590,30 @@ class SynergiaClassroom(SynergiaGenericClass):
 
 
 class SynergiaTeacherFreeDaysTypes(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None):
-        super().__init__(oid, session, ('TeacherFreeDays', 'Types'), 'Types', payload)
-        self.name = self._json_payload[0]['Name']
+    def __init__(self, uid, resource, session):
+        super().__init__(uid, resource, session)
+        self.name = self._json_resource[0]['Name']
 
 
 class SynergiaTeacherFreeDays(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None):
-        super().__init__(oid, session, ('TeacherFreeDays',), 'TeacherFreeDay', payload)
+    def __init__(self, uid, resource, session):
+        super().__init__(uid, resource, session)
 
-        class ObjectsIds:
-            def __init__(self, tea_id, type_id):
-                self.teacher = tea_id
-                self.type = type_id
-
-        self.starts = datetime.strptime(self._json_payload['DateFrom'], '%Y-%m-%d').date()
-        self.ends = datetime.strptime(self._json_payload['DateTo'], '%Y-%m-%d').date()
-        self.objects_ids = ObjectsIds(
-            self._json_payload['Teacher']['Id'],
-            self._json_payload['Type']['Id']
+        self.starts = datetime.strptime(self._json_resource['DateFrom'], '%Y-%m-%d').date()
+        self.ends = datetime.strptime(self._json_resource['DateTo'], '%Y-%m-%d').date()
+        self.objects.set_object(
+            'teacher', self._json_resource['Teacher']['Id'], SynergiaTeacher
+        ).set_object(
+            'type', self._json_resource['Type']['Id'], SynergiaTeacherFreeDaysTypes
         )
 
     @property
-    def teacher(self):
+    def teacher(self) -> SynergiaTeacher:
         """
 
         :rtype: SynergiaTeacher
         """
-        return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
+        return self.objects.assembly('teacher')
 
     @property
     def type(self):
@@ -651,34 +621,39 @@ class SynergiaTeacherFreeDays(SynergiaGenericClass):
 
         :rtype: SynergiaTeacherFreeDaysTypes
         """
-        return self._session.csync(self.objects_ids.type, SynergiaTeacherFreeDaysTypes)
+        return self.objects.assembly('type')
 
     def __repr__(self):
         return f'<SynergiaTeacherFreeDays {self.starts.isoformat()}-{self.ends.isoformat()} for {self.teacher.__repr__()}>'
 
 
 class SynergiaSchoolFreeDays(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None, from_origin=False):
-        super().__init__(oid, session, ('SchoolFreeDays',), 'SchoolFreeDays', payload)
+    def __init__(self, uid, resource, session, from_origin=False):
+        super().__init__(uid, resource, session)
         if from_origin:
             self._json_payload = self._json_payload[0]
         self.starts = datetime.strptime(self._json_payload['DateFrom'], '%Y-%m-%d').date()
         self.ends = datetime.strptime(self._json_payload['DateTo'], '%Y-%m-%d').date()
         self.name = self._json_payload['Name']  # TODO: Dodać Units
+
+    @classmethod
+    def create(cls, uid=None, path=('',), session=None, extraction_key=None):
+        self = super().create(uid, path, session, extraction_key)
+        return self
     # TODO: Wymagany debug oraz test
 
     # TODO: Dodać __repr__()
 
 
 class SynergiaSchool(SynergiaGenericClass):
-    def __init__(self, oid, session, payload=None):
-        super().__init__(oid, session, ('School', ), 'School', payload)
-        self.name = self._json_payload['Name']
+    def __init__(self, uid, resource, session):
+        super().__init__(uid, resource, session)
+        self.name = self._json_resource['Name']
         self.school_location = {
-            'street': self._json_payload['Street'],
-            'street_no': self._json_payload['BuildingNumber'],
-            'state': self._json_payload['State'],
-            'town': self._json_payload['Town']
+            'street': self._json_resource['Street'],
+            'street_no': self._json_resource['BuildingNumber'],
+            'state': self._json_resource['State'],
+            'town': self._json_resource['Town']
         }
 
     def __repr__(self):
@@ -686,3 +661,91 @@ class SynergiaSchool(SynergiaGenericClass):
 
     def __str__(self):
         return self.name
+
+
+class SynergiaTimetableEntry(SynergiaGenericClass):
+    def __init__(self, uid, resource, session):
+        super().__init__(uid, resource, session)
+        self.available = datetime.fromisoformat(resource['DateFrom']).date(), \
+                         datetime.fromisoformat(resource['DateTo']).date()
+
+    @classmethod
+    def create(cls, uid=None, path=('TimetableEntries',), session=None, extraction_key='TimetableEntry'):
+        self = super().create(uid, path, session, extraction_key)
+        return self
+
+
+class SynergiaTimetableEvent:
+    def __init__(self, resource, session):
+        self.lesson_no = resource['LessonNo']
+        self.start = time.fromisoformat(resource['HourFrom'])
+        self.end = time.fromisoformat(resource['HourTo'])
+        self.is_cancelled = resource['IsCanceled']
+        self.is_sub = resource['IsSubstitutionClass']
+        self.preloaded = {
+            'subject_name': resource['Subject']['Name'],
+            'teacher': f'{resource["Teacher"]["FirstName"]} {resource["Teacher"]["LastName"]}'
+        }
+        self.objects = _RemoteObjectsUIDManager(session, self)
+        self.objects.set_object(
+            'subject', resource['Subject']['Id'], SynergiaSubject
+        ).set_object(
+            'teacher', resource['Teacher']['Id'], SynergiaTeacher
+        )
+
+    @property
+    def subject(self):
+        return self.objects.assembly('subject')
+
+    def __repr__(self):
+        return f'<SynergiaTimetableEvent {self.start} {self.end} {self.objects.return_id("subject")}>'
+
+
+class SynergiaTimetable(SynergiaGenericClass):
+    def __init__(self, uid, resource, session):
+        super().__init__(uid, resource, session)
+        self.lessons = self.convert_parsed_timetable(
+            self.parse_timetable(resource)
+        )
+
+    @property
+    def today_timetable(self):
+        return self.lessons[datetime.now().date()]
+
+    @classmethod
+    def assembly(cls, resource, session):
+        pseudo_id = int(datetime.now().timestamp()).__str__()
+        self = cls(pseudo_id, resource, session)
+        return self
+
+    @classmethod
+    def create(cls, uid=None, path=('Timetables',), session=None, extraction_key='Timetable', week=None):
+        response = session.get_cached_response(*path)
+
+        if extraction_key is None:
+            extraction_key = SynergiaGenericClass.auto_extract(response)
+
+        resource = response[extraction_key]
+        self = cls.assembly(resource, session)
+        return self
+
+    @staticmethod
+    def parse_timetable(resource):
+        root = {}
+
+        for day in resource.keys():
+            day_date = date.fromisoformat(day)
+            root[day_date] = []
+            for period in resource[day]:
+                if period.__len__() != 0:
+                    root[day_date].append(period[0])
+                else:
+                    root[day_date].append({})
+        return root
+
+    def convert_parsed_timetable(self, timetable):
+        for day in timetable:
+            for event_index in range(len(timetable[day])):
+                if timetable[day][event_index].keys().__len__() != 0:
+                    timetable[day][event_index] = SynergiaTimetableEvent(timetable[day][event_index], self._session)
+        return timetable

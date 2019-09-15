@@ -17,7 +17,7 @@ def get_all_grades(session):
     grades_list = []
     for record in grades_raw:
         grades_list.append(
-            SynergiaGrade(record['Id'], session, payload=record)
+            SynergiaGrade(record['Id'], session, resource=record)
         )
     return tuple(grades_list)
 
@@ -34,7 +34,7 @@ def get_all_attendance(session):
     attendance_list = []
     for record in attendance_raw:
         attendance_list.append(
-            SynergiaAttendance(record['Id'], session, payload=record)
+            SynergiaAttendance(record['Id'], session, resource=record)
         )
     return tuple(attendance_list)
 
@@ -87,7 +87,7 @@ def get_filtered_attendance(session, *a_types):
     for record in attendance_raw:
         if record['Type']['Id'] in allowed_types:
             attendance_list.append(
-                SynergiaAttendance(record['Id'], session, payload=record)
+                SynergiaAttendance(record['Id'], session, resource=record)
             )
 
     return attendance_list
@@ -295,7 +295,7 @@ def get_school_feed(session):
             return self._session.csync(self.objects_ids.teacher, SynergiaTeacher)
 
         def mark_as_read(self):
-            self._session.do_request('SchoolNotices', 'MarkAsRead', self.unique_id)
+            self._session.post('SchoolNotices', 'MarkAsRead', self.unique_id)
 
         def __repr__(self):
             return f'<SynergiaNews {self.topic}>'

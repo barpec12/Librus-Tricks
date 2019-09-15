@@ -1,16 +1,17 @@
 import requests
 
-from librus_tricks import cache
-from librus_tricks import exceptions, utilities
+from librus_tricks import cache as cache_lib
+from librus_tricks import exceptions, tools
 from librus_tricks.classes import *
 from librus_tricks.messages import MessageReader
+from datetime import timedelta
 
 
 class SynergiaClient:
     """Sesja z API Synergii"""
 
-    def __init__(self, user, api_url='https://api.librus.pl/2.0/', user_agent='LibrusMobileApp',
-                 cache_location='cache.sqlite', custom_cache_object=None, synergia_user_passwd=None):
+    def __init__(self, user, api_url='https://api.librus.pl/2.0', user_agent='LibrusMobileApp',
+                 cache=cache_lib.AlchemyCache(), synergia_user_passwd=None):
         """
         Tworzy obiekt sesji z API Synergii.
 
@@ -25,19 +26,31 @@ class SynergiaClient:
         """
         self.user = user
         self.session = requests.session()
-        if custom_cache_object is not None:
-            self.cache = custom_cache_object
+
+        if cache_lib.CacheBase in cache.__class__.__bases__:
+            self.cache = cache
+            self.li_session = self
         else:
-            self.cache = cache.SQLiteCache(db_location=cache_location)
+            raise exceptions.InvalidCacheManager(f'{cache} can not be a cache object!')
+
         if synergia_user_passwd:
             self.message_reader = MessageReader(self.user.login, synergia_user_passwd, cache_backend=self.cache)
         else:
             self.message_reader = None
+
         self.__auth_headers = {'Authorization': f'Bearer {user.token}', 'User-Agent': user_agent}
         self.__api_url = api_url
 
     def __repr__(self):
         return f'<Synergia session for {self.user}>'
+
+    @staticmethod
+    def assembly_path(*elements, prefix='', suffix='', sep='/'):
+        for el in elements:
+            prefix += sep + str(el)
+        return prefix + suffix
+
+    # HTTP part
 
     def get(self, *path, request_params=None):
         """
@@ -53,9 +66,7 @@ class SynergiaClient:
         """
         if request_params is None:
             request_params = dict()
-        path_str = f'{self.__api_url}'
-        for p in path:
-            path_str += f'{p}/'
+        path_str = self.assembly_path(*path, prefix=self.__api_url)
         response = self.session.get(
             path_str, headers=self.__auth_headers, params=request_params
         )
@@ -71,18 +82,13 @@ class SynergiaClient:
 
         return response.json()
 
-    def do_request(self, *path, method='POST', request_params=None):
+    def post(self, *path, request_params=None):
         if request_params is None:
             request_params = dict()
-        path_str = f'{self.__api_url}'
-        for p in path:
-            path_str += f'{p}/'
-        if method == 'POST':
-            response = self.session.post(
-                path_str, headers=self.__auth_headers, params=request_params
-            )
-        else:
-            raise exceptions.WrongHTTPMethod('Nie obsługiwane zapytanie HTTP')
+        path_str = self.assembly_path(*path, prefix=self.__api_url)
+        response = self.session.post(
+            path_str, headers=self.__auth_headers, params=request_params
+        )
 
         if response.status_code >= 400:
             raise {
@@ -95,171 +101,129 @@ class SynergiaClient:
 
         return response.json()
 
-    def get_grade(self, grade_id):
+    # Cache
+
+    def get_cached_response(self, *path, http_params=None, max_lifetime=timedelta(hours=1)):
+        uri = self.assembly_path(*path, prefix=self.__api_url)
+        response_cached = self.cache.get_query(uri)
+
+        if response_cached is None:
+            http_response = self.get(*path, request_params=http_params)
+            self.cache.add_query(uri, http_response)
+            return http_response
+
+        age = datetime.now() - response_cached.last_load
+
+        if age > max_lifetime:
+            http_response = self.get(*path, request_params=http_params)
+            self.cache.del_query(uri)
+            self.cache.add_query(uri, http_response)
+            return http_response
+        return response_cached.response
+
+    def get_cached_object(self, uid, cls, max_lifetime=timedelta(hours=1)):
+        requested_object = self.cache.get_object(uid, cls)
+
+        if requested_object is None:
+            requested_object = cls.create(uid=uid, session=self)
+            self.cache.add_object(uid, cls, requested_object._json_resource)
+            return requested_object
+
+        age = datetime.now() - requested_object.last_load
+
+        if age > max_lifetime:
+            requested_object = cls.create(uid=uid, session=self)
+            self.cache.del_object(uid)
+            self.cache.add_object(uid, cls, requested_object._json_resource)
+
+        return requested_object
+
+    # API query part
+
+    def return_objects(self, *path, cls, extraction_key=None, lifetime=timedelta(minutes=1)):
         """
-        Zwraca podaną ocenę.
 
-        przykład: ``session.get_grade('42690')``
-
-        :param str grade_id: id oceny
-        :return: obiekt oceny
-        :rtype: librus_tricks.classes.SynergiaGrade
+        :param path:
+        :param cls:
+        :param extraction_key:
+        :param lifetime:
+        :return:
         """
-        return SynergiaGrade(grade_id, self)
+        raw = self.get_cached_response(*path, max_lifetime=lifetime)
 
-    def get_grades(self, selected=None):
+        if extraction_key is None:
+            extraction_key = SynergiaGenericClass.auto_extract(raw)
+
+        raw = raw[extraction_key]
+
+        stack = []
+
+        for stored_payload in raw:
+            stack.append(cls.assembly(stored_payload, self))
+
+        return tuple(stack)
+
+    def grades(self, *grades):
         """
         Zwraca daną listę ocen.
 
-        :param selected: lista lub krotka z wybranymi ocenami, zostawienie tego parametru
-        powoduje pobranie wszystkich ocen
-        :type selected: list of int
-        :type selected: tuple of int
         :return: krotka z ocenami
         :rtype: tuple of librus_tricks.classes.SynergiaGrade
         """
-        if selected is None:
-            return utilities.get_all_grades(self)
+        if grades.__len__() == 0:
+            return self.return_objects('Grades', cls=SynergiaGrade, extraction_key='Grades')
         else:
-            ids_computed = ''
-            for i in selected:
-                ids_computed += f'{i},'
-            ids_computed += f'{selected[-1]}'
-            return utilities.get_objects(self, 'Grades', ids_computed, 'Grades', SynergiaGrade)
+            ids_computed = self.assembly_path(*grades, sep=',', suffix=grades[-1])
+            return self.return_objects('Grades', ids_computed, cls=SynergiaGrade, extraction_key='Grades')
 
-    def get_subject_grades(self, subject):
+    def attendances(self, *attendances):
         """
 
-        :param SynergiaSubject subject: przedmiot z, którego będą pobierane oceny
+        :param attendances:
         :return:
-        :rtype: tuple of librus_tricks.classes.SynergiaGrade
-        """
-        grades = self.get_grades()
-        return tuple([grade for grade in grades if grade.subject == subject])
-
-    def get_basetextgrades(self):
-        """
-        Zwraca krotkę ocen opisowych (chyba to tak się nazywa)
-
-        :return:
-        :rtype: tuple of SynergiaBaseTextGrade
-        """
-        return utilities.get_objects(self, 'BaseTextGrades', '', 'Grades', SynergiaBaseTextGrade)
-
-    def get_exams(self, *calendars, only_future=True, now=datetime.now()):
-        """
-        Zwraca listę wszystkich egzaminów w obecnym miesiącu. Pozostawienie ``calendars`` pustym pobiera
-        sprawdziany z wszystkich kalendarzy.
-
-        :param str calendars: str zawierające id kalendarza
-        :param bool only_future: bool określający czy ma pobierać tylko przyszłe sprawdziany
-        :param datetime.datetime now: obiekt datetime, który określa od którego momentu ma pobierać przyszłe sprawdziany
-        :return: lista zawierająca sprawdziany
-        :rtype: list of librus_tricks.classes.SynergiaExam
-        """
-        if only_future:
-            return [ex for ex in utilities.get_exams(self, *calendars) if ex.date > now.date()]
-        else:
-            return utilities.get_exams(self, *calendars)
-
-    def get_attendances(self, *att_ids):
-        """
-        Zwraca krotkę z wszystkimi (nie)obecnościami lub zwolnieniami. Jeśli parametr ``att_ids`` zawiera id,
-        pobiera tylko podaną frekwencję.
-
-        :param att_ids: id danych obiektów frekwencji
-        :return: krotka z frekwencją
         :rtype: tuple of librus_tricks.classes.SynergiaAttendance
         """
-        computed_ids = ''
-        for atid in att_ids:
-            computed_ids += atid + ','
-        return utilities.get_objects(self, 'Attendances', computed_ids, 'Attendances', SynergiaAttendance)
-
-    def get_absences(self):
-        """
-        Zwraca listę nieobecności ucznia
-        :rtype: list of SynergiaAttendance
-        """
-        return utilities.get_filtered_attendance(self, *utilities.get_all_absence_types(self))
-
-    def get_timetable(self, week_start=None):
-        if week_start is None:
-            return utilities.get_timetable(self)
+        if attendances.__len__() == 0:
+            return self.return_objects('Attendances', cls=SynergiaAttendance, extraction_key='Attendances')
         else:
-            return utilities.get_timetable(self, week_start)
+            ids_computed = self.assembly_path(*attendances, sep=',', suffix=attendances[-1])
+            return self.return_objects('Attendances', ids_computed, cls=SynergiaGrade, extraction_key='Attendances')
 
-    def get_news(self, unseen_only=False):
-        ns = utilities.get_school_feed(self)
-        ns = sorted(ns, key=lambda x: x.created)
-        if unseen_only:
-            return [x for x in ns if not x.was_read]
+    def exams(self, *exams):
+        """
+
+        :param exams:
+        :return:
+        :rtype: tuple of librus_tricks.classes.SynergiaExam
+        """
+        if exams.__len__() == 0:
+            return self.return_objects('HomeWorks', cls=SynergiaExam, extraction_key='HomeWorks')
         else:
-            return ns
+            ids_computed = self.assembly_path(*exams, sep=',', suffix=exams[-1])
+            return self.return_objects('HomeWorks', ids_computed, cls=SynergiaExam, extraction_key='HomeWorks')
 
-    def get_lucky_number(self):
+    def colors(self, *colors):
         """
-        Zwraca szczęśliwy numerek.
 
-        :return: szczęśliwy numerek
-        :rtype: int
+        :param exams:
+        :return:
+        :rtype: tuple of librus_tricks.classes.SynergiaColors
         """
-        return int(self.get('LuckyNumbers')['LuckyNumber']['LuckyNumber'])
+        if colors.__len__() == 0:
+            return self.return_objects('Colors', cls=SynergiaColor, extraction_key='Colors')
+        else:
+            ids_computed = self.assembly_path(*colors, sep=',', suffix=colors[-1])
+            return self.return_objects('Colors', ids_computed, cls=SynergiaColor, extraction_key='Colors')
 
-    def get_teacher_free_days(self, only_future=True, now=datetime.now()):
-        return utilities.get_teachers_free_days(self, only_future, now)
+    def timetable(self, for_date=datetime.now()):
+        monday = tools.get_actual_monday(for_date).isoformat()
+        r = self.get('Timetables', request_params={'weekStart': monday})
+        return SynergiaTimetable.assembly(r['Timetable'], self)
 
-    def get_school_free_days(self, only_future=True, now=datetime.now()):
-        return utilities.get_free_days(self, only_future, now)
+    @property
+    def today_timetable(self):
+        return self.timetable().lessons[datetime.now().date()]
 
-    def get_all_teachers(self, *teachers_ids):
-        """
-        Zwraca listę zawierającą wszystkich nauczycieli
-
-        :param teachers_ids: IDki nauczycieli, pozostawienie tego parametru pustego, spowoduje pobranie
-        wszystkich nauczycieli
-        :rtype: list of SynergiaTeacher
-        """
-        computed_ids = ''
-        for atid in teachers_ids:
-            computed_ids += atid + ','
-        return utilities.get_objects(self, 'Users', computed_ids, 'Users', SynergiaTeacher)
-
-    def is_school_free_date(self, now=datetime.now()):
-        """
-        Zwraca czy dzisiejszy dzień jest dniem wolnym, jeśli jest zwracany jest obiekt dnia wolnego, jeśli jest to
-        normalny dzień, zwracany jest False.
-
-        :param datetime.datetime now: obiekt datetime, który określa od teraźniejszość
-        :rtype: librus_tricks.classes.SynergiaSchoolFreeDays
-        """
-        free_days = self.get_school_free_days(only_future=False)
-        for free_day in free_days:
-            if free_day.starts <= now.date() <= free_day.ends:
-                return free_day
-        return False
-
-    def get_school(self):
-        temporary_r = self.get('Schools')['School']
-        return SynergiaSchool(temporary_r['Id'], self, temporary_r)
-
-    def csync(self, oid, cls):
-        return self.cache.sync(oid, cls, self)
-
-    def preload_cache(self):
-        objs = (
-            *utilities.get_all_attendance_types(self),
-            *self.get_all_teachers(),
-            *utilities.get_objects(self, 'Subjects', '', 'Subjects', SynergiaSubject)
-        )
-        for at in objs:
-            self.csync(at.oid, at.__class__)
-
-    def get_subjects(self, *subjects_ids):
-        computed_ids = ''
-        for atid in subjects_ids:
-            computed_ids += atid + ','
-        return utilities.get_objects(self, 'Subjects', computed_ids, 'Subjects', SynergiaSubject)
-
-    def get_ad(self):
-        return self.get('BannerAds')['BannerAds']
+    @property
+    def tomorrow_timetable(self):
+        return self.timetable(datetime.now() + timedelta(days=1)).lessons[(datetime.now() + timedelta(days=1)).date()]
