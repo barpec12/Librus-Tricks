@@ -28,21 +28,15 @@ def test_grades():
 
 
 def test_timetable():
-    session.timetable()
-    k = session.today_timetable
-    return session.tomorrow_timetable
+    return session.tomorrow_timetable, session.today_timetable, session.timetable()
 
 
 def test_newsfeed():
-    return session.get_news()
+    return session.news_feed()
 
 
 def test_messages():
     return session.message_reader.read_messages()
-
-
-def test_basetextgrades():
-    return session.get_basetextgrades()
 
 
 def test_colors():
