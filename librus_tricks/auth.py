@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-import httpx
+import requests
 from bs4 import BeautifulSoup
 
 from .exceptions import *
@@ -33,7 +33,7 @@ class SynergiaUser:
         return f'{self.name} {self.last_name}'
 
     def revalidate_root(self):
-        auth_session = httpx.Client()
+        auth_session = requests.session()
         new_tokens = auth_session.post(
             OAUTHURL,
             data={
@@ -46,7 +46,7 @@ class SynergiaUser:
         self.refresh_token = new_tokens.json()['refresh_token']
 
     def revalidate_user(self):
-        auth_session = httpx.Client()
+        auth_session = requests.session()
         new_token = auth_session.get(
             FRESHURL.format(login=self.login),
             headers={'Authorization': f'Bearer {self.root_token}'}
@@ -63,7 +63,7 @@ class SynergiaUser:
             else:
                 clock_resp = True
         if use_query:
-            test = httpx.get('https://api.librus.pl/2.0/Me', headers={'Authorization': f'Bearer {self.token}'})
+            test = requests.get('https://api.librus.pl/2.0/Me', headers={'Authorization': f'Bearer {self.token}'})
             if test.status_code == 401:
                 query_resp = False
             else:
@@ -81,7 +81,7 @@ def authorizer(email, password):
     :return:
     :rtype: list of librus_tricks.auth.SynergiaUser
     """
-    auth_session = httpx.Client()
+    auth_session = requests.session()
     site = auth_session.get(LIBRUSLOGINURL)
     soup = BeautifulSoup(site.text, 'html.parser')
     csrf = soup.find('meta', attrs={'name': 'csrf-token'})['content']
