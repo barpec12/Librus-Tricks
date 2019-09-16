@@ -5,7 +5,7 @@ python:
   - '3.7'
   - '3.8-dev'
 install:
-  - pip install httpx colorama beautifulsoup4 SQLAlchemy
+  - pip install requests colorama beautifulsoup4
 script:
   - pytest
 after_success:

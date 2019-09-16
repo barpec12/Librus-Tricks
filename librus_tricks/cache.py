@@ -192,7 +192,7 @@ class SQLiteCache:
     def sync_message(self, message_obj):
         """
 
-        :type message_obj: librus_tricks.messages.SynergiaScrappedMessage
+        :type message_obj: librus_tricks.messages.Message
         """
         cache_response = self.get_message(message_obj.url)
         if cache_response is None:
