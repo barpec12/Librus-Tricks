@@ -1,4 +1,4 @@
-import requests
+import httpx
 
 from librus_tricks import cache as cache_lib
 from librus_tricks import exceptions, tools
@@ -21,7 +21,7 @@ class SynergiaClient:
         :param synergia_user_passwd:
         """
         self.user = user
-        self.session = requests.session()
+        self.session = httpx.Client()
 
         if cache_lib.CacheBase in cache.__class__.__bases__:
             self.cache = cache

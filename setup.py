@@ -16,7 +16,7 @@ setuptools.setup(
     url="https://github.com/Backdoorek/LibrusTricks",
     packages=setuptools.find_packages(),
     install_requires=[
-        'requests', 'beautifulsoup4', 'SQLAlchemy'
+        'httpx', 'beautifulsoup4', 'SQLAlchemy'
     ],
     extras_require={
         'examples': ['colorama', 'matplotlib', 'PrettyTable']
