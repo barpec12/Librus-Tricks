@@ -1,4 +1,4 @@
-from librus_tricks import exceptions, utilities
+from librus_tricks import exceptions
 from librus_tricks.auth import authorizer
 from librus_tricks.classes import *
 from librus_tricks.core import SynergiaClient

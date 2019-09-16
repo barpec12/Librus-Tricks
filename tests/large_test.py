@@ -6,7 +6,7 @@ sys.path.extend(['./'])
 email = os.environ['librus_email']
 password = os.environ['librus_password']
 
-from librus_tricks import utilities, create_session, cache
+from librus_tricks import create_session, cache
 
 session = create_session(email, password, cache=cache.AlchemyCache(engine_uri='sqlite:///:memory:'))
 

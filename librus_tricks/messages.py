@@ -1,15 +1,14 @@
 from bs4 import BeautifulSoup
-import requests
+import httpx
 from datetime import datetime
 from librus_tricks.cache import SQLiteCache
 
 
-class Message:
+class SynergiaScrappedMessage:
     def __init__(self, url, parent_web_session, header, author, message_date, cache_backend=SQLiteCache(':memory:')):
         """
 
         :type url: str
-        :type parent_web_session: requests.sessions.Session
         :type message_date: datetime
         """
         self.web_session = parent_web_session
@@ -34,7 +33,7 @@ class Message:
 
 class MessageReader:
     def __init__(self, username, password, cache_backend=SQLiteCache(':memory:')):
-        self.web_session = requests.session()
+        self.web_session = httpx.Client()
         self.web_session.get('https://api.librus.pl/OAuth/Authorization?client_id=46&response_type=code&scope=mydata')
         login_response = self.web_session.post('https://api.librus.pl/OAuth/Authorization?client_id=46', data={
             'action': 'login', 'login': username, 'pass': password
@@ -55,7 +54,7 @@ class MessageReader:
         messages = []
         for message in rows:
             cols = message.find_all('td')
-            messages.append(Message(
+            messages.append(SynergiaScrappedMessage(
                 url=cols[3].a['href'],
                 header=cols[3].text.strip(),
                 author=cols[2].text.strip(),
