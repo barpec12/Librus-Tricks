@@ -13,16 +13,12 @@ class SynergiaClient:
     def __init__(self, user, api_url='https://api.librus.pl/2.0', user_agent='LibrusMobileApp',
                  cache=cache_lib.AlchemyCache(), synergia_user_passwd=None):
         """
-        Tworzy obiekt sesji z API Synergii.
 
-        :param librus_tricks.auth.SynergiaUser user: użytkownik Synergii
-        :param str api_url: url do API, NIE ZMIENIAJ GO JEŚLI NIE WIESZ DO CZEGO SŁUŻY
-        :param str user_agent: określa jak ma się przedstawiać nasza sesja
-        :param str cache_location: określa lokalizację bazy danych z cache, ustaw ``:memory:``
-         aby utworzyć bazę danych w pamięci operacyjnej
-        :param object custom_cache_object: pozwala na wybranie własnego mechanizmu do cache'owania
-        :param str synergia_user_passwd: pozostawienie tego parametru pustego uniemożliwia używanie modułu związanego z
-        obsługą wiadomości
+        :param user:
+        :param api_url:
+        :param user_agent:
+        :param cache:
+        :param synergia_user_passwd:
         """
         self.user = user
         self.session = requests.session()
@@ -216,14 +212,46 @@ class SynergiaClient:
             return self.return_objects('Colors', ids_computed, cls=SynergiaColor, extraction_key='Colors')
 
     def timetable(self, for_date=datetime.now()):
+        """
+
+        :param for_date:
+        :return:
+        :rtype: Dict[datetime.date, List[librus_tricks.classes.SynergiaTimetableEvent]]
+        """
         monday = tools.get_actual_monday(for_date).isoformat()
         r = self.get('Timetables', request_params={'weekStart': monday})
         return SynergiaTimetable.assembly(r['Timetable'], self)
 
     @property
     def today_timetable(self):
+        """
+
+        :return:
+        :rtype: list of librus_tricks.classes.SynergiaTimetableEvent
+        """
         return self.timetable().lessons[datetime.now().date()]
 
     @property
     def tomorrow_timetable(self):
+        """
+
+        :return:
+        :rtype: list of librus_tricks.classes.SynergiaTimetableEvent
+        """
         return self.timetable(datetime.now() + timedelta(days=1)).lessons[(datetime.now() + timedelta(days=1)).date()]
+
+    def messages(self, *messages):
+        """
+
+        :param exams:
+        :return:
+        :rtype: tuple of librus_tricks.classes.SynergiaColors
+        """
+        if messages.__len__() == 0:
+            return self.return_objects('Messages', cls=SynergiaNativeMessage, extraction_key='Messages')
+        else:
+            ids_computed = self.assembly_path(*messages, sep=',', suffix=messages[-1])
+            return self.return_objects('Messages', ids_computed, cls=SynergiaNativeMessage, extraction_key='Messages')
+
+    def news_feed(self):
+        return self.return_objects('SchoolNotices', cls=SynergiaNews, extraction_key='SchoolNotices')

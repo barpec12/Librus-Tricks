@@ -6,7 +6,7 @@ from librus_tricks.core import SynergiaClient
 name = 'librus_tricks'
 __title__ = 'librus_tricks'
 __author__ = 'Backdoorek'
-__version__ = '0.5.1'
+__version__ = '0.7.0'
 
 def create_session(email, password, fetch_first=True, **kwargs):
     """

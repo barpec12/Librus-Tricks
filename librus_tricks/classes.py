@@ -288,6 +288,11 @@ class SynergiaBaseTextGrade(SynergiaGenericClass):
             'student', self._json_resource['Student']['Id'], SynergiaStudent
         )
 
+    @classmethod
+    def create(cls, uid=None, path=('BaseTextGrades',), session=None, extraction_key='BaseTextGrades'):
+        self = super().create(uid, path, session, extraction_key)
+        return self
+
     @property
     def teacher(self) -> SynergiaTeacher:
         return self.objects.assembly('teacher')
@@ -353,7 +358,7 @@ class SynergiaGrade(SynergiaGenericClass):
         return self.objects.assembly('subject')
 
     @property
-    def category(self):
+    def category(self) -> SynergiaGradeCategory:
         return self.objects.assembly('category')
 
     @property
@@ -683,7 +688,7 @@ class SynergiaTimetableEvent:
         self.is_cancelled = resource['IsCanceled']
         self.is_sub = resource['IsSubstitutionClass']
         self.preloaded = {
-            'subject_name': resource['Subject']['Name'],
+            'subject_title': resource['Subject']['Name'],
             'teacher': f'{resource["Teacher"]["FirstName"]} {resource["Teacher"]["LastName"]}'
         }
         self.objects = _RemoteObjectsUIDManager(session, self)
@@ -698,7 +703,10 @@ class SynergiaTimetableEvent:
         return self.objects.assembly('subject')
 
     def __repr__(self):
-        return f'<SynergiaTimetableEvent {self.start} {self.end} {self.objects.return_id("subject")}>'
+        return f'<SynergiaTimetableEvent {self.preloaded["subject_title"]} {self.start} {self.end} with {self.preloaded["teacher"]}>'
+
+    def __str__(self):
+        return self.preloaded["subject_title"]
 
 
 class SynergiaTimetable(SynergiaGenericClass):
@@ -710,6 +718,10 @@ class SynergiaTimetable(SynergiaGenericClass):
 
     @property
     def today_timetable(self):
+        """
+
+        :rtype: list of SynergiaTimetableEvent
+        """
         return self.lessons[datetime.now().date()]
 
     @classmethod
@@ -749,3 +761,54 @@ class SynergiaTimetable(SynergiaGenericClass):
                 if timetable[day][event_index].keys().__len__() != 0:
                     timetable[day][event_index] = SynergiaTimetableEvent(timetable[day][event_index], self._session)
         return timetable
+
+    def __repr__(self):
+        return f'<{self.__class__.__name__} for {self.lessons.keys()}>'
+
+    def __str__(self):
+        o_str = ''
+        for d in self.lessons.keys():
+            o_str += f'{d}\n'
+            for e in self.lessons[d]:
+                if e != {}:
+                    o_str += f'  {e.__str__()}\n'
+        return o_str
+
+
+
+class SynergiaNativeMessage(SynergiaGenericClass):
+    def __init__(self, uid, resource, session):
+        super().__init__(uid, resource, session)
+        self.body = self._json_resource['Body']
+        self.topic = self._json_resource['Subject']
+        self.send_date = datetime.fromtimestamp(self._json_resource['SendDate'])
+        # self.objects.set_object('sender', self._json_resource['Sender']['Id'], SynergiaTeacher)
+
+    # @property
+    # def sender(self) -> SynergiaTeacher:
+    #     return self.objects.assembly('sender')
+
+    @classmethod
+    def create(cls, uid=None, path=('Messages',), session=None, extraction_key='Message'):
+        self = super().create(uid, path, session, extraction_key)
+        return self
+
+
+class SynergiaNews(SynergiaGenericClass):
+    def __init__(self, uid, resource, session):
+        super().__init__(uid, resource, session)
+        self.content = self._json_resource['Content']
+        self.created = datetime.strptime(self._json_resource['CreationDate'], '%Y-%m-%d %H:%M:%S')
+        self.unique_id = self._json_resource['Id']
+        self.topic = self._json_resource['Subject']
+        self.was_read = self._json_resource['WasRead']
+        self.starts = datetime.strptime(self._json_resource['StartDate'], '%Y-%m-%d')
+        self.ends = datetime.strptime(self._json_resource['EndDate'], '%Y-%m-%d')
+
+    @classmethod
+    def create(cls, uid=None, path=('SchoolNotices',), session=None, extraction_key='SchoolNotices'):
+        self = super().create(uid, path, session, extraction_key)
+        return self
+
+    def __repr__(self):
+        return f'<SynergiaNews {self.topic}>'
