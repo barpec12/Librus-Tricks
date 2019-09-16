@@ -1,7 +1,7 @@
 ---
 name: Zgłoś błąd
 about: Opisz jaki błąd znalazłeś
-title: "[BUG} "
+title: "[BUG] "
 labels: bug
 assignees: Backdoorek
 

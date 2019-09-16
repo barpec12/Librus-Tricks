@@ -7,36 +7,32 @@
 
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/librus-tricks.svg?style=for-the-badge)![PyPI - Version](https://img.shields.io/pypi/v/librus-tricks.svg?style=for-the-badge)![PyPI - Python Version](https://img.shields.io/pypi/pyversions/librus-tricks.svg?style=for-the-badge)](https://pypi.org/project/librus-tricks/)
 
-A powerful python Librus Synergia API based on RE
-Wiki was written in polish, checkout it [here](https://github.com/Backdoorek/Librus-Tricks/wiki)
+Fast and powerful Synergia Librus API wrapper
 </div>
 
 ## What is inside the box?
- - Basic caching system (based on SQLite)
+ - Flexible cache system (Based on SQLAlchemy ORM)
+ - Easy to use authentication process
  - Lazy object loading
- - Simplified objects
- - Errors handlers
- - All-In-One login mechanism
- - Many built-in solutions (get future exams, get timetable etc.)
- - Optional message support (read-only, based on screen-scraping)
- - Docstrings (help for PyCharm, VS IDE, VS Code, IDLE etc.)
+ - Use features from `Mobilne Dodatki` or their spare solutions
+ - `__repr__` and `__str__` are pretty human readable
 
 ## Install
 ```text
 # Windows
 # Latest stable
 pip install librus-tricks
-# Libs for exams
+# Libs for examples
 pip install librus-tricks[examples]
-# Latest sources
+# Dev channel
 pip install git+https://github.com/Backdoorek/Librus-Tricks.git@prototype
 
 # Linux
 # Latest stable
 sudo -H pip3 install librus-tricks
-# Libs for exams
+# Libs for examples
 sudo -H pip3 install librus-tricks[examples]
-# Latest sources
+# Dev channel
 sudo -H pip3 install git+https://github.com/Backdoorek/Librus-Tricks.git@prototype
 ```
 

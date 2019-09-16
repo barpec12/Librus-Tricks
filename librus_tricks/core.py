@@ -66,11 +66,12 @@ class SynergiaClient:
         response = self.session.get(
             path_str, headers=self.__auth_headers, params=request_params
         )
+        print(path_str)
 
         if response.status_code >= 400:
             raise {
                 500: Exception('Server error'),
-                404: exceptions.SynergiaNotFound(response.json()),
+                404: exceptions.SynergiaNotFound(path_str),
                 403: exceptions.SynergiaForbidden(response.json()),
                 401: exceptions.SynergiaAccessDenied(response.json()),
                 400: exceptions.SynergiaInvalidRequest(response.json()),
@@ -169,7 +170,7 @@ class SynergiaClient:
         if grades.__len__() == 0:
             return self.return_objects('Grades', cls=SynergiaGrade, extraction_key='Grades')
         else:
-            ids_computed = self.assembly_path(*grades, sep=',', suffix=grades[-1])
+            ids_computed = self.assembly_path(*grades, sep=',', suffix=grades[-1])[1:]
             return self.return_objects('Grades', ids_computed, cls=SynergiaGrade, extraction_key='Grades')
 
     def attendances(self, *attendances):
@@ -182,7 +183,7 @@ class SynergiaClient:
         if attendances.__len__() == 0:
             return self.return_objects('Attendances', cls=SynergiaAttendance, extraction_key='Attendances')
         else:
-            ids_computed = self.assembly_path(*attendances, sep=',', suffix=attendances[-1])
+            ids_computed = self.assembly_path(*attendances, sep=',', suffix=attendances[-1])[1:]
             return self.return_objects('Attendances', ids_computed, cls=SynergiaGrade, extraction_key='Attendances')
 
     def exams(self, *exams):
@@ -195,7 +196,7 @@ class SynergiaClient:
         if exams.__len__() == 0:
             return self.return_objects('HomeWorks', cls=SynergiaExam, extraction_key='HomeWorks')
         else:
-            ids_computed = self.assembly_path(*exams, sep=',', suffix=exams[-1])
+            ids_computed = self.assembly_path(*exams, sep=',', suffix=exams[-1])[1:]
             return self.return_objects('HomeWorks', ids_computed, cls=SynergiaExam, extraction_key='HomeWorks')
 
     def colors(self, *colors):
@@ -250,7 +251,7 @@ class SynergiaClient:
         if messages.__len__() == 0:
             return self.return_objects('Messages', cls=SynergiaNativeMessage, extraction_key='Messages')
         else:
-            ids_computed = self.assembly_path(*messages, sep=',', suffix=messages[-1])
+            ids_computed = self.assembly_path(*messages, sep=',', suffix=messages[-1])[1:]
             return self.return_objects('Messages', ids_computed, cls=SynergiaNativeMessage, extraction_key='Messages')
 
     def news_feed(self):
