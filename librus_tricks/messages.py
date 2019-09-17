@@ -55,7 +55,7 @@ class MessageReader:
         messages = []
         for message in rows:
             cols = message.find_all('td')
-            messages.append(Message(
+            messages.append(SynergiaScrappedMessage(
                 url=cols[3].a['href'],
                 header=cols[3].text.strip(),
                 author=cols[2].text.strip(),
@@ -64,19 +64,3 @@ class MessageReader:
                 cache_backend=self._cache
             ))
         return messages
-
-
-def find_teacher(message, session):
-    """
-
-    :param message:
-    :param librus_tricks.SynergiaClient session:
-    :return:
-    """
-    target = message.author_alias
-    available_teachers = [t for t in session.get_all_teachers() if t.name is not None and t.last_name is not None]
-
-    for teacher in available_teachers:
-        if teacher.name in target and teacher.last_name in target:
-            return teacher
-    return None
