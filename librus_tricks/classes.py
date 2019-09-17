@@ -44,7 +44,7 @@ class SynergiaGenericClass:
         """
 
         self._session = session
-        self.uid = int(uid)
+        self.uid = uid
         self.objects = _RemoteObjectsUIDManager(self._session, self)
         self._json_resource = resource
 
